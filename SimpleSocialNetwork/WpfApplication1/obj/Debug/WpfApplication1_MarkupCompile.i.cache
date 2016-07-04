@@ -1,7 +1,7 @@
 ﻿WpfApplication1
 
 
-winexe
+exe
 C#
 .cs
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\WpfApplication1\obj\Debug\
@@ -16,5 +16,5 @@ C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\WpfAp
 13738642453
 MainWindow.xaml;
 
-False
+True
 
