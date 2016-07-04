@@ -1,20 +1,20 @@
 ﻿WpfApplication1
 
 
-exe
+winexe
 C#
 .cs
-C:\Users\erben\code\knightecDelight\SimpleSocialNetwork\WpfApplication1\obj\Debug\
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\WpfApplication1\obj\Debug\
 WpfApplication1
 none
 false
 DEBUG;TRACE
-C:\Users\erben\code\knightecDelight\SimpleSocialNetwork\WpfApplication1\App.xaml
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\WpfApplication1\App.xaml
 11151548125
 
-91028477841
+91018139145
 13738642453
 MainWindow.xaml;
 
-True
+False
 
