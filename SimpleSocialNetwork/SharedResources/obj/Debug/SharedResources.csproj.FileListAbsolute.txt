@@ -2,8 +2,3 @@ C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\Share
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.pdb
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.dll
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.pdb
-C:\Users\erben\code\knightecDelight\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.dll
-C:\Users\erben\code\knightecDelight\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.pdb
-C:\Users\erben\code\knightecDelight\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.csprojResolveAssemblyReference.cache
-C:\Users\erben\code\knightecDelight\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.dll
-C:\Users\erben\code\knightecDelight\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.pdb

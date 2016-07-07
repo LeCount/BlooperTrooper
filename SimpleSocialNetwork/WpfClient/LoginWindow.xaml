@@ -5,21 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfClient"
         mc:Ignorable="d"
-        Title="Login" Height="180" Width="250"
+        Title="Login" Height="250" Width="250"
         ResizeMode="NoResize">
 
-    <Grid>
-        <Grid Height="70" VerticalAlignment="Top" Margin="0,0,150,0">
-            <Label Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10">Username:</Label>
-            <Label Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,40,5,0">Password:</Label>
-        </Grid>
-        <Grid Height="70" VerticalAlignment="Top" Margin="100,0,0,0 ">
-            <TextBox x:Name="txtLogin" Margin="0,10,5,0" Height="25" VerticalAlignment="Top"></TextBox>
-            <PasswordBox x:Name="txtPassword" Margin="0,40,5,0" Height="25" VerticalAlignment="Top"></PasswordBox>
-        </Grid>
-        <Grid Height="70" Margin="0,70,0,0" VerticalAlignment="Top">
-            <Button Height="40" VerticalAlignment="Top" x:Name="loginButton" Margin="5" Click="loginButton_Click">Login</Button>
-            <Label x:Name="lblRegister" VerticalAlignment="Bottom" MouseLeftButtonUp="lblRegister_MouseLeftButtonUp" FontSize="10" Background="{x:Null}" Foreground="#FF000CFF">Register Account</Label>
-        </Grid>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.ColumnSpan="2">Fill in your credentials.</Label>
+        
+            <Label Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="1">Username:</Label>
+             <TextBox x:Name="txtLogin" Height="25" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"></TextBox>
+
+        <Label Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="2">Password:</Label>
+        <PasswordBox x:Name="txtPassword" Height="25" VerticalAlignment="Top"  Grid.Row="2" Grid.Column="1"> </PasswordBox>
+        
+            <Button Height="40" VerticalAlignment="Top" x:Name="loginButton" Margin="5" Click="loginButton_Click" Grid.Row="3" Grid.ColumnSpan="2">Login</Button>
+            <Label x:Name="lblRegister" VerticalAlignment="Bottom" MouseLeftButtonUp="lblRegister_MouseLeftButtonUp" FontSize="10" Background="{x:Null}" Foreground="#FF000CFF" Grid.Row="4" Grid.ColumnSpan="2">Register Account</Label>
+     
     </Grid>
 </Window>

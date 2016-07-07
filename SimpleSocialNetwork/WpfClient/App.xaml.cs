@@ -22,7 +22,10 @@ namespace WpfClient
         public static bool LoginToServer(string username, string password)
         {
             MessageBox.Show(username + password);
+            
             return true;
         }
+
+
     }
 }

@@ -23,5 +23,15 @@ namespace WpfClient
         {
             InitializeComponent();
         }
+
+        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

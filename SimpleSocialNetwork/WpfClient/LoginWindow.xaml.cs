@@ -40,9 +40,11 @@ namespace WpfClient
 
         private void lblRegister_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            Hide();
             RegisterWindow register = new RegisterWindow();
-            register.Show();
-            this.Close();
+            register.Owner = this;
+            Nullable<bool> dialogResult = register.ShowDialog();
+            Show();
         }
     }
 }
