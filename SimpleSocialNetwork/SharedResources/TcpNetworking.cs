@@ -69,8 +69,6 @@ namespace SharedResources
         public const int BUFFER_SIZE = 1024 * 4;
 
         /// <summary>Convert an integer constant to its corresponding text.</summary>
-        /// <param name="i"></param>
-        /// <returns></returns>
         public static string IntToText(int i)
         {
             switch (i)
