@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedResources", "SharedResources\SharedResources.csproj", "{01726BF9-92E0-444C-9B6A-3FB638B32C0C}"
 EndProject
+<<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{FC0301EA-B630-43A6-8B0B-53E35EE417A7}"
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfClient", "WpfClient\WpfClient.csproj", "{CA6154F9-01B9-4DA2-BBEE-3F41031335F1}"
+>>>>>>> wpf-client
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,7 @@ Global
 		{01726BF9-92E0-444C-9B6A-3FB638B32C0C}.Debug|x86.Build.0 = Debug|Any CPU
 		{01726BF9-92E0-444C-9B6A-3FB638B32C0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01726BF9-92E0-444C-9B6A-3FB638B32C0C}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{01726BF9-92E0-444C-9B6A-3FB638B32C0C}.Release|x86.ActiveCfg = Release|Any CPU
 		{01726BF9-92E0-444C-9B6A-3FB638B32C0C}.Release|x86.Build.0 = Release|Any CPU
 		{FC0301EA-B630-43A6-8B0B-53E35EE417A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -31,6 +36,12 @@ Global
 		{FC0301EA-B630-43A6-8B0B-53E35EE417A7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FC0301EA-B630-43A6-8B0B-53E35EE417A7}.Release|x86.ActiveCfg = Release|x86
 		{FC0301EA-B630-43A6-8B0B-53E35EE417A7}.Release|x86.Build.0 = Release|x86
+=======
+		{CA6154F9-01B9-4DA2-BBEE-3F41031335F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA6154F9-01B9-4DA2-BBEE-3F41031335F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA6154F9-01B9-4DA2-BBEE-3F41031335F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA6154F9-01B9-4DA2-BBEE-3F41031335F1}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> wpf-client
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
