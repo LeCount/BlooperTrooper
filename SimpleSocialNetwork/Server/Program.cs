@@ -1,5 +1,6 @@
 ﻿namespace ServerProgram
 {
+    using System.Data.SQLite;
     using SharedResources;
     using System;
     using System.Collections.Generic;
@@ -29,6 +30,7 @@
         private int server_port;
         private String server_ipAddr;
 
+        private SQLiteDB db = new SQLiteDB(TcpConst.DATABASE_FILE);
         private Thread connect_listener = null;
         private TcpListener client_listener = null;
         private List<Thread> all_active_client_threads = new List<Thread>();
