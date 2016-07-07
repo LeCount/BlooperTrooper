@@ -43,6 +43,58 @@ namespace SharedResources
 
             return client_stream;
         }
+
+        /// <summary>Checks if mail address format is valid. 
+        /// Conditions{
+        /// minlength: 5 
+        /// maxlength: 20 
+        /// uppercase letter: > 0 
+        /// lowercase letter: > 0
+        /// digits: > 2}</summary>
+        /// <param name="suggested_password"></param>
+        /// <returns></returns>
+        static public bool PasswordFormatIsValid(string suggested_password)
+        {
+            int MIN_LENGTH = 5;
+            int MAX_LENGTH = 20;
+
+            if (suggested_password == null)
+                return false;
+
+            bool meetsLengthRequirements = suggested_password.Length >= MIN_LENGTH && suggested_password.Length <= MAX_LENGTH;
+
+            if (!meetsLengthRequirements)
+                return false;
+
+            bool hasUpperCaseLetter = false;
+            bool hasLowerCaseLetter = false;
+            int digitCounter = 0;
+
+            foreach (char c in suggested_password)
+            {
+                if (char.IsUpper(c)) hasUpperCaseLetter = true;
+                else if (char.IsLower(c)) hasLowerCaseLetter = true;
+                else if (char.IsDigit(c)) digitCounter++;
+            }
+
+            if (hasUpperCaseLetter && hasLowerCaseLetter && digitCounter == 3)
+                return true;
+            else
+                return false;
+        }
+
+        /// <summary>Checks if mail address format is valid.</summary>
+        /// <param name="suggested_password"></param>
+        /// <returns></returns>
+        static public bool EmailFormatIsValid(string suggested_email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(suggested_email);
+                return addr.Address == suggested_email;
+            }
+            catch{return false;}
+        }
     }
 
     /// <summary>A class meant to distribute TCP related constants used by both client and server.</summary>
