@@ -84,6 +84,12 @@
                 s = client_listener.AcceptSocket();
                 all_active_client_sockets.Add(s);
                 AddSocketListener(s);
+
+                ServerMsg reply = new ServerMsg();
+                reply.data = "Hi from mr Boaty Mc Boatface!";
+                reply.type = TcpConst.CONNECT;
+
+                SendMessageToSocket(reply, s);
             }
         }
 

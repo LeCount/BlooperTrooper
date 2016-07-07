@@ -101,6 +101,7 @@ namespace SharedResources
     public static class TcpConst
     {
         //Message identifiers
+        public const int CONNECT = 0;
         public const int JOIN = 1;
         public const int LOGIN = 2;
         public const int LOGOUT = 3;
@@ -109,12 +110,13 @@ namespace SharedResources
         public const int GET_FRIENDS_STATUS = 6;
         public const int GET_CLIENT_DATA = 7;
         public const int SEND_MESSAGE = 8;
+        
 
         //message types:
         public const int REQUEST = 9;
         public const int REPLY = 10;
 
-        public const int INVALID = 0;
+        public const int INVALID = -1;
 
         public const int SERVER_PORT = 8001;
         public const string DATABASE_FILE = "serverDB.db";
@@ -125,6 +127,7 @@ namespace SharedResources
         {
             switch (i)
             {
+                case 0: return "CONNECT";
                 case 1: return "JOIN";
                 case 2: return "LOGIN";
                 case 3: return "LOGOUT";
