@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading
+
 
 namespace SharedResources
 {
@@ -28,14 +30,14 @@ namespace SharedResources
        
     }
 
-    public static class ServerTCP
+    public class ServerTcpNetworking
     {
 
     }
 
-    public static class ClientTCP
+    public class ClientTCP
     {
-        static public Stream ConnectToServer(TcpClient c, string server_addr, int port)
+        public Stream ConnectToServer(TcpClient c, string server_addr, int port)
         {
             bool connected = false;
             Stream client_stream = null;
