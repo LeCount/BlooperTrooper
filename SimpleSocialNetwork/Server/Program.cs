@@ -9,7 +9,7 @@
     using System.Net.Sockets;
     using System.Threading;
 
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -25,7 +25,7 @@
         }
     }
 
-    internal class Server
+    public class Server
     {
         private int server_port;
         private String server_ipAddr;
@@ -41,6 +41,9 @@
 
         public Server(String ip_addr, String port)
         {
+            ServerTcpNetworking a = new ServerTcpNetworking(this);
+
+
             try
             {
                 server_ipAddr = ip_addr;

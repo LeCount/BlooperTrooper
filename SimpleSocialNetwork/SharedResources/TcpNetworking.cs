@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading
+
 
 namespace SharedResources
 {
@@ -25,7 +27,17 @@ namespace SharedResources
         /// <param name="addr">IP address to server</param>
         /// <param name="port">Server port</param>
         /// <returns>A network stream to reveive and send data on.</returns>
-        static public Stream ConnectToServer(TcpClient c, string server_addr, int port)
+       
+    }
+
+    public class ServerTcpNetworking
+    {
+
+    }
+
+    public class ClientTCP
+    {
+        public Stream ConnectToServer(TcpClient c, string server_addr, int port)
         {
             bool connected = false;
             Stream client_stream = null;
@@ -44,7 +56,10 @@ namespace SharedResources
 
             return client_stream;
         }
+    }
 
+    public static class Validation
+    {
         /// <summary>Checks if mail address format is valid. 
         /// Conditions{
         /// minlength: 5 
@@ -94,7 +109,7 @@ namespace SharedResources
                 var addr = new System.Net.Mail.MailAddress(suggested_email);
                 return addr.Address == suggested_email;
             }
-            catch{return false;}
+            catch { return false; }
         }
 
         static public object ContstructMessageData()
