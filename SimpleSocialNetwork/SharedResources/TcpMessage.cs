@@ -32,6 +32,9 @@ namespace SharedResources
         /// <summary>The type of the msg.</summary>
         public int type { get; set; }
 
+        /// <summary>The name of the user, that this message regards.</summary>
+        public string user { get; set; }
+
         /// <summary>Data to be parsed on receiver side.</summary>
         public object data { get; set; }
 

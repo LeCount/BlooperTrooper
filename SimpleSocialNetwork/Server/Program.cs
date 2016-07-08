@@ -27,141 +27,57 @@
 
     public class Server
     {
-        private int server_port;
-        private String server_ipAddr;
-
-        private SQLiteDB db = new SQLiteDB(TcpConst.DATABASE_FILE);
-        private Thread connect_listener = null;
-        private TcpListener client_listener = null;
-        private List<Thread> all_active_client_threads = new List<Thread>();
-        private List<Socket> all_active_client_sockets = new List<Socket>();
+        private Thread message_handler = null;
         Serializer server_serializer = new Serializer();
+        ServerTCP networking = new ServerTCP();
 
-        public Server(){ init();}
-
-        public Server(String ip_addr, String port)
+        public Server()
         {
-            ServerTcpNetworking a = new ServerTcpNetworking(this);
-
-
-            try
-            {
-                server_ipAddr = ip_addr;
-                int.TryParse(port, out server_port);
-            }
-            catch(FormatException)
-            {
-                Console.WriteLine("Invalid server configuration.");
-                init();
-            }
-
-            Console.WriteLine(String.Format("Using custom server  settings: IP: {0} PORT: {1}", server_ipAddr, TcpConst.SERVER_PORT));
+            Init(null, null);
         }
 
-        private void init()
+        public Server(string ipaddr, string port)
         {
-            Console.WriteLine(String.Format("Using default server settings: IP: {0} PORT: {1}", TcpNetworking.GetIP(), TcpConst.SERVER_PORT));
-            StartServer();
+            Init(ipaddr, port);
         }
 
-
-        private void StartServer()
+        private void Init(string ipAddr, string port)
         {
-            client_listener = new TcpListener(IPAddress.Parse(TcpNetworking.GetIP()), TcpConst.SERVER_PORT);
-            client_listener.Start();
-
-            connect_listener = new Thread(ListenForConnections);
-            connect_listener.Start();
+            networking.server_ipAddr = ipAddr;
+            networking.server_port = port;
+            networking.StartServer();
+            StartHandlingRequests();
         }
 
-        private void StopServer()
+        private void StartHandlingRequests()
         {
-            throw new NotImplementedException();
+            message_handler = new Thread(executeRequests);
+            message_handler.Start();
         }
 
-        private void ListenForConnections()
+        private void executeRequests()
         {
-            Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            ClientMsg next_request = null;
 
             while (true)
             {
-                while (!client_listener.Pending()) { }
-                s = client_listener.AcceptSocket();
-                all_active_client_sockets.Add(s);
-                AddSocketListener(s);
+                next_request = networking.GetNextRequest();
 
-                ServerMsg reply = new ServerMsg();
-                reply.data = "Hi from mr Boaty Mc Boatface!";
-                reply.type = TcpConst.CONNECT;
-
-                SendMessageToSocket(reply, s);
-            }
-        }
-
-        private void AddSocketListener(Socket s)
-        {
-            Thread socket_listener = new Thread(ListenOnSocket);
-            socket_listener.Start(s);
-
-            all_active_client_threads.Add(socket_listener);
-        }
-
-        private void ListenOnSocket(object client_socket)
-        {
-            List<ClientMsg> request_list = new List<ClientMsg>();
-
-            Socket s = (Socket)client_socket;
-            int num_of_bytes_read = 0;
-            byte[] receive_buffer = new byte[TcpConst.BUFFER_SIZE];
-
-            while (true)
-            {
-                if (s.Connected)
-                {
-                    try
-                    {
-                        num_of_bytes_read = s.Receive(receive_buffer);
-                    }
-                    catch (Exception) { }
-
-                    if (num_of_bytes_read > 0)
-                    {
-                        ClientMsg msg = server_serializer.DeserializeClientMsg(receive_buffer);
-                       
-                        request_list.Add(msg);
-                    }
-
-                    if (request_list != null && request_list.Count >= 1)
-                    {
-                        HandleMessage(request_list.ElementAt(0), s);
-                        request_list.RemoveAt(0);
-                    }
-
-                    num_of_bytes_read = 0;
-                }
+                if (next_request == null)
+                    Thread.Sleep(10);
                 else
-                    s.Close();
+                    HandleClientRequest(next_request);
             }
         }
 
-        /// <summary>Send message to specific socket (client).</summary>
-        /// <param name="msg">Message to send.</param>
-        /// <param name="s">Socket to send msg to.</param>
-        public void SendMessageToSocket(ServerMsg msg, Socket s)
-        {
-            byte[] byte_buffer = server_serializer.SerializeServerMsg(msg);
-            s.Send(byte_buffer);
-        }
-
-        private void HandleMessage(ClientMsg msg, Socket s)
+        private void HandleClientRequest(ClientMsg msg)
         {
             switch(msg.type)
             {
                 case TcpConst.JOIN:
-                    HandleJoinRequest(msg, s);
+                    HandleJoinRequest(msg);
                     break;
                 case TcpConst.LOGIN:
-                    HandleLoginRequest(msg, s);
                     break;
                 case TcpConst.LOGOUT:
                     break;
@@ -184,12 +100,16 @@
             }
         }
 
-        private void HandleJoinRequest(ClientMsg msg, Socket s)
+        private void HandleJoinRequest(ClientMsg msg)
         {
-            throw new NotImplementedException();
+            if (ValidateJoinRequest())
+                return;
+            else
+                return;
+
         }
 
-        private void HandleLoginRequest(ClientMsg msg, Socket s)
+        private bool ValidateJoinRequest()
         {
             throw new NotImplementedException();
         }
