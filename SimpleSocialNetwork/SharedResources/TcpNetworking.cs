@@ -110,8 +110,8 @@ namespace SharedResources
         public const int GET_FRIEND_STATUS = 6;
         public const int GET_CLIENT_DATA = 7;
         public const int SEND_MESSAGE = 8;
-        private const int GET_WALL = 9;
-        private const int PING = 10;
+        public const int GET_WALL = 9;
+        public const int PING = 10;
 
 
         //message types:
