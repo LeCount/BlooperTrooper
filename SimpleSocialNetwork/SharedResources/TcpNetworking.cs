@@ -25,6 +25,16 @@ namespace SharedResources
         /// <param name="addr">IP address to server</param>
         /// <param name="port">Server port</param>
         /// <returns>A network stream to reveive and send data on.</returns>
+       
+    }
+
+    public static class ServerTCP
+    {
+
+    }
+
+    public static class ClientTCP
+    {
         static public Stream ConnectToServer(TcpClient c, string server_addr, int port)
         {
             bool connected = false;
@@ -44,7 +54,10 @@ namespace SharedResources
 
             return client_stream;
         }
+    }
 
+    public static class Validation
+    {
         /// <summary>Checks if mail address format is valid. 
         /// Conditions{
         /// minlength: 5 
@@ -94,7 +107,7 @@ namespace SharedResources
                 var addr = new System.Net.Mail.MailAddress(suggested_email);
                 return addr.Address == suggested_email;
             }
-            catch{return false;}
+            catch { return false; }
         }
 
         static public object ContstructMessageData()
