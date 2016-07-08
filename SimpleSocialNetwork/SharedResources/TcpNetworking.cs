@@ -111,11 +111,12 @@ namespace SharedResources
         public const int GET_CLIENT_DATA = 7;
         public const int SEND_MESSAGE = 8;
         private const int GET_WALL = 9;
-        
+        private const int PING = 10;
+
 
         //message types:
-        public const int REQUEST = 10;
-        public const int REPLY = 11;
+        public const int REQUEST = 11;
+        public const int REPLY = 12;
 
         public const int INVALID = -1;
 
@@ -138,8 +139,9 @@ namespace SharedResources
                 case 7: return "GET CLIENT DATA";
                 case 8: return "SEND MESSAGE";
                 case 9: return "GET_WALL";
-                case 10: return "REQUEST";
-                case 11: return "REPLY";
+                case 10: return "PING";
+                case 11: return "REQUEST";
+                case 12: return "REPLY";
                 default: return "INVALID";
             }
         }
