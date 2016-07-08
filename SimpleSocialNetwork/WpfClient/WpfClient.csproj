@@ -58,7 +58,6 @@
     <Compile Include="RegisterWindow.xaml.cs">
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TcpNetworking.cs" />
     <Page Include="LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -109,6 +108,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedResources\SharedResources.csproj">
+      <Project>{01726bf9-92e0-444c-9b6a-3fb638b32c0c}</Project>
+      <Name>SharedResources</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
