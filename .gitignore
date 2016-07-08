@@ -3,6 +3,7 @@
 *.ko
 *.obj
 *.elf
+*.lref
 
 # Precompiled Headers
 *.gch
@@ -33,3 +34,7 @@
 *.su
 *.cache
 *.pdb
+
+/bin
+/debug
+/obj
