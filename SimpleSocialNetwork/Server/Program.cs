@@ -27,6 +27,7 @@
 
     public class Server
     {
+        private SQLiteDB db = new SQLiteDB(TcpConst.DATABASE_FILE);
         private Thread message_handler = null;
         Serializer server_serializer = new Serializer();
         ServerTCP networking = new ServerTCP();
@@ -102,16 +103,21 @@
 
         private void HandleJoinRequest(ClientMsg msg)
         {
-            if (ValidateJoinRequest())
-                return;
+            if (ValidateJoinRequest(msg))
+            {
+                db.AddNewUser(msg.user, null, null);
+            }
             else
                 return;
 
         }
 
-        private bool ValidateJoinRequest()
+        private bool ValidateJoinRequest(ClientMsg msg)
         {
-            throw new NotImplementedException();
+            if (db.EntryExistsInTable(msg.user, "User", "user_id"))
+                return true;
+            else
+                return false;
         }
     }
 }

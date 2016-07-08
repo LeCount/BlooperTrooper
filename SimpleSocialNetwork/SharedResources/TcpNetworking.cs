@@ -40,8 +40,6 @@ namespace SharedResources
         /// <summary>The ip address used by the server</summary>
         public String server_ipAddr { get; set; }
 
-        //private SQLiteDB db = new SQLiteDB(TcpConst.DATABASE_FILE);
-
         /// <summary>A hash table associating usernames(key) with sockets(value). </summary>
         private Hashtable userOnSocket = new Hashtable();
 
@@ -54,9 +52,13 @@ namespace SharedResources
         /// <summary>List containing all threads, that each listens on a specific socket.</summary>
         private List<Thread> all_active_client_threads = new List<Thread>();
 
-
+        /// <summary>List containing all client sockets, assumed to be connected.</summary>
         private List<Socket> all_active_client_sockets = new List<Socket>();
+
+        /// <summary>A list/inbox of client messages. These can be read externally.</summary>
         private ServerInbox inbox = new ServerInbox();
+
+        /// <summary>A serializer for reading byte arrays into messages, and for writing messages into byte arrays.</summary>
         Serializer server_serializer = new Serializer();
 
         public ServerTCP() {}
@@ -282,16 +284,6 @@ namespace SharedResources
                 return addr.Address == suggested_email;
             }
             catch { return false; }
-        }
-
-        static public object ContstructMessageData()
-        {
-            throw new NotImplementedException();
-        }
-
-        static public List<Object> ParseMessageData()
-        {
-            throw new NotImplementedException();
         }
     }
 
