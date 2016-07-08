@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -94,6 +95,16 @@ namespace SharedResources
                 return addr.Address == suggested_email;
             }
             catch{return false;}
+        }
+
+        static public object ContstructMessageData()
+        {
+            throw new NotImplementedException();
+        }
+
+        static public List<Object> ParseMessageData()
+        {
+            throw new NotImplementedException();
         }
     }
 
