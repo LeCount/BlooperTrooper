@@ -155,8 +155,10 @@
             switch(msg.type)
             {
                 case TcpConst.JOIN:
+                    HandleJoinRequest(msg, s);
                     break;
                 case TcpConst.LOGIN:
+                    HandleLoginRequest(msg, s);
                     break;
                 case TcpConst.LOGOUT:
                     break;
@@ -164,15 +166,29 @@
                     break;
                 case TcpConst.ADD_FRIEND:
                     break;
-                case TcpConst.GET_FRIENDS_STATUS:
+                case TcpConst.GET_FRIEND_STATUS:
                     break;
                 case TcpConst.GET_CLIENT_DATA:
                     break;
                 case TcpConst.SEND_MESSAGE:
                     break;
+                case TcpConst.GET_WALL:
+                    break;
+                case TcpConst.PING:
+                    break;
                 case TcpConst.INVALID:
                     break;
             }
+        }
+
+        private void HandleJoinRequest(ClientMsg msg, Socket s)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleLoginRequest(ClientMsg msg, Socket s)
+        {
+            throw new NotImplementedException();
         }
     }
 }

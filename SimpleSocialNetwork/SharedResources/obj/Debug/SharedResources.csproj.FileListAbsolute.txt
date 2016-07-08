@@ -1,5 +1,0 @@
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.dll
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.pdb
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.csprojResolveAssemblyReference.cache
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.dll
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.pdb

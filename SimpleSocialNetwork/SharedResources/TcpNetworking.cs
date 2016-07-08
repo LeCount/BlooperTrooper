@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -95,6 +96,16 @@ namespace SharedResources
             }
             catch{return false;}
         }
+
+        static public object ContstructMessageData()
+        {
+            throw new NotImplementedException();
+        }
+
+        static public List<Object> ParseMessageData()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>A class meant to distribute TCP related constants used by both client and server.</summary>
@@ -107,14 +118,16 @@ namespace SharedResources
         public const int LOGOUT = 3;
         public const int GET_USERS = 4;
         public const int ADD_FRIEND = 5;
-        public const int GET_FRIENDS_STATUS = 6;
+        public const int GET_FRIEND_STATUS = 6;
         public const int GET_CLIENT_DATA = 7;
         public const int SEND_MESSAGE = 8;
-        
+        public const int GET_WALL = 9;
+        public const int PING = 10;
+
 
         //message types:
-        public const int REQUEST = 9;
-        public const int REPLY = 10;
+        public const int REQUEST = 11;
+        public const int REPLY = 12;
 
         public const int INVALID = -1;
 
@@ -133,11 +146,13 @@ namespace SharedResources
                 case 3: return "LOGOUT";
                 case 4: return "GET USERS";
                 case 5: return "ADD FRIEND";
-                case 6: return "GET FRIENDS STATUS";
+                case 6: return "GET FRIEND STATUS";
                 case 7: return "GET CLIENT DATA";
                 case 8: return "SEND MESSAGE";
-                case 9: return "REQUEST";
-                case 10: return "REPLY";
+                case 9: return "GET_WALL";
+                case 10: return "PING";
+                case 11: return "REQUEST";
+                case 12: return "REPLY";
                 default: return "INVALID";
             }
         }

@@ -33,16 +33,12 @@ namespace SharedResources
         public int type { get; set; }
 
         /// <summary>Data to be parsed on receiver side.</summary>
-        public string user { get; set; }
-
-        /// <summary>Data to be parsed on receiver side.</summary>
         public object data { get; set; }
 
         /// <summary>Default constructor; initialize a new message: id = invalid, type = invalid</summary>
         public ServerMsg()
         {
             type = TcpConst.INVALID;
-            user = null;
             data = null;
         }
     }
