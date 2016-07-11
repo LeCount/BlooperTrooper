@@ -70,14 +70,28 @@
 
         private void HandleClientRequest(ClientMsg msg)
         {
+            User user = DataParser.Deserialize(msg.data);
+
             switch(msg.type)
             {
                 case TcpConst.JOIN:
-                    HandleJoinRequest(msg);
+
+                    HandleJoinRequest(user);
+
                     break;
                 case TcpConst.LOGIN:
+
+                    HandleLoginRequest(user);
+
+                    //Add the user to the userlist on server
+                    networking.AddToUserList(GetUserFromDB(user.username));
+
                     break;
                 case TcpConst.LOGOUT:
+
+                    //Remove the user from the userlist on server
+                    networking.RemoveUserFromList(user.username);
+
                     break;
                 case TcpConst.GET_USERS:
                     break;
@@ -85,7 +99,18 @@
                     break;
                 case TcpConst.GET_FRIEND_STATUS:
                     break;
+                case TcpConst.UPDATE_USER_DATA:
+
+                    //Update the user, that was updated, in the userlist on server
+                    networking.RemoveUserFromList(user.username);
+                    networking.AddToUserList(GetUserFromDB(user.username));
+
+                    break;
                 case TcpConst.GET_CLIENT_DATA:
+
+                    //Add requested user to userlist on server
+                    networking.AddToUserList(GetUserFromDB(user.username));
+
                     break;
                 case TcpConst.SEND_MESSAGE:
                     break;
@@ -93,28 +118,54 @@
                     break;
                 case TcpConst.PING:
                     break;
+                case TcpConst.VERIFICATION_CODE:
+                    break;
                 case TcpConst.INVALID:
                     break;
             }
         }
 
-        private void HandleJoinRequest(ClientMsg msg)
+        /// <summary>Gets the data on a specific user from local db, and puts it parameterized into a user-class object.</summary>
+        /// <param name="username">The name of the user.</param>
+        private User GetUserFromDB(String username)
         {
-            if (ValidateJoinRequest(msg))
-            {
-                db.AddNewUser(msg.user, null, null);
-            }
-            else
-                return;
+            User user = new User();
 
+            user.name = username;
+            user.mail = db.GetMail(username);
+            user.name = db.GetName(username);
+            user.surname = db.GetSurname(username);
+            user.about_user = db.GetAbout(username);
+            user.interests = db.GetInterest(username);
+            user.friends = db.GetFriends(username);
+            user.wall = db.GetEvents(username);
+
+            return user;
         }
 
-        private bool ValidateJoinRequest(ClientMsg msg)
+        private void HandleJoinRequest(User u)
         {
-            if (db.EntryExistsInTable(msg.user, "User", "user_id"))
-                return true;
+            ServerMsg reply = new ServerMsg();
+            reply.type = TcpConst.JOIN;
+
+            reply.data = ValidateJoinRequest(u);
+            networking.SendMessage(u.username, reply);
+        }
+
+        private int ValidateJoinRequest(User u)
+        {
+            if (db.EntryExistsInTable(u.username, "User", "user_id"))
+            {
+                db.AddNewUser(u.username, u.password, null);
+                return TcpMessageCode.ACCEPTED;
+            }
             else
-                return false;
+                return TcpMessageCode.USER_EXISTS;
+        }
+
+        private void HandleLoginRequest(User u)
+        {
+
         }
     }
 }

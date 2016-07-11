@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -17,13 +18,31 @@ namespace SharedResources
             }
 
             return "No ip address found";
-        } 
+        }
+    }
+
+    /// <summary>A class that users Json serializer to convert client and server msg data back and forth.</summary>
+    public static class DataParser
+    {
+        public static object Serializer(User u)
+        {
+            Object data = (Object)JsonConvert.SerializeObject(u);
+            return data;
+        }
+
+        public static User Deserialize(Object data)
+        {
+            User user = (User)JsonConvert.DeserializeObject((String)data);
+            return user;
+        }
     }
 
     /// <summary>A class for having parameterized user information available in memory, on the server and the client.</summary>
     public class User
     {
+        public DateTime last_requested { get; set; }
         public String username { get; set; }
+        public String password { get; set; }
         public String name { get; set; }
         public String surname { get; set; }
         public String mail { get; set; }
@@ -31,6 +50,7 @@ namespace SharedResources
         public String interests { get; set; }
         public List<String> friends = new List<String>();
         public List<UserEvent> wall = new List<UserEvent>();
+
     }
 
     /// <summary>A class to contain information regarding an event/post/log, on a users "wall".</summary>
@@ -54,6 +74,8 @@ namespace SharedResources
         /// <returns></returns>
         static public bool PasswordFormatIsValid(string suggested_password)
         {
+
+            User a = new User();
             int MIN_LENGTH = 5;
             int MAX_LENGTH = 20;
 
@@ -96,8 +118,20 @@ namespace SharedResources
         }
     }
 
-    /// <summary>A class meant to distribute TCP related constants used by both client and server.</summary>
-    public static class TcpConst
+    /// <summary>A class meant to distribute related error codes to tcp messages.</summary>
+    public static class TcpMessageCode
+    {
+        public const int INVALID = -1;
+        public const int INCORRECT_PASSWORD = -2;
+        public const int USER_EXISTS = -3;
+
+
+        public const int DECLINED = 0;
+        public const int ACCEPTED = 1;
+    }
+
+        /// <summary>A class meant to distribute TCP related constants used by both client and server.</summary>
+        public static class TcpConst
     {
         //Message identifiers
         public const int CONNECT = 0;

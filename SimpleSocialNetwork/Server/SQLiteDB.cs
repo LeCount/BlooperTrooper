@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using SharedResources;
 
 namespace ServerProgram
 {
@@ -100,6 +102,41 @@ namespace ServerProgram
                 return false;
             else
                 return true;
+        }
+
+        internal string GetMail(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal string GetName(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal string GetSurname(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal string GetAbout(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal string GetInterest(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal List<UserEvent> GetEvents(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal List<string> GetFriends(string username)
+        {
+            throw new NotImplementedException();
         }
     }
 }

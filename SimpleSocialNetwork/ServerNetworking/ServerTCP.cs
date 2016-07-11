@@ -30,6 +30,9 @@ namespace ServerNetworking
         /// <summary>List containing all threads, that each listens on a specific socket.</summary>
         private List<Thread> all_active_client_threads = new List<Thread>();
 
+        /// <summary>List for keeping client's data in memory for easier access.</summary>
+        private List<User> users_data_list = new List<User>();
+
         /// <summary>List containing all client sockets, assumed to be connected.</summary>
         private List<Socket> all_active_client_sockets = new List<Socket>();
 
@@ -121,7 +124,10 @@ namespace ServerNetworking
                         inbox.Push(msg);
 
                         if (msg.type == TcpConst.JOIN || msg.type == TcpConst.LOGIN)
-                            BindUserToSocket(s, msg.user);
+                        {
+                            
+                            BindUserToSocket(s, DataParser.Deserialize(msg.data).username);
+                        }
                     }
 
                     num_of_bytes_read = 0;
@@ -143,9 +149,9 @@ namespace ServerNetworking
                 usersOnSockets.Remove(username);
         }
 
-        public void SendMessage(ServerMsg msg)
+        public void SendMessage(String username,ServerMsg msg)
         {
-            Socket s = GetSocketFromUser(msg.user);
+            Socket s = GetSocketFromUser(username);
             SendMessageToSocket(msg, s);
         }
 
@@ -167,6 +173,41 @@ namespace ServerNetworking
         {
             object value = usersOnSockets[user];
             return (Socket)value;
+        }
+
+        /// <summary>Add user to server user list, if user does not exist.</summary>
+        public void AddToUserList(User u)
+        {
+            if (!UserExistsInList(u.username))
+                users_data_list.Add(u);
+        }
+
+        /// <summary>Remove user from server user list, if user exists, and list isn't empty</summary>
+        public void RemoveUserFromList(String username)
+        {
+            if (users_data_list.Count > 0)
+            {
+                foreach (User u in users_data_list)
+                {
+                    if (u.name.Equals(username))
+                        users_data_list.Remove(u);
+                }
+            }
+        }
+
+        /// <summary>Check if server users list contains a specific user (by username)</summary>
+        public bool UserExistsInList(String username)
+        {
+            if (users_data_list.Count > 0)
+            {
+                foreach (User u in users_data_list)
+                {
+                    if (u.name.Equals(username))
+                        return true;
+                }
+            }
+
+            return false;
         }
     }
 
