@@ -10,7 +10,7 @@ using System.Threading;
 namespace SharedResources
 {
     /// <summary>A class meant to distribute TCP related methods used by both client and server.</summary>
-    public static class TcpNetworking
+    public static class TcpMethod
     {
         static public string GetIP()
         {
@@ -88,7 +88,7 @@ namespace SharedResources
 
         public void SetDefaultServerSettings()
         {
-            server_ipAddr = TcpNetworking.GetIP();
+            server_ipAddr = TcpMethod.GetIP();
             server_port = TcpConst.SERVER_PORT.ToString();
         }
 
@@ -303,11 +303,6 @@ namespace SharedResources
         public const int GET_WALL = 9;
         public const int PING = 10;
 
-
-        //message types:
-        public const int REQUEST = 11;
-        public const int REPLY = 12;
-
         public const int INVALID = -1;
 
         public const int SERVER_PORT = 8001;
@@ -330,8 +325,6 @@ namespace SharedResources
                 case 8: return "SEND MESSAGE";
                 case 9: return "GET_WALL";
                 case 10: return "PING";
-                case 11: return "REQUEST";
-                case 12: return "REPLY";
                 default: return "INVALID";
             }
         }
