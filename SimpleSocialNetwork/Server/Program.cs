@@ -1,13 +1,10 @@
 ﻿namespace ServerProgram
 {
-    using System.Data.SQLite;
     using SharedResources;
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
-    using System.Net.Sockets;
     using System.Threading;
+    using ServerNetworking;
 
     public class Program
     {

@@ -1,13 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedResources", "SharedResources\SharedResources.csproj", "{01726BF9-92E0-444C-9B6A-3FB638B32C0C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{FC0301EA-B630-43A6-8B0B-53E35EE417A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11EFB4BB-8568-4CE3-95F6-6D9B845037AC} = {11EFB4BB-8568-4CE3-95F6-6D9B845037AC}
+		{01726BF9-92E0-444C-9B6A-3FB638B32C0C} = {01726BF9-92E0-444C-9B6A-3FB638B32C0C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfClient", "WpfClient\WpfClient.csproj", "{CA6154F9-01B9-4DA2-BBEE-3F41031335F1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6B81305-DA48-41A4-97FE-9C1581812FEC} = {E6B81305-DA48-41A4-97FE-9C1581812FEC}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerNetworking", "ServerNetworking\ServerNetworking.csproj", "{11EFB4BB-8568-4CE3-95F6-6D9B845037AC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{01726BF9-92E0-444C-9B6A-3FB638B32C0C} = {01726BF9-92E0-444C-9B6A-3FB638B32C0C}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientNetworking", "ClientNetworking\ClientNetworking.csproj", "{E6B81305-DA48-41A4-97FE-9C1581812FEC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{01726BF9-92E0-444C-9B6A-3FB638B32C0C} = {01726BF9-92E0-444C-9B6A-3FB638B32C0C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +56,22 @@ Global
 		{CA6154F9-01B9-4DA2-BBEE-3F41031335F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA6154F9-01B9-4DA2-BBEE-3F41031335F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CA6154F9-01B9-4DA2-BBEE-3F41031335F1}.Release|x86.ActiveCfg = Release|Any CPU
+		{11EFB4BB-8568-4CE3-95F6-6D9B845037AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11EFB4BB-8568-4CE3-95F6-6D9B845037AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11EFB4BB-8568-4CE3-95F6-6D9B845037AC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{11EFB4BB-8568-4CE3-95F6-6D9B845037AC}.Debug|x86.Build.0 = Debug|Any CPU
+		{11EFB4BB-8568-4CE3-95F6-6D9B845037AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11EFB4BB-8568-4CE3-95F6-6D9B845037AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11EFB4BB-8568-4CE3-95F6-6D9B845037AC}.Release|x86.ActiveCfg = Release|Any CPU
+		{11EFB4BB-8568-4CE3-95F6-6D9B845037AC}.Release|x86.Build.0 = Release|Any CPU
+		{E6B81305-DA48-41A4-97FE-9C1581812FEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6B81305-DA48-41A4-97FE-9C1581812FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6B81305-DA48-41A4-97FE-9C1581812FEC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E6B81305-DA48-41A4-97FE-9C1581812FEC}.Debug|x86.Build.0 = Debug|Any CPU
+		{E6B81305-DA48-41A4-97FE-9C1581812FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6B81305-DA48-41A4-97FE-9C1581812FEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6B81305-DA48-41A4-97FE-9C1581812FEC}.Release|x86.ActiveCfg = Release|Any CPU
+		{E6B81305-DA48-41A4-97FE-9C1581812FEC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

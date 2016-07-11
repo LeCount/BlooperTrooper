@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using static SharedResources.TcpMethod;
+using static SharedResources.TcpMethods;
 
 namespace SharedResources
 {
