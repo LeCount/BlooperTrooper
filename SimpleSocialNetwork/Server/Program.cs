@@ -84,7 +84,7 @@
                     HandleLoginRequest(user);
 
                     //Add the user to the userlist on server
-                    networking.AddToUserList(GetUserFromDB(user.username));
+                    // networking.AddToUserList(GetUserFromDB(user.username));
 
                     break;
                 case TcpConst.LOGOUT:
@@ -169,6 +169,7 @@
             reply.type = TcpConst.LOGIN;
             reply.data = TcpMessageCode.ACCEPTED;
 
+            Console.WriteLine(u.username);
             networking.SendMessage(u.username, reply);
 
         }

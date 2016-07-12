@@ -32,7 +32,8 @@ namespace SharedResources
 
         public static User Deserialize(Object data)
         {
-            User user = (User)JsonConvert.DeserializeObject((String)data);
+
+            User user = JsonConvert.DeserializeObject<User>((String)data);
             return user;
         }
     }
