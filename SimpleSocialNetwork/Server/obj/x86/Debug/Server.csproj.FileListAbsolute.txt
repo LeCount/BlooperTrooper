@@ -18,3 +18,23 @@ C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\Serve
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\Server\obj\x86\Debug\Server.csprojResolveAssemblyReference.cache
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\Server\obj\x86\Debug\Server.exe
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\Server\obj\x86\Debug\Server.pdb
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\Server.exe.config
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\Server.exe
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\Server.pdb
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\EntityFramework.dll
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\EntityFramework.SqlServer.dll
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\Newtonsoft.Json.dll
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\ServerNetworking.dll
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\SharedResources.dll
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\System.Data.SQLite.dll
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\System.Data.SQLite.EF6.dll
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\System.Data.SQLite.Linq.dll
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\EntityFramework.xml
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\EntityFramework.SqlServer.xml
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\Newtonsoft.Json.xml
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\ServerNetworking.pdb
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\SharedResources.pdb
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\bin\x86\Debug\System.Data.SQLite.xml
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\obj\x86\Debug\Server.csprojResolveAssemblyReference.cache
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\obj\x86\Debug\Server.exe
+C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\Server\obj\x86\Debug\Server.pdb

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
 using System.Threading;
-
 using SharedResources;
 using System.Net;
 using System.Net.Sockets;
+using Newtonsoft.Json;
 
 namespace WpfClient
 {
@@ -19,7 +19,7 @@ namespace WpfClient
     /// </summary>
     public partial class App : Application
     {
-        private Serializer s = new Serializer();
+        private static Serializer s = new Serializer();
 
         /// <summary>Thread responsible for connecting to the server.</summary>
         private Thread server_connect = null;
@@ -28,7 +28,7 @@ namespace WpfClient
         private Thread message_read = null;
 
         /// <summary>A stream providing read and write operations, on a given medium.</summary>
-        private Stream client_stream = null;
+        private static Stream client_stream = null;
 
         /// <summary>A medium for providing client connections for TCP network services.</summary>
         private TcpClient tcp_client = new TcpClient();
@@ -38,7 +38,7 @@ namespace WpfClient
 
         private bool connected = false;
 
-        private string serverIPAddress = "192.168.12.170";
+        private string serverIPAddress = TcpMethods.GetIP();
 
         ///<summary>
         /// Login to server
@@ -46,7 +46,17 @@ namespace WpfClient
         public static bool LoginToServer(string username, string password)
         {
             MessageBox.Show(username + password);
-            
+            User loginData = new User();
+
+            loginData.password = password;
+            loginData.username = username;
+
+            ClientMsg msg = new ClientMsg();
+            msg.type = TcpConst.LOGIN;
+            msg.data = DataParser.Serializer(loginData);
+
+            Client_send(msg);
+                   
             return true;
         }
 
@@ -68,6 +78,13 @@ namespace WpfClient
                 }
             }
         }
+
+        public void ClientStop()
+        {
+            server_connect.Abort();
+            message_read.Abort();
+        }
+
         /// <summary>Read messages from the server</summary>
         public void ClientRead()
         {
@@ -85,25 +102,37 @@ namespace WpfClient
                 {
                     ServerMsg msg = s.DeserializeServerMsg(receive_buffer);
 
-                    if (msg.type == TcpConst.REPLY)
-                        HandleServerReplies(msg);
+                    HandleServerReplies(msg);
 
                     numOfBytesRead = 0;
                 }
             }
         }
 
+        /// <summary>Send message from client to server over TCP.</summary>
+        /// <param name="msg">Message to be sent over TCP.</param>
+        public static void Client_send(ClientMsg msg)
+        {
+            byte[] byteBuffer = s.SerializeClientMsg(msg);
+            try { client_stream.Write(byteBuffer, 0, byteBuffer.Length); }
+            catch (Exception) { }
+        }
+
         /// <summary>Depending on the reply that was received, handle it accordingly. </summary>
         /// <param name="msg">Received message.</param>
         private void HandleServerReplies(ServerMsg msg)
         {
-            switch (msg.id)
+            switch (msg.type)
             {
                 case TcpConst.JOIN:
                     MessageBox.Show("Join response recieved");
                     break;
                 case TcpConst.LOGIN:
                     MessageBox.Show("Login response Recieved");
+                    if (TcpMessageCode.ACCEPTED == (int)msg.data)
+                    {
+                        MessageBox.Show("Logged in!");
+                    }
                     break;
                 case TcpConst.LOGOUT:
 
@@ -114,7 +143,7 @@ namespace WpfClient
                 case TcpConst.ADD_FRIEND:
 
                     break;
-                case TcpConst.GET_FRIENDS_STATUS:
+                case TcpConst.GET_FRIEND_STATUS:
 
                     break;
                 case TcpConst.GET_CLIENT_DATA:
@@ -127,11 +156,19 @@ namespace WpfClient
             }
         }
 
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
 
+            server_connect = new Thread(ConnectToServer);
+            server_connect.Start();
+
+            message_read = new Thread(ClientRead);
+            message_read.Start();
+
+            // Show login window
+            LoginWindow login = new LoginWindow();
+            login.Show();
+        }
     }
-
-
-
-
 
 }

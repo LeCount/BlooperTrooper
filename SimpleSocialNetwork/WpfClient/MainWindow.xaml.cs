@@ -16,7 +16,6 @@ using SharedResources;
 
 namespace WpfClient
 {
-    private SharedResources.Serializer s = new Serializer;
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -25,6 +24,7 @@ namespace WpfClient
         public MainWindow()
         {
             InitializeComponent();
+            
         }
     }
 }
