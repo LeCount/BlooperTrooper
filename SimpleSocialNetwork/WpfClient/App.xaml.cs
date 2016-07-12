@@ -10,7 +10,6 @@ using System.Threading;
 using SharedResources;
 using System.Net;
 using System.Net.Sockets;
-using Newtonsoft.Json;
 
 namespace WpfClient
 {
@@ -44,8 +43,7 @@ namespace WpfClient
         /// Login to server
         ///</summary>
         public static bool LoginToServer(string username, string password)
-        {
-            MessageBox.Show(username + password);
+        {            
             User loginData = new User();
 
             loginData.password = password;
@@ -113,6 +111,7 @@ namespace WpfClient
         /// <param name="msg">Message to be sent over TCP.</param>
         public static void Client_send(ClientMsg msg)
         {
+            MessageBox.Show("Sending Message");
             byte[] byteBuffer = s.SerializeClientMsg(msg);
             try { client_stream.Write(byteBuffer, 0, byteBuffer.Length); }
             catch (Exception) { }
@@ -156,9 +155,8 @@ namespace WpfClient
             }
         }
 
-        private void Application_Startup(object sender, StartupEventArgs e)
+        private void App_Startup(object sender, StartupEventArgs e)
         {
-
             server_connect = new Thread(ConnectToServer);
             server_connect.Start();
 

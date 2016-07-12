@@ -137,7 +137,7 @@ namespace ServerNetworking
                     {
                         ClientMsg msg = server_serializer.DeserializeClientMsg(receive_buffer);
 
-                        Console.WriteLine(String.Format("new message received of type: {0}", TcpConst.IntToText(msg.type));
+                        Console.WriteLine(String.Format("new message received of type: {0}", TcpConst.IntToText(msg.type)));
 
                         inbox.Push(msg);
 
