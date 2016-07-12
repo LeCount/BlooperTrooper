@@ -137,13 +137,12 @@ namespace ServerNetworking
                     {
                         ClientMsg msg = server_serializer.DeserializeClientMsg(receive_buffer);
 
-                        Console.WriteLine(String.Format("new message received of type: {0}", TcpConst.IntToText(msg.type));
+                        Console.WriteLine(String.Format("new message received of type: {0}", TcpConst.IntToText(msg.type)));
 
                         inbox.Push(msg);
 
                         if (msg.type == TcpConst.JOIN || msg.type == TcpConst.LOGIN)
                         {
-                            
                             BindUserToSocket(s, DataParser.Deserialize(msg.data).username);
                         }
                     }
@@ -238,7 +237,10 @@ namespace ServerNetworking
             ClientMsg next = null;
 
             if (list.Count > 0 && list != null)
+            {
                 next = list.ElementAt(0);
+                list.RemoveAt(0);
+            }
 
             return next;
         }

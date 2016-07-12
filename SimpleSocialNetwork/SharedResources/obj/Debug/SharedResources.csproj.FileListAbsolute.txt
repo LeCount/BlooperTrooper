@@ -1,14 +1,3 @@
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.dll.config
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.dll
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.pdb
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\EntityFramework.dll
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\EntityFramework.SqlServer.dll
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\Newtonsoft.Json.dll
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\EntityFramework.xml
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.dll
-C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.pdb
 C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.dll.config
 C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.dll
 C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.pdb
@@ -17,3 +6,10 @@ C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\
 C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.csprojResolveAssemblyReference.cache
 C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.dll
 C:\Users\erben\SSN\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.pdb
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.dll.config
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.dll
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\SharedResources.pdb
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.dll
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\SharedResources\obj\Debug\SharedResources.pdb
