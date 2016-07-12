@@ -148,7 +148,7 @@ namespace WpfClient
                 case TcpConst.GET_CLIENT_DATA:
 
                     break;
-                case TcpConst.SEND_MESSAGE:
+                case TcpConst.CHAT:
 
                     break;
                 default: break;
