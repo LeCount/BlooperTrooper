@@ -49,7 +49,7 @@ namespace ServerNetworking
             if (server_ipAddr == null || server_port == null)
                 SetDefaultServerSettings();
 
-            Console.WriteLine(String.Format("Server is now running! Port: {1}, Ip: {2}"));
+            Console.WriteLine(String.Format("Server is now running! Port: {0}, Ip: {1}", server_port, server_ipAddr));
 
             client_listener = new TcpListener(IPAddress.Parse(server_ipAddr), Int32.Parse(server_port));
             client_listener.Start();
@@ -73,6 +73,8 @@ namespace ServerNetworking
 
         public void SetDefaultServerSettings()
         {
+            Console.WriteLine("No settings specified! Using default settings and local host.");
+
             server_ipAddr = TcpMethods.GetIP();
             server_port = TcpConst.SERVER_PORT.ToString();
         }
@@ -101,14 +103,20 @@ namespace ServerNetworking
 
         private void AddSocketListener(Socket s)
         {
+           
+
             Thread socket_listener = new Thread(ListenOnSocket);
             socket_listener.Start(s);
 
             all_active_client_threads.Add(socket_listener);
+
+            Console.WriteLine("Socketlistener added for client!");
         }
 
         private void ListenOnSocket(object client_socket)
         {
+            Console.WriteLine("Awaiting messages on new socket...");
+
             List<ClientMsg> request_list = new List<ClientMsg>();
 
             Socket s = (Socket)client_socket;
@@ -128,6 +136,9 @@ namespace ServerNetworking
                     if (num_of_bytes_read > 0)
                     {
                         ClientMsg msg = server_serializer.DeserializeClientMsg(receive_buffer);
+
+                        Console.WriteLine(String.Format("new message received of type: {0}", TcpConst.IntToText(msg.type));
+
                         inbox.Push(msg);
 
                         if (msg.type == TcpConst.JOIN || msg.type == TcpConst.LOGIN)

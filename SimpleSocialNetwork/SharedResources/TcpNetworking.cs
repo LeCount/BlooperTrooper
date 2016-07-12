@@ -132,6 +132,9 @@ namespace SharedResources
         public const int DECLINED = 0;
         public const int ACCEPTED = 1;
         public const int CONFIRMED = 2;
+        public const int REQUEST = 3;
+        public const int REPLY = 4;
+
     }
 
         /// <summary>A class meant to distribute TCP related constants used by both client and server.</summary>
