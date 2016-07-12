@@ -2,3 +2,4 @@ C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\Clien
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\ClientNetworking\bin\Debug\ClientNetworking.pdb
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\ClientNetworking\obj\Debug\ClientNetworking.dll
 C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\ClientNetworking\obj\Debug\ClientNetworking.pdb
+C:\Users\Greven\Desktop\Erik och Stefan\BlooperTrooper\SimpleSocialNetwork\ClientNetworking\obj\Debug\ClientNetworking.csprojResolveAssemblyReference.cache

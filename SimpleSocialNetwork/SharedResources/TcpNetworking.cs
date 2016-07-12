@@ -41,6 +41,8 @@ namespace SharedResources
     public class User
     {
         public DateTime last_requested { get; set; }
+        public bool access { get; set; }
+        public bool status { get; set; }
         public String username { get; set; }
         public String password { get; set; }
         public String name { get; set; }
@@ -56,8 +58,8 @@ namespace SharedResources
     /// <summary>A class to contain information regarding an event/post/log, on a users "wall".</summary>
     public class UserEvent
     {
-        public String time = null;
-        public String text = null;
+        public String time { get; set; }
+        public String text { get; set; }
     }
 
     /// <summary>A class with methods for validating expressions and formats.</summary>
@@ -122,12 +124,14 @@ namespace SharedResources
     public static class TcpMessageCode
     {
         public const int INVALID = -1;
-        public const int INCORRECT_PASSWORD = -2;
-        public const int USER_EXISTS = -3;
-
+        public const int USER_EXISTS = -2;
+        public const int USER_DONT_EXISTS = -3;
+        public const int INCORRECT_PASSWORD = -4;
+        public const int INCORRECT_CODE = -5;
 
         public const int DECLINED = 0;
         public const int ACCEPTED = 1;
+        public const int CONFIRMED = 2;
     }
 
         /// <summary>A class meant to distribute TCP related constants used by both client and server.</summary>

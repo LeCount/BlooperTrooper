@@ -165,6 +165,11 @@
 
         private void HandleLoginRequest(User u)
         {
+            ServerMsg reply = new ServerMsg();
+            reply.type = TcpConst.LOGIN;
+            reply.data = TcpMessageCode.ACCEPTED;
+
+            networking.SendMessage(u.username, reply);
 
         }
     }
