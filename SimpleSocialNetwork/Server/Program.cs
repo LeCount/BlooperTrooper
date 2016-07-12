@@ -90,7 +90,7 @@
                 case TcpConst.LOGOUT:
 
                     //Remove the user from the userlist on server
-                    networking.RemoveUserFromList(user.username);
+                    //networking.RemoveUserFromList(user.username);
 
                     break;
                 case TcpConst.GET_USERS:
@@ -102,14 +102,14 @@
                 case TcpConst.UPDATE_USER_DATA:
 
                     //Update the user, that was updated, in the userlist on server
-                    networking.RemoveUserFromList(user.username);
-                    networking.AddToUserList(GetUserFromDB(user.username));
+                    //networking.RemoveUserFromList(user.username);
+                    //networking.AddToUserList(GetUserFromDB(user.username));
 
                     break;
                 case TcpConst.GET_CLIENT_DATA:
 
                     //Add requested user to userlist on server
-                    networking.AddToUserList(GetUserFromDB(user.username));
+                    //networking.AddToUserList(GetUserFromDB(user.username));
 
                     break;
                 case TcpConst.SEND_MESSAGE:
@@ -117,6 +117,12 @@
                 case TcpConst.GET_WALL:
                     break;
                 case TcpConst.PING:
+
+                    ServerMsg reply = new ServerMsg();
+                    reply.type = TcpConst.PING;
+                    reply.data = TcpMessageCode.CONFIRMED;
+                    networking.SendMessage(user.username, reply);
+
                     break;
                 case TcpConst.VERIFICATION_CODE:
                     break;
