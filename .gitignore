@@ -39,3 +39,5 @@
 bin/
 debug/
 obj/
+packages/
+.vs/
