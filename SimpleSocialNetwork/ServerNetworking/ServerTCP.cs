@@ -49,11 +49,15 @@ namespace ServerNetworking
             if (server_ipAddr == null || server_port == null)
                 SetDefaultServerSettings();
 
+            Console.WriteLine(String.Format("Server is now running! Port: {1}, Ip: {2}"));
+
             client_listener = new TcpListener(IPAddress.Parse(server_ipAddr), Int32.Parse(server_port));
             client_listener.Start();
 
             connect_listener = new Thread(ListenForConnections);
             connect_listener.Start();
+
+            Console.WriteLine(String.Format("Server is now listening for connections!"));
         }
 
         public void StopServer()
@@ -85,6 +89,9 @@ namespace ServerNetworking
                 AddSocketListener(s);
 
                 ServerMsg reply = new ServerMsg();
+
+                Console.WriteLine(String.Format("Client connection occurred."));
+
                 reply.data = "Hi from mr Boaty Mc Boatface!";
                 reply.type = TcpConst.CONNECT;
 
