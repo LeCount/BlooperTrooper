@@ -70,18 +70,18 @@
         private void HandleClientRequest(ClientMsg msg)
         {
 
-            Object message_data = DataTransform.Deserialize(msg.data);
+            
 
             switch (msg.type)
             {
                 case TcpConst.JOIN:
 
-                    HandleJoinRequest(message_data);
+                    HandleJoinRequest(msg.data);
 
                     break;
                 case TcpConst.LOGIN:
 
-                    HandleLoginRequest(message_data);
+                    HandleLoginRequest(msg.data);
 
                     //Add the user to the userlist on server
                     // networking.AddToUserList(GetUserFromDB(user.username));
@@ -118,7 +118,7 @@
                     break;
                 case TcpConst.PING:
 
-                    PingRequest_data request_data = (PingRequest_data)message_data;
+                    PingRequest_data request_data = (PingRequest_data)msg.data;
 
                     ServerMsg msg_reply = new ServerMsg();
                     msg_reply.type = TcpConst.PING;
@@ -126,7 +126,7 @@
                     PingReply_data reply_data = new PingReply_data();
 
                     reply_data.message_code = TcpMessageCode.CONFIRMED;
-                    msg_reply.data = DataTransform.Serialize(reply_data);
+                    msg_reply.data = (Object)reply_data;
 
                     tcp_server.SendMessage(request_data.from, msg_reply);
 
@@ -167,7 +167,7 @@
             //if(reply_data.message_code == TcpMessageCode.ACCEPTED)
             //    sqlite_database.AddNewUser(request_data.username, request_data.password)
 
-            msg_reply.data = DataTransform.Serialize(reply_data);
+            msg_reply.data = (Object)reply_data;
 
             tcp_server.SendMessage(request_data.username, msg_reply);
         }

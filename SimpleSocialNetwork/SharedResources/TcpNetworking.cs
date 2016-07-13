@@ -21,21 +21,6 @@ namespace SharedResources
         }
     }
 
-    /// <summary>A class that users Json serializer to convert client and server msg data back and forth.</summary>
-    public static class DataTransform
-    {
-        public static object Serialize(Object obj)
-        {
-            Object data = (Object)JsonConvert.SerializeObject(obj);
-            return data;
-        }
-
-        public static Object Deserialize(Object data)
-        {
-            return JsonConvert.DeserializeObject<Object>((String)data);
-        }
-    }
-
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to Join the social network.</summary>
     public class JoinRequest_data
     {

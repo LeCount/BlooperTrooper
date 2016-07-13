@@ -145,13 +145,13 @@ namespace ServerNetworking
                         
                         if (msg.type == TcpConst.JOIN)
                         {
-                            JoinRequest_data d1 = (JoinRequest_data)DataTransform.Deserialize(msg.data);
+                            JoinRequest_data d1 = (JoinRequest_data)msg.data;
                             BindUserToSocket(s, d1.username);
                         }
 
                         if (msg.type == TcpConst.LOGIN)
                         {
-                            LoginRequest_data d2 = (LoginRequest_data)DataTransform.Deserialize(msg.data);
+                            LoginRequest_data d2 = (LoginRequest_data)msg.data;
                             BindUserToSocket(s, d2.username);
                         }
                     }
