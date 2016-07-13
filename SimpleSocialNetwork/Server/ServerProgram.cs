@@ -1,56 +1,55 @@
-﻿namespace ServerProgram
+﻿namespace Program
 {
-    using SharedResources;
     using System;
     using System.Linq;
     using System.Threading;
     using ServerNetworking;
+    using SharedResources;
 
-    public class Program
+
+    public static class Entrypoint
     {
         static void Main(string[] args)
         {
             if (args.Count() < 2)
-                new Server();
+                new ServerApp();
             else
             {
                 String server_ipAddr = args.ElementAt(0);
                 String server_port = args.ElementAt(1);
 
-                new Server(server_ipAddr, server_port);
+                new ServerApp(server_ipAddr, server_port);
             }
         }
     }
 
-    public class Server
+    public interface I_TcpServer
     {
-        private SQLiteDB db = new SQLiteDB(TcpConst.DATABASE_FILE);
-        private Thread message_handler = null;
-        Serializer server_serializer = new Serializer();
-        ServerTCP networking = new ServerTCP();
+        ClientMsg GetNextRequest();
+        void HandleRequest(ClientMsg msg);
 
-        public Server()
-        {
-            Init(null, null);
-        }
+    }
 
-        public Server(string ipaddr, string port)
-        {
-            Init(ipaddr, port);
-        }
+    public class ServerApp
+    {
+        private SQLiteDB sqlite_database = new SQLiteDB(TcpConst.DATABASE_FILE);
+        TcpServer tcp_server = null;
+        private Thread get_next_request = null;
 
-        private void Init(string ipAddr, string port)
-        {
-            networking.server_ipAddr = ipAddr;
-            networking.server_port = port;
-            networking.StartServer();
-            StartHandlingRequests();
-        }
+        
+        public ServerApp(){Init(null, null);}
 
-        private void StartHandlingRequests()
+        public ServerApp(string ipaddr, string port){Init(ipaddr, port);}
+
+        private void Init(string ip, string port)
         {
-            message_handler = new Thread(executeRequests);
-            message_handler.Start();
+            tcp_server = new TcpServer();
+            tcp_server.ipAddr = ip;
+            tcp_server.port = port;
+            tcp_server.StartServer();
+
+            get_next_request = new Thread(executeRequests);
+            get_next_request.Start();
         }
 
         private void executeRequests()
@@ -59,10 +58,10 @@
 
             while (true)
             {
-                next_request = networking.GetNextRequest();
+                next_request = tcp_server.GetNextRequest();
 
                 if (next_request == null)
-                    Thread.Sleep(10);
+                    Thread.Sleep(100);
                 else
                     HandleClientRequest(next_request);
             }
@@ -70,7 +69,7 @@
 
         private void HandleClientRequest(ClientMsg msg)
         {
-            User user = DataParser.Deserialize(msg.data);
+            User user = DataTransform.Deserialize(msg.data);
 
             switch(msg.type)
             {
@@ -121,10 +120,8 @@
                     ServerMsg reply = new ServerMsg();
                     reply.type = TcpConst.PING;
                     reply.data = TcpMessageCode.CONFIRMED;
-                    networking.SendMessage(user.username, reply);
+                    tcp_server.SendMessage(user.username, reply);
 
-                    break;
-                case TcpConst.VERIFICATION_CODE:
                     break;
                 case TcpConst.INVALID:
                     break;
@@ -138,13 +135,13 @@
             User user = new User();
 
             user.name = username;
-            user.mail = db.GetMail(username);
-            user.name = db.GetName(username);
-            user.surname = db.GetSurname(username);
-            user.about_user = db.GetAbout(username);
-            user.interests = db.GetInterest(username);
-            user.friends = db.GetFriends(username);
-            user.wall = db.GetEvents(username);
+            user.mail = sqlite_database.GetMail(username);
+            user.name = sqlite_database.GetName(username);
+            user.surname = sqlite_database.GetSurname(username);
+            user.about_user = sqlite_database.GetAbout(username);
+            user.interests = sqlite_database.GetInterest(username);
+            user.friends = sqlite_database.GetFriends(username);
+            user.wall = sqlite_database.GetEvents(username);
 
             return user;
         }
@@ -155,14 +152,14 @@
             reply.type = TcpConst.JOIN;
 
             reply.data = ValidateJoinRequest(u);
-            networking.SendMessage(u.username, reply);
+            tcp_server.SendMessage(u.username, reply);
         }
 
         private int ValidateJoinRequest(User u)
         {
-            if (db.EntryExistsInTable(u.username, "User", "user_id"))
+            if (sqlite_database.EntryExistsInTable(u.username, "User", "user_id"))
             {
-                db.AddNewUser(u.username, u.password, null);
+                sqlite_database.AddNewUser(u.username, u.password, null);
                 return TcpMessageCode.ACCEPTED;
             }
             else
@@ -176,7 +173,7 @@
             reply.data = TcpMessageCode.ACCEPTED;
 
             Console.WriteLine(u.username);
-            networking.SendMessage(u.username, reply);
+            tcp_server.SendMessage(u.username, reply);
 
         }
     }

@@ -7,16 +7,17 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 
+
 namespace ServerNetworking
 {
     /// <summary>A class for handling server and TCP related tasks.</summary>
-    public class ServerTCP
+    public class TcpServer
     {
         /// <summary>The port used by the server.</summary>
-        public String server_port { get; set; }
+        public String port { get; set; }
 
         /// <summary>The ip address used by the server</summary>
-        public String server_ipAddr { get; set; }
+        public String ipAddr { get; set; }
 
         /// <summary>A hash table associating usernames(key) with sockets(value). </summary>
         private Hashtable usersOnSockets = new Hashtable();
@@ -42,16 +43,16 @@ namespace ServerNetworking
         /// <summary>A serializer for reading byte arrays into messages, and for writing messages into byte arrays.</summary>
         Serializer server_serializer = new Serializer();
 
-        public ServerTCP() { }
+        public TcpServer() { }
 
         public void StartServer()
-        {
-            if (server_ipAddr == null || server_port == null)
+        { 
+            if (ipAddr == null || port == null)
                 SetDefaultServerSettings();
 
-            Console.WriteLine(String.Format("Server is now running! Port: {0}, Ip: {1}", server_port, server_ipAddr));
+            Console.WriteLine(String.Format("Server is now running! Port: {0}, Ip: {1}", port, ipAddr));
 
-            client_listener = new TcpListener(IPAddress.Parse(server_ipAddr), Int32.Parse(server_port));
+            client_listener = new TcpListener(IPAddress.Parse(ipAddr), Int32.Parse(port));
             client_listener.Start();
 
             connect_listener = new Thread(ListenForConnections);
@@ -75,8 +76,8 @@ namespace ServerNetworking
         {
             Console.WriteLine("No settings specified! Using default settings and local host.");
 
-            server_ipAddr = TcpMethods.GetIP();
-            server_port = TcpConst.SERVER_PORT.ToString();
+            ipAddr = TcpMethods.GetIP();
+            port = TcpConst.SERVER_PORT.ToString();
         }
 
         private void ListenForConnections()
@@ -143,7 +144,7 @@ namespace ServerNetworking
 
                         if (msg.type == TcpConst.JOIN || msg.type == TcpConst.LOGIN)
                         {
-                            BindUserToSocket(s, DataParser.Deserialize(msg.data).username);
+                            BindUserToSocket(s, DataTransform.Deserialize(msg.data).username);
                         }
                     }
 

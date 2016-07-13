@@ -51,7 +51,7 @@ namespace WpfClient
 
             ClientMsg msg = new ClientMsg();
             msg.type = TcpConst.LOGIN;
-            msg.data = DataParser.Serializer(loginData);
+            msg.data = DataTransform.Serialize(loginData);
 
             Client_send(msg);
                    

@@ -22,9 +22,9 @@ namespace SharedResources
     }
 
     /// <summary>A class that users Json serializer to convert client and server msg data back and forth.</summary>
-    public static class DataParser
+    public static class DataTransform
     {
-        public static object Serializer(User u)
+        public static object Serialize(User u)
         {
             Object data = (Object)JsonConvert.SerializeObject(u);
             return data;
