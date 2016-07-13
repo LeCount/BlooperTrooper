@@ -38,22 +38,178 @@ namespace SharedResources
         }
     }
 
+    /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to Join the social network.</summary>
+    public static class JoinData
+    {
+        public static String username { get; set; }
+        public static String password { get; set; }
+        public static String mail { get; set; }
+        public static String name { get; set; }
+        public static String surname { get; set; }
+        public static String about_user { get; set; }
+        public static String interests { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ClientMsg- or ServerMsg class, when sender want to send a ping message.</summary>
+    public static class JoinReply_data
+    {
+        /// <summary>Code indicating the success or failure of the request.</summary>
+        public static int message_code { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a login request.</summary>
+    public static class LoginRequest_data
+    {
+        /// <summary>Suggested username of the user.</summary>
+        public static String username { get; set; }
+
+        /// <summary>Suggested password for the user.</summary>
+        public static String password { get; set; }
+
+        /// <summary>Suggested confirmation code for the user.</summary>
+        public static String confirmation_code { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a login request.</summary>
+    public static class LoginReply_data
+    {
+        /// <summary>Code indicating the success or failure of the request.</summary>
+        public static int message_code { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ClientMsg- or ServerMsg class, when sender want to send a ping message.</summary>
+    public static class PingRequest_data
+    {
+        /// <summary>Username of the one who sent the ping request.</summary>
+        public static String from { get; set; }
+    }
+
+    /// <summary>A response to a ping request.</summary>
+    public static class PingReply_data
+    {
+        /// <summary>Code indicating the success or failure of the request.</summary>
+        public static int message_code = TcpMessageCode.CONFIRMED;
+    }
+
+
+    /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_users request.</summary>
+    public static class GetUsersRequest_data
+    {
+        /// <summary>Username of the one who sent the request.</summary>
+        public static String from { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a get_users request.</summary>
+    public static class GetUsersReply_data
+    {
+        /// <summary>One of the available users in the social network.</summary>
+        public static String username { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_friends_status request.</summary>
+    public static class GetFriendStatusRequest_data
+    {
+        /// <summary>Username of the one who sent the request.</summary>
+        public static String from { get; set; }
+
+        /// <summary>The user that the client wants to know the online status of.</summary>
+        public static String user { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a get_friends_status request.</summary>
+    public static class GetFriendStatusReply_data
+    {
+        /// <summary>The status of the requested user</summary>
+        public static bool online { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a GET_WALL request.</summary>
+    public static class GetWallRequest_data
+    {
+        /// <summary>Username of the one who sent the request.</summary>
+        public static String from { get; set; }
+
+        /// <summary>The user who's wall is being requested.</summary>
+        public static String user { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a GET_WALL request.</summary>
+    public static class GetWallReply_data
+    {
+        /// <summary>Date and time of wall post</summary>
+        public static DateTime time { get; set; }
+
+        /// <summary>Text of post</summary>
+        public static String text { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a update request.</summary>
+    public static class UpdateRequest_data
+    {
+        public static String new_username { get; set; }
+        public static String new_password { get; set; }
+        public static String new_mail { get; set; }
+        public static String new_name { get; set; }
+        public static String new_surname { get; set; }
+        public static String new_about_user { get; set; }
+        public static String new_interests { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a update request.</summary>
+    public static class UpdateReply_data
+    {
+        /// <summary>Code indicating the success or failure of the request.</summary>
+        public static int message_code { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_user_data request.</summary>
+    public static class GetUserDataRequest_data
+    {
+        /// <summary>Username of the one who sent the request.</summary>
+        public static String from { get; set; }
+
+        /// <summary>The user who's data is being requested.</summary>
+        public static String user { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a get_user_data request.</summary>
+    public static class GetUserDataReply_data
+    {
+        /// <summary>Code indicating the success or failure of the request.</summary>
+        public static int message_code { get; set; }
+
+        public static String new_username { get; set; }
+        public static String new_mail { get; set; }
+        public static String new_name { get; set; }
+        public static String new_surname { get; set; }
+        public static String new_about_user { get; set; }
+        public static String new_interests { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ClientMsg class, when the user wants to send a chat msg to another user.</summary>
+    public static class Chat_data
+    {
+        /// <summary>Username of the one who sent the request.</summary>
+        public static String from { get; set; }
+
+        /// <summary>The user to send message to</summary>
+        public static String to { get; set; }
+    }
+
     /// <summary>A class for having parameterized user information available in memory, on the server and the client.</summary>
     public class User
     {
-        public DateTime last_requested { get; set; }
-        public bool access { get; set; }
-        public bool status { get; set; }
-        public String username { get; set; }
-        public String password { get; set; }
-        public String name { get; set; }
-        public String surname { get; set; }
-        public String mail { get; set; }
-        public String about_user { get; set; }
-        public String interests { get; set; }
+        public DateTime last_requested  { get; set; }
+        public bool online_status       { get; set; }
+        public String username          { get; set; }
+        public String password          { get; set; }
+        public String name              { get; set; }
+        public String surname           { get; set; }
+        public String mail              { get; set; }
+        public String about_user        { get; set; }
+        public String interests         { get; set; }
         public List<String> friends = new List<String>();
         public List<UserEvent> wall = new List<UserEvent>();
-
     }
 
     /// <summary>A class to contain information regarding an event/post/log, on a users "wall".</summary>
@@ -133,6 +289,7 @@ namespace SharedResources
         public const int DECLINED = 0;
         public const int ACCEPTED = 1;
         public const int CONFIRMED = 2;
+
         public const int REQUEST = 3;
         public const int REPLY = 4;
 
@@ -149,13 +306,11 @@ namespace SharedResources
         public const int GET_USERS = 4;
         public const int ADD_FRIEND = 5;
         public const int GET_FRIEND_STATUS = 6;
-        public const int UPDATE_USER_DATA = 7;
+        public const int UPDATE = 7;
         public const int GET_CLIENT_DATA = 8;
-        public const int SEND_MESSAGE = 9;
+        public const int CHAT = 9;
         public const int GET_WALL = 10;
         public const int PING = 11;
-        public const int VERIFICATION_CODE = 12;
-        //
 
         public const int INVALID = -1;
 
@@ -175,9 +330,9 @@ namespace SharedResources
                 case 4: return "GET USERS";
                 case 5: return "ADD FRIEND";
                 case 6: return "GET FRIEND STATUS";
-                case 7: return "UPDATE USER DATA";
+                case 7: return "UPDATE";
                 case 8: return "GET CLIENT DATA";
-                case 9: return "SEND MESSAGE";
+                case 9: return "CHAT";
                 case 10: return "GET_WALL";
                 case 11: return "PING";
                 default: return "INVALID";

@@ -99,7 +99,7 @@
                     break;
                 case TcpConst.GET_FRIEND_STATUS:
                     break;
-                case TcpConst.UPDATE_USER_DATA:
+                case TcpConst.UPDATE:
 
                     //Update the user, that was updated, in the userlist on server
                     //networking.RemoveUserFromList(user.username);
@@ -112,7 +112,7 @@
                     //networking.AddToUserList(GetUserFromDB(user.username));
 
                     break;
-                case TcpConst.SEND_MESSAGE:
+                case TcpConst.CHAT:
                     break;
                 case TcpConst.GET_WALL:
                     break;
