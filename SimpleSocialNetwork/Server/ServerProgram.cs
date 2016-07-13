@@ -25,8 +25,18 @@
 
     public interface I_TcpServer
     {
-        ClientMsg GetNextRequest();
-        void HandleRequest(ClientMsg msg);
+        void Start();
+
+        void Stop();
+
+        /// <summary>A method for collecting the next client request to execute, from the server's request inbox.
+        /// Perferably, this method will be executed inside it's own thread.</summary>
+        /// <returns>The next client request to execute.</returns>
+        ClientMsg GetNextClientRequest();
+
+        /// <summary>A method where actions are taken accordingl,y to the specific type of the client requests.</summary>
+        /// <param name="msg">A client request.</param>
+        void HandleNextClientRequest(ClientMsg msg);
 
     }
 
@@ -37,9 +47,16 @@
         private Thread get_next_request = null;
 
         
-        public ServerApp(){Init(null, null);}
+        public ServerApp()
+        {
+            Console.WriteLine("HERP!");
+            Init(null, null);
+        }
 
-        public ServerApp(string ipaddr, string port){Init(ipaddr, port);}
+        public ServerApp(string ipaddr, string port)
+        {
+            Init(ipaddr, port);
+        }
 
         private void Init(string ip, string port)
         {
@@ -69,9 +86,6 @@
 
         private void HandleClientRequest(ClientMsg msg)
         {
-
-            
-
             switch (msg.type)
             {
                 case TcpConst.JOIN:
@@ -116,21 +130,6 @@
                     break;
                 case TcpConst.GET_WALL:
                     break;
-                case TcpConst.PING:
-
-                    PingRequest_data request_data = (PingRequest_data)msg.data;
-
-                    ServerMsg msg_reply = new ServerMsg();
-                    msg_reply.type = TcpConst.PING;
-
-                    PingReply_data reply_data = new PingReply_data();
-
-                    reply_data.message_code = TcpMessageCode.CONFIRMED;
-                    msg_reply.data = (Object)reply_data;
-
-                    tcp_server.SendMessage(request_data.from, msg_reply);
-
-                    break;
                 case TcpConst.INVALID:
                     break;
             }
@@ -156,20 +155,20 @@
 
         private void HandleJoinRequest(Object obj)
         {
-            ServerMsg msg_reply = new ServerMsg();
-            msg_reply.type = TcpConst.JOIN;
+            JoinRequest_data received_data = (JoinRequest_data)obj;
+        
+            ServerMsg msg_to_send = new ServerMsg();
+            msg_to_send.type = TcpConst.JOIN;
 
-            JoinRequest_data request_data = (JoinRequest_data)obj;
-
-            JoinReply_data reply_data = new JoinReply_data();
-            reply_data.message_code = ValidateJoinRequest(request_data);
+            JoinReply_data data_to_send = new JoinReply_data();
+            data_to_send.message_code = ValidateJoinRequest(received_data);
 
             //if(reply_data.message_code == TcpMessageCode.ACCEPTED)
             //    sqlite_database.AddNewUser(request_data.username, request_data.password)
 
-            msg_reply.data = (Object)reply_data;
+            msg_to_send.data = (Object)data_to_send;
 
-            tcp_server.SendMessage(request_data.username, msg_reply);
+            tcp_server.SendMessage(received_data.username, msg_to_send);
         }
 
         private int ValidateJoinRequest(JoinRequest_data data)
@@ -187,14 +186,18 @@
 
         private void HandleLoginRequest(Object obj)
         {
-            ServerMsg msg_reply = new ServerMsg();
-            msg_reply.type = TcpConst.LOGIN;
+            LoginRequest_data received_data = (LoginRequest_data)obj;
 
-            LoginRequest_data request_data = (LoginRequest_data)obj;
+            ServerMsg msg_to_send = new ServerMsg();
+            msg_to_send.type = TcpConst.LOGIN;
 
+            LoginReply_data data_to_send = new LoginReply_data();
 
-            Console.WriteLine(request_data.username);
-            tcp_server.SendMessage(request_data.username, msg_reply);
+            data_to_send.message_code = ValidateLoginRequest(received_data);
+
+            msg_to_send.data = (Object)data_to_send;
+
+            tcp_server.SendMessage(received_data.username, msg_to_send);
 
         }
 
@@ -209,7 +212,7 @@
             //    return TcpMessageCode.INCORRECT_PASSWORD;
             //}
             //else 
-                return TcpMessageCode.ACCEPTED;
+            return TcpMessageCode.ACCEPTED;
         }
     }
 }
