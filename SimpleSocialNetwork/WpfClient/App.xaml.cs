@@ -46,7 +46,7 @@ namespace WpfClient
         /// Login to server
         ///</summary>
         public static bool LoginToServer(string username, string password)
-        {            
+        {
             User loginData = new User();
 
             loginData.password = password;
@@ -57,7 +57,27 @@ namespace WpfClient
             msg.data = DataTransform.Serialize(loginData);
 
             Client_send(msg);
-                   
+
+            return true;
+        }
+
+        public static bool JoinRequest(string username, string password, string email, string firstName, string lastName, string about, string interests)
+        {
+            JoinRequest_data j = new JoinRequest_data();
+            j.password = password;
+            j.username = username;
+            j.mail = email;
+            j.name = firstName;
+            j.surname = lastName;
+            j.about_user = about;
+            j.interests = interests;
+        
+            ClientMsg msg = new ClientMsg();
+            msg.type = TcpConst.JOIN;
+            msg.data = DataTransform.Serialize(j);
+
+            Client_send(msg);
+
             return true;
         }
 

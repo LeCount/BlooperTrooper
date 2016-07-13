@@ -21,6 +21,13 @@ namespace WpfClient
     {
         public RegisterWindow()
         {
+            if (App.JoinRequest(txtUsername.Text, txtPassword.Password, txtEmail.Text, txtFirstName.Text, txtLastName.Text, txtAbout.Text, txtInterests.Text))
+            {
+                MessageBox.Show("Registration Successful");
+                LoginWindow l = new LoginWindow();
+                l.Show();
+                this.Close();
+            }
             InitializeComponent();
         }
 

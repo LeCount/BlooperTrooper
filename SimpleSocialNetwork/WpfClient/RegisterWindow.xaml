@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfClient"
         mc:Ignorable="d"
-        Title="Register" Height="350" Width="300"
+        Title="Register" Height="400" Width="300"
         ResizeMode="NoResize">
 
     <Grid Margin="5">
@@ -20,6 +20,7 @@
             <RowDefinition Height="30" />
             <RowDefinition Height="30" />
             <RowDefinition Height="30" />
+            <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
@@ -43,8 +44,11 @@
 
         <Label Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="6">About:</Label>
         <TextBox x:Name="txtAbout" Height="120" VerticalAlignment="Top" Grid.Row="6" Grid.Column="1" AcceptsReturn="True" TextWrapping="Wrap"></TextBox>
-
-        <Grid Grid.Column="1" Grid.Row="7">
+        
+        <Label Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="7">Interests:</Label>
+        <TextBox x:Name="txtInterests" Height="120" VerticalAlignment="Top" Grid.Row="7" Grid.Column="1" AcceptsReturn="True" TextWrapping="Wrap"></TextBox>
+        
+        <Grid Grid.Column="1" Grid.Row="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
