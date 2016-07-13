@@ -60,13 +60,6 @@ namespace SharedResources
         public int message_code { get; set; }
     }
 
-    /// <summary>A class for representing the field "data", in the ClientMsg- or ServerMsg class, when sender want to send a ping message.</summary>
-    public class PingRequest_data
-    {
-        /// <summary>Username of the one who sent the ping request.</summary>
-        public String from { get; set; }
-    }
-
     /// <summary>A response to a ping request.</summary>
     public class PingReply_data
     {

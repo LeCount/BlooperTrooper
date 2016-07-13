@@ -114,10 +114,8 @@ namespace WpfClient
             {
                 server_alive = false;
                 ClientMsg msg = new ClientMsg();
-                PingRequest_data p = new PingRequest_data();
-                p.from = "Kalle";
+
                 msg.type = TcpConst.PING;
-                msg.data = (Object)p;
                 Client_send(msg);
 
                 Thread.Sleep(5000);

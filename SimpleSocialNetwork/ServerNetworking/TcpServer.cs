@@ -142,17 +142,29 @@ namespace ServerNetworking
 
                         inbox.Push(msg);
 
-                        
+                        if (msg.type == TcpConst.PING)
+                        {
+                            ServerMsg msg_to_send = new ServerMsg();
+                            msg_to_send.type = TcpConst.PING;
+
+                            PingReply_data data_to_send = new PingReply_data();
+                            data_to_send.message_code = TcpMessageCode.CONFIRMED;
+
+                            msg_to_send.data = (Object)data_to_send;
+
+                            SendMessageToSocket(msg_to_send, s);
+                        }
+
                         if (msg.type == TcpConst.JOIN)
                         {
-                            JoinRequest_data d1 = (JoinRequest_data)msg.data;
-                            BindUserToSocket(s, d1.username);
+                            JoinRequest_data received_data = (JoinRequest_data)msg.data;
+                            BindUserToSocket(s, received_data.username);
                         }
 
                         if (msg.type == TcpConst.LOGIN)
                         {
-                            LoginRequest_data d2 = (LoginRequest_data)msg.data;
-                            BindUserToSocket(s, d2.username);
+                            LoginRequest_data received_data = (LoginRequest_data)msg.data;
+                            BindUserToSocket(s, received_data.username);
                         }
                     }
 
