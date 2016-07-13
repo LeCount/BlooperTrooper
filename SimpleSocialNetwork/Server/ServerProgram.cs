@@ -47,9 +47,16 @@
         private Thread get_next_request = null;
 
         
-        public ServerApp(){Init(null, null);}
+        public ServerApp()
+        {
+            Console.WriteLine("HERP!");
+            Init(null, null);
+        }
 
-        public ServerApp(string ipaddr, string port){Init(ipaddr, port);}
+        public ServerApp(string ipaddr, string port)
+        {
+            Init(ipaddr, port);
+        }
 
         private void Init(string ip, string port)
         {

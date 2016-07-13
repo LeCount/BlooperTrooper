@@ -198,7 +198,8 @@ namespace ServerNetworking
         /// <param name="s">Socket to send msg to.</param>
         private void SendMessageToSocket(ServerMsg msg, Socket s)
         {
-            byte[] byte_buffer = server_serializer.SerializeServerMsg(msg);
+            byte[] byte_buffer = new byte[TcpConst.BUFFER_SIZE];
+            byte_buffer = server_serializer.SerializeServerMsg(msg);
             s.Send(byte_buffer);
         }
 

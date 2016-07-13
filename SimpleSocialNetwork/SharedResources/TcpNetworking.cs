@@ -22,6 +22,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to Join the social network.</summary>
+    [Serializable]
     public class JoinRequest_data
     {
         public String username { get; set; }
@@ -34,6 +35,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg- or ServerMsg class, when sender want to send a ping message.</summary>
+    [Serializable]
     public class JoinReply_data
     {
         /// <summary>Code indicating the success or failure of the request.</summary>
@@ -41,6 +43,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a login request.</summary>
+    [Serializable]
     public class LoginRequest_data
     {
         /// <summary>Suggested username of the user.</summary>
@@ -54,6 +57,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a login request.</summary>
+    [Serializable]
     public class LoginReply_data
     {
         /// <summary>Code indicating the success or failure of the request.</summary>
@@ -61,6 +65,7 @@ namespace SharedResources
     }
 
     /// <summary>A response to a ping request.</summary>
+    [Serializable]
     public class PingReply_data
     {
         /// <summary>Code indicating the success or failure of the request.</summary>
@@ -69,6 +74,7 @@ namespace SharedResources
 
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_users request.</summary>
+    [Serializable]
     public class GetUsersRequest_data
     {
         /// <summary>Username of the one who sent the request.</summary>
@@ -76,6 +82,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a get_users request.</summary>
+    [Serializable]
     public class GetUsersReply_data
     {
         /// <summary>One of the available users in the social network.</summary>
@@ -83,6 +90,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_friends_status request.</summary>
+    [Serializable]
     public class GetFriendStatusRequest_data
     {
         /// <summary>Username of the one who sent the request.</summary>
@@ -93,6 +101,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a get_friends_status request.</summary>
+    [Serializable]
     public class GetFriendStatusReply_data
     {
         /// <summary>The status of the requested user</summary>
@@ -100,6 +109,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a GET_WALL request.</summary>
+    [Serializable]
     public class GetWallRequest_data
     {
         /// <summary>Username of the one who sent the request.</summary>
@@ -110,6 +120,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a GET_WALL request.</summary>
+    [Serializable]
     public class GetWallReply_data
     {
         /// <summary>Date and time of wall post</summary>
@@ -120,6 +131,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a update request.</summary>
+    [Serializable]
     public class UpdateRequest_data
     {
         public String new_username { get; set; }
@@ -132,6 +144,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a update request.</summary>
+    [Serializable]
     public class UpdateReply_data
     {
         /// <summary>Code indicating the success or failure of the request.</summary>
@@ -139,6 +152,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_user_data request.</summary>
+    [Serializable]
     public class GetUserDataRequest_data
     {
         /// <summary>Username of the one who sent the request.</summary>
@@ -149,6 +163,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a get_user_data request.</summary>
+    [Serializable]
     public class GetUserDataReply_data
     {
         /// <summary>Code indicating the success or failure of the request.</summary>
@@ -163,6 +178,7 @@ namespace SharedResources
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when the user wants to send a chat msg to another user.</summary>
+    [Serializable]
     public class Chat_data
     {
         /// <summary>Username of the one who sent the request.</summary>
