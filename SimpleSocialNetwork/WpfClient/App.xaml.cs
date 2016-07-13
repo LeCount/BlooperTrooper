@@ -47,7 +47,7 @@ namespace WpfClient
         ///</summary>
         public static bool LoginToServer(string username, string password)
         {
-            User loginData = new User();
+            LoginRequest_data loginData = new LoginRequest_data();
 
             loginData.password = password;
             loginData.username = username;
@@ -114,11 +114,14 @@ namespace WpfClient
             {
                 server_alive = false;
                 ClientMsg msg = new ClientMsg();
+                PingRequest_data p = new PingRequest_data();
+                p.from = "Kalle";
                 msg.type = TcpConst.PING;
+                msg.data = DataTransform.Serialize(p);
                 Client_send(msg);
 
                 Thread.Sleep(5000);
-
+                
                 if (!server_alive)
                 {
                     connected = false;

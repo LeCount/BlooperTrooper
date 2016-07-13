@@ -32,7 +32,14 @@ namespace SharedResources
 
         public static Object Deserialize(Object data)
         {
-            return JsonConvert.DeserializeObject<Object>((String)data);
+            try
+            {
+                return JsonConvert.DeserializeObject<Object>((String)data);
+            }
+            catch (Exception e)
+            {
+                return new Object();
+            }
         }
     }
 
