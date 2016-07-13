@@ -76,14 +76,12 @@
             {
                 case TcpConst.JOIN:
 
-                    
                     HandleJoinRequest(message_data);
 
                     break;
                 case TcpConst.LOGIN:
 
-                    //User user = DataTransform.Deserialize(msg.data);
-                    //HandleLoginRequest(user);
+                    HandleLoginRequest(message_data);
 
                     //Add the user to the userlist on server
                     // networking.AddToUserList(GetUserFromDB(user.username));
@@ -120,10 +118,17 @@
                     break;
                 case TcpConst.PING:
 
-                    //ServerMsg reply = new ServerMsg();
-                    //reply.type = TcpConst.PING;
-                    //reply.data = TcpMessageCode.CONFIRMED;
-                    //tcp_server.SendMessage(user.username, reply);
+                    PingRequest_data request_data = (PingRequest_data)message_data;
+
+                    ServerMsg msg_reply = new ServerMsg();
+                    msg_reply.type = TcpConst.PING;
+
+                    PingReply_data reply_data = new PingReply_data();
+
+                    reply_data.message_code = TcpMessageCode.CONFIRMED;
+                    msg_reply.data = DataTransform.Serialize(reply_data);
+
+                    tcp_server.SendMessage(request_data.from, msg_reply);
 
                     break;
                 case TcpConst.INVALID:
@@ -151,37 +156,60 @@
 
         private void HandleJoinRequest(Object obj)
         {
-            ServerMsg reply = new ServerMsg();
-            reply.type = TcpConst.JOIN;
-            JoinRequest_data data = (JoinRequest_data)obj;
+            ServerMsg msg_reply = new ServerMsg();
+            msg_reply.type = TcpConst.JOIN;
 
+            JoinRequest_data request_data = (JoinRequest_data)obj;
 
+            JoinReply_data reply_data = new JoinReply_data();
+            reply_data.message_code = ValidateJoinRequest(request_data);
 
+            //if(reply_data.message_code == TcpMessageCode.ACCEPTED)
+            //    sqlite_database.AddNewUser(request_data.username, request_data.password)
 
-            //reply.data = ValidateJoinRequest(u);
-            //tcp_server.SendMessage(u.username, reply);
+            msg_reply.data = DataTransform.Serialize(reply_data);
+
+            tcp_server.SendMessage(request_data.username, msg_reply);
         }
 
-        private int ValidateJoinRequest(User u)
+        private int ValidateJoinRequest(JoinRequest_data data)
         {
-            if (sqlite_database.EntryExistsInTable(u.username, "User", "user_id"))
-            {
-                sqlite_database.AddNewUser(u.username, u.password, null);
+            //if (sqlite_database.EntryExistsInTable(data.username, "User", "user_id"))
+            //{
+            //    sqlite_database.AddNewUser(data.username, data.password, null);
+            //    return TcpMessageCode.ACCEPTED;
+            //}
+            //else
+            //    return TcpMessageCode.USER_EXISTS;
+
+            return TcpMessageCode.ACCEPTED;
+        }
+
+        private void HandleLoginRequest(Object obj)
+        {
+            ServerMsg msg_reply = new ServerMsg();
+            msg_reply.type = TcpConst.LOGIN;
+
+            LoginRequest_data request_data = (LoginRequest_data)obj;
+
+
+            Console.WriteLine(request_data.username);
+            tcp_server.SendMessage(request_data.username, msg_reply);
+
+        }
+
+        private int ValidateLoginRequest(LoginRequest_data data)
+        {
+            //if (!sqlite_database.EntryExistsInTable(data.username, "User", "username"))
+            //{
+            //    return TcpMessageCode.USER_DONT_EXISTS;
+            //}
+            //else if(!sqlite_database.EntryExistsInTable(data.password, "User", "password"))
+            //{
+            //    return TcpMessageCode.INCORRECT_PASSWORD;
+            //}
+            //else 
                 return TcpMessageCode.ACCEPTED;
-            }
-            else
-                return TcpMessageCode.USER_EXISTS;
-        }
-
-        private void HandleLoginRequest(User u)
-        {
-            ServerMsg reply = new ServerMsg();
-            reply.type = TcpConst.LOGIN;
-            reply.data = TcpMessageCode.ACCEPTED;
-
-            Console.WriteLine(u.username);
-            tcp_server.SendMessage(u.username, reply);
-
         }
     }
 }
