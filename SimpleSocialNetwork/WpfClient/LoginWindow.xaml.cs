@@ -46,5 +46,10 @@ namespace WpfClient
             Nullable<bool> dialogResult = register.ShowDialog();
             Show();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ((App)Application.Current).App_Shutdown();
+        }
     }
 }

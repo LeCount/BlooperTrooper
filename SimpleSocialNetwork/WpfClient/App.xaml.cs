@@ -42,6 +42,8 @@ namespace WpfClient
 
         private string serverIPAddress = TcpMethods.GetIP();
 
+        private string current_username;
+
         ///<summary>
         /// Login to server
         ///</summary>
@@ -114,10 +116,9 @@ namespace WpfClient
             {
                 server_alive = false;
                 ClientMsg msg = new ClientMsg();
-                PingRequest_data p = new PingRequest_data();
-                p.from = "Kalle";
+
                 msg.type = TcpConst.PING;
-                msg.data = (Object)p;
+
                 Client_send(msg);
 
                 Thread.Sleep(5000);
@@ -128,7 +129,6 @@ namespace WpfClient
                     MessageBox.Show("Server Disconnected!");
                 }
 
-                MessageBox.Show("Server Heartbeat!");
             }
         }
 
@@ -166,7 +166,6 @@ namespace WpfClient
         /// <param name="msg">Message to be sent over TCP.</param>
         public static void Client_send(ClientMsg msg)
         {
-            MessageBox.Show("Sending Message");
             byte[] byteBuffer = s.SerializeClientMsg(msg);
             try { client_stream.Write(byteBuffer, 0, byteBuffer.Length); }
             catch (Exception) { }
@@ -179,14 +178,16 @@ namespace WpfClient
             switch (msg.type)
             {
                 case TcpConst.PING:
-                    int a = (int)msg.data;
-                    if(a == TcpMessageCode.REPLY)
+                    PingReply_data b = new PingReply_data();
+                    b = (PingReply_data)msg.data;
+                   
+                    if(b.message_code == TcpMessageCode.CONFIRMED)
                     {
-
+                        server_alive = true;
                     }
                     else
                     {
-
+                        server_alive = false;
                     }
 
                     break;
@@ -233,6 +234,16 @@ namespace WpfClient
             // Show login window
             LoginWindow login = new LoginWindow();
             login.Show();
+        }
+
+        public void App_Shutdown()
+        {
+            if (server_connect.IsAlive)
+                server_connect.Abort();
+            if (message_read.IsAlive)
+                message_read.Abort();
+            if (server_ping.IsAlive)
+                server_ping.Abort();
         }
     }
 
