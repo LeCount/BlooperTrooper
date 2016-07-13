@@ -69,18 +69,21 @@
 
         private void HandleClientRequest(ClientMsg msg)
         {
-            User user = DataTransform.Deserialize(msg.data);
 
-            switch(msg.type)
+            Object message_data = DataTransform.Deserialize(msg.data);
+
+            switch (msg.type)
             {
                 case TcpConst.JOIN:
 
-                    HandleJoinRequest(user);
+                    
+                    HandleJoinRequest(message_data);
 
                     break;
                 case TcpConst.LOGIN:
 
-                    HandleLoginRequest(user);
+                    //User user = DataTransform.Deserialize(msg.data);
+                    //HandleLoginRequest(user);
 
                     //Add the user to the userlist on server
                     // networking.AddToUserList(GetUserFromDB(user.username));
@@ -117,10 +120,10 @@
                     break;
                 case TcpConst.PING:
 
-                    ServerMsg reply = new ServerMsg();
-                    reply.type = TcpConst.PING;
-                    reply.data = TcpMessageCode.CONFIRMED;
-                    tcp_server.SendMessage(user.username, reply);
+                    //ServerMsg reply = new ServerMsg();
+                    //reply.type = TcpConst.PING;
+                    //reply.data = TcpMessageCode.CONFIRMED;
+                    //tcp_server.SendMessage(user.username, reply);
 
                     break;
                 case TcpConst.INVALID:
@@ -146,13 +149,17 @@
             return user;
         }
 
-        private void HandleJoinRequest(User u)
+        private void HandleJoinRequest(Object obj)
         {
             ServerMsg reply = new ServerMsg();
             reply.type = TcpConst.JOIN;
+            JoinRequest_data data = (JoinRequest_data)obj;
 
-            reply.data = ValidateJoinRequest(u);
-            tcp_server.SendMessage(u.username, reply);
+
+
+
+            //reply.data = ValidateJoinRequest(u);
+            //tcp_server.SendMessage(u.username, reply);
         }
 
         private int ValidateJoinRequest(User u)

@@ -144,7 +144,7 @@ namespace ServerNetworking
 
                         if (msg.type == TcpConst.JOIN || msg.type == TcpConst.LOGIN)
                         {
-                            BindUserToSocket(s, DataTransform.Deserialize(msg.data).username);
+                            BindUserToSocket(s, DataTransform.Deserialize(msg.data).);
                         }
                     }
 
