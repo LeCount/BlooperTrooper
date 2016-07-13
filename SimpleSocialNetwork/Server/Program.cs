@@ -120,7 +120,8 @@
 
                     ServerMsg reply = new ServerMsg();
                     reply.type = TcpConst.PING;
-                    reply.data = TcpMessageCode.CONFIRMED;
+                    reply.data = TcpMessageCode.
+                        ;
                     networking.SendMessage(user.username, reply);
 
                     break;
