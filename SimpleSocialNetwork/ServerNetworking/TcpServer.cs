@@ -142,9 +142,17 @@ namespace ServerNetworking
 
                         inbox.Push(msg);
 
-                        if (msg.type == TcpConst.JOIN || msg.type == TcpConst.LOGIN)
+                        
+                        if (msg.type == TcpConst.JOIN)
                         {
-                            BindUserToSocket(s, DataTransform.Deserialize(msg.data).);
+                            JoinRequest_data d1 = (JoinRequest_data)DataTransform.Deserialize(msg.data);
+                            BindUserToSocket(s, d1.username);
+                        }
+
+                        if (msg.type == TcpConst.LOGIN)
+                        {
+                            LoginRequest_data d2 = (LoginRequest_data)DataTransform.Deserialize(msg.data);
+                            BindUserToSocket(s, d2.username);
                         }
                     }
 

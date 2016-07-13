@@ -153,20 +153,21 @@
         {
             ServerMsg reply = new ServerMsg();
             reply.type = TcpConst.JOIN;
-            JoinRequest_data data = (JoinRequest_data)obj;
+            JoinRequest_data request_data = (JoinRequest_data)obj;
 
+            JoinReply_data reply_data = new JoinReply_data();
 
+            reply_data.message_code = ValidateJoinRequest(request_data);
+            reply.data = reply_data;
 
-
-            //reply.data = ValidateJoinRequest(u);
-            //tcp_server.SendMessage(u.username, reply);
+            tcp_server.SendMessage(request_data.username, reply);
         }
 
-        private int ValidateJoinRequest(User u)
+        private int ValidateJoinRequest(JoinRequest_data data)
         {
-            if (sqlite_database.EntryExistsInTable(u.username, "User", "user_id"))
+            if (sqlite_database.EntryExistsInTable(data.username, "User", "user_id"))
             {
-                sqlite_database.AddNewUser(u.username, u.password, null);
+                sqlite_database.AddNewUser(data.username, data.password, null);
                 return TcpMessageCode.ACCEPTED;
             }
             else
