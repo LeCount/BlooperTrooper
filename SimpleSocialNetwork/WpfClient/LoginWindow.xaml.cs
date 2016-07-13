@@ -29,7 +29,7 @@ namespace WpfClient
             if (App.LoginToServer(this.txtLogin.Text,this.txtPassword.Password)) {
                 MainWindow main = new MainWindow();
                 main.Show();
-                this.Close();
+                this.Hide();
             }
             else
             {
@@ -47,9 +47,13 @@ namespace WpfClient
             Show();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+            //do my stuff before closing
             ((App)Application.Current).App_Shutdown();
-        }
+
+
+            base.OnClosing(e);
+        }       
     }
 }

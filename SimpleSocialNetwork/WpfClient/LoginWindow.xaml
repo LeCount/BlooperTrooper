@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:WpfClient"
         mc:Ignorable="d"
         Title="Login" Height="250" Width="250"
-        ResizeMode="NoResize"
-        Closing="Window_Closing">
+        ResizeMode="NoResize">
 
     <Grid Margin="5">
         <Grid.RowDefinitions>

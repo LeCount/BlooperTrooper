@@ -195,8 +195,9 @@ namespace WpfClient
                     MessageBox.Show("Join response recieved");
                     break;
                 case TcpConst.LOGIN:
-                    MessageBox.Show("Login response Recieved");
-                    if (TcpMessageCode.ACCEPTED == (int)msg.data)
+                    LoginReply_data lrd = new LoginReply_data();
+                        lrd = (LoginReply_data)msg.data;
+                    if (TcpMessageCode.ACCEPTED == lrd.message_code)
                     {
                         MessageBox.Show("Logged in!");
                     }
