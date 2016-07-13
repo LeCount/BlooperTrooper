@@ -23,6 +23,8 @@ namespace WpfClient
         /// <summary>Thread responsible for connecting to the server.</summary>
         private Thread server_connect = null;
 
+        private Thread server_ping = null;
+
         /// <summary>Thread responsible for reading incoming messages on this client's socket.</summary>
         private Thread message_read = null;
 
@@ -36,6 +38,7 @@ namespace WpfClient
         private byte[] receive_buffer = new byte[TcpConst.BUFFER_SIZE];
 
         private bool connected = false;
+        private bool server_alive = false;
 
         private string serverIPAddress = TcpMethods.GetIP();
 
@@ -68,12 +71,41 @@ namespace WpfClient
                     tcp_client.Connect(IPAddress.Parse(serverIPAddress), TcpConst.SERVER_PORT);
                     client_stream = tcp_client.GetStream();
                     connected = true;
+
+                    server_ping = new Thread(ServerStatusPing);
+                    server_ping.Start();
+
                 }
 
                 catch (Exception)
                 {
                     MessageBox.Show("Server not available.");
                 }
+
+
+            }
+
+
+        }
+
+        private void ServerStatusPing()
+        {
+            while(true)
+            {
+                server_alive = false;
+                ClientMsg msg = new ClientMsg();
+                msg.type = TcpConst.PING;
+                Client_send(msg);
+
+                Thread.Sleep(5000);
+
+                if (!server_alive)
+                {
+                    connected = false;
+                    MessageBox.Show("Server Disconnected!");
+                }
+
+                MessageBox.Show("Server Heartbeat!");
             }
         }
 
@@ -123,6 +155,18 @@ namespace WpfClient
         {
             switch (msg.type)
             {
+                case TcpConst.PING:
+                    int a = (int)msg.data;
+                    if(a == TcpMessageCode.REPLY)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+
+                    break;
                 case TcpConst.JOIN:
                     MessageBox.Show("Join response recieved");
                     break;
