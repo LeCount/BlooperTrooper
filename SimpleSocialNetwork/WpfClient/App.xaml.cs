@@ -54,7 +54,7 @@ namespace WpfClient
 
             ClientMsg msg = new ClientMsg();
             msg.type = TcpConst.LOGIN;
-            msg.data = DataTransform.Serialize(loginData);
+            msg.data = (object)loginData;
 
             Client_send(msg);
 
@@ -74,7 +74,7 @@ namespace WpfClient
         
             ClientMsg msg = new ClientMsg();
             msg.type = TcpConst.JOIN;
-            msg.data = DataTransform.Serialize(j);
+            msg.data = (Object)j;
 
             Client_send(msg);
 
@@ -117,7 +117,7 @@ namespace WpfClient
                 PingRequest_data p = new PingRequest_data();
                 p.from = "Kalle";
                 msg.type = TcpConst.PING;
-                msg.data = DataTransform.Serialize(p);
+                msg.data = (Object)p;
                 Client_send(msg);
 
                 Thread.Sleep(5000);
