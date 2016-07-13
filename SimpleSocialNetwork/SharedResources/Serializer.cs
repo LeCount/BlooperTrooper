@@ -63,7 +63,7 @@ namespace SharedResources
                 bin_formater.Serialize(mem_stream, msg);
                 return mem_stream.ToArray();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
