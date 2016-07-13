@@ -151,16 +151,18 @@
 
         private void HandleJoinRequest(Object obj)
         {
-            ServerMsg reply = new ServerMsg();
-            reply.type = TcpConst.JOIN;
+            ServerMsg msg_reply = new ServerMsg();
+            msg_reply.type = TcpConst.JOIN;
+
             JoinRequest_data request_data = (JoinRequest_data)obj;
 
             JoinReply_data reply_data = new JoinReply_data();
 
             reply_data.message_code = ValidateJoinRequest(request_data);
-            reply.data = reply_data;
 
-            tcp_server.SendMessage(request_data.username, reply);
+            msg_reply.data = DataTransform.Serialize(reply_data.message_code);
+
+            tcp_server.SendMessage(request_data.username, msg_reply);
         }
 
         private int ValidateJoinRequest(JoinRequest_data data)
