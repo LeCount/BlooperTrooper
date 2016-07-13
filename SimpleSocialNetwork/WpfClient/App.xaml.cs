@@ -51,7 +51,7 @@ namespace WpfClient
 
             ClientMsg msg = new ClientMsg();
             msg.type = TcpConst.LOGIN;
-            msg.data = DataParser.Serializer(loginData);
+            msg.data = DataTransform.Serialize(loginData);
 
             Client_send(msg);
                    
@@ -148,7 +148,7 @@ namespace WpfClient
                 case TcpConst.GET_CLIENT_DATA:
 
                     break;
-                case TcpConst.SEND_MESSAGE:
+                case TcpConst.CHAT:
 
                     break;
                 default: break;
