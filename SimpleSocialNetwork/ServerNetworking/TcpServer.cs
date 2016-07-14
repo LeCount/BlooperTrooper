@@ -25,8 +25,6 @@ namespace ServerNetworking
         /// <summary>A thread for listening for clients that wants to connect.</summary>
         private Thread connect_listener = null;
 
-        private Thread ping_clients = null;
-
         /// <summary>A client TCP listener</summary>
         private TcpListener client_listener = null;
 
@@ -40,7 +38,7 @@ namespace ServerNetworking
         private List<Socket> all_active_client_sockets = new List<Socket>();
 
         /// <summary>A list/inbox of client messages. These can be read externally.</summary>
-        private ServerInbox inbox = new ServerInbox();
+        public ServerInbox inbox = new ServerInbox();
 
         /// <summary>A serializer for reading byte arrays into messages, and for writing messages into byte arrays.</summary>
         Serializer server_serializer = new Serializer();
@@ -59,9 +57,6 @@ namespace ServerNetworking
 
             connect_listener = new Thread(ListenForConnections);
             connect_listener.Start();
-
-            ping_clients = new Thread(PingSockets);
-            ping_clients.Start();
 
             Console.WriteLine(String.Format("Server is now listening for connections!"));
         }
@@ -109,8 +104,6 @@ namespace ServerNetworking
 
         private void AddSocketListener(Socket s)
         {
-           
-
             Thread socket_listener = new Thread(ListenOnSocket);
             socket_listener.Start(s);
 
@@ -131,8 +124,21 @@ namespace ServerNetworking
 
             while (true)
             {
-                if (s.Connected)
+                // Detect if client disconnected
+                if (s.Poll(0, SelectMode.SelectRead))
                 {
+                    byte[] buff = new byte[1];
+                    if (s.Receive(buff, SocketFlags.Peek) == 0)
+                    {
+                        // Client disconnected
+                        Console.WriteLine("A client disconnected...");
+                        all_active_client_sockets.Remove(s);
+                        s.Close();
+                        break;
+                    }
+                }
+                else
+                { 
                     try
                     {
                         num_of_bytes_read = s.Receive(receive_buffer);
@@ -186,24 +192,6 @@ namespace ServerNetworking
 
                     num_of_bytes_read = 0;
                 }
-                else
-                    s.Close();
-            }
-        }
-
-        private void PingSockets()
-        {
-            if(all_active_client_sockets != null && all_active_client_sockets.Count > 0)
-            {
-                foreach (Socket s in all_active_client_sockets)
-                {
-                    if(!s.Connected)
-                    {
-                        Console.WriteLine("A client disconnected...");
-                        s.Close();
-                        all_active_client_sockets.Remove(s);
-                    }
-                }
             }
         }
 
@@ -232,7 +220,15 @@ namespace ServerNetworking
         {
             byte[] byte_buffer = new byte[TcpConst.BUFFER_SIZE];
             byte_buffer = server_serializer.SerializeServerMsg(msg);
-            s.Send(byte_buffer);
+
+            try
+            {
+                s.Send(byte_buffer);
+            }
+            catch(ObjectDisposedException)
+            {
+                //The client has disconnected
+            }
         }
 
         public ClientMsg GetNextRequest()
@@ -282,23 +278,35 @@ namespace ServerNetworking
         }
     }
 
-    internal class ServerInbox
+    public class ServerInbox
     {
         private List<ClientMsg> list = new List<ClientMsg>();
 
-        internal ClientMsg Pop()
+        public bool Empty()
+        {
+            if (list.Count < 1)
+                return true;
+            else
+                return false;
+        }
+
+        public ClientMsg Pop()
         {
             ClientMsg next = null;
 
-            if (list.Count > 0 && list != null)
-            {
-                next = list.ElementAt(0);
-                list.RemoveAt(0);
-            }
+            Console.WriteLine(String.Format("About to pop next request..."));
+            next = list.First();
+            list.RemoveAt(list.IndexOf(list.First()));
+            Console.WriteLine(String.Format("Request poped !Current request count: {0}", list.Count));
 
             return next;
         }
 
-        internal void Push(ClientMsg msg) { list.Add(msg); }
+        public void Push(ClientMsg msg)
+        {
+            Console.WriteLine(String.Format("About to push new request..."));
+            list.Add(msg);
+            Console.WriteLine(String.Format("Request pushed! Current request count: {0}",list.Count));
+        }
     }
 }

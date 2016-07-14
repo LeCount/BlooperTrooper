@@ -46,9 +46,6 @@
         TcpServer tcp_server = null;
         private Thread get_next_request = null;
 
-        private Thread cached_user_cleaner = null;
-
-
         public ServerApp()
         {
             Console.WriteLine("HERP!");
@@ -69,11 +66,6 @@
 
             get_next_request = new Thread(executeRequests);
             get_next_request.Start();
-
-
-
-            cached_user_cleaner = new Thread(executeRequests);
-            cached_user_cleaner.Start();
         }
 
         private void executeRequests()
@@ -82,12 +74,17 @@
 
             while (true)
             {
-                next_request = tcp_server.GetNextRequest();
-
-                if (next_request == null)
-                    Thread.Sleep(100);
-                else
+                if (!tcp_server.inbox.Empty())
+                {
+                    next_request = tcp_server.GetNextRequest();
                     HandleClientRequest(next_request);
+                    Thread.Sleep(100);
+                }
+                else
+                {
+                    Thread.Sleep(1000);
+                }
+
             }
         }
 
@@ -205,7 +202,7 @@
             tcp_server.SendMessage(received_data.username, msg_to_send);
 
             //Add the user to the userlist on server
-            tcp_server.CacheUserInMemory(GetUserFromDB(received_data.username));
+            //tcp_server.CacheUserInMemory(GetUserFromDB(received_data.username));
 
         }
 
