@@ -199,6 +199,7 @@ namespace ServerNetworking
                 {
                     if(!s.Connected)
                     {
+                        Console.WriteLine("A client disconnected...");
                         s.Close();
                         all_active_client_sockets.Remove(s);
                     }
