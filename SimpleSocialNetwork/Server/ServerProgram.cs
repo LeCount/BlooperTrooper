@@ -46,7 +46,9 @@
         TcpServer tcp_server = null;
         private Thread get_next_request = null;
 
-        
+        private Thread cached_user_cleaner = null;
+
+
         public ServerApp()
         {
             Console.WriteLine("HERP!");
@@ -67,6 +69,11 @@
 
             get_next_request = new Thread(executeRequests);
             get_next_request.Start();
+
+
+
+            cached_user_cleaner = new Thread(executeRequests);
+            cached_user_cleaner.Start();
         }
 
         private void executeRequests()
@@ -96,9 +103,6 @@
                 case TcpConst.LOGIN:
 
                     HandleLoginRequest(msg.data);
-
-                    //Add the user to the userlist on server
-                    // networking.AddToUserList(GetUserFromDB(user.username));
 
                     break;
                 case TcpConst.LOGOUT:
@@ -141,6 +145,7 @@
         {
             User user = new User();
 
+            user.last_requested = DateTime.Today;
             user.name = username;
             user.mail = sqlite_database.GetMail(username);
             user.name = sqlite_database.GetName(username);
@@ -149,7 +154,7 @@
             user.interests = sqlite_database.GetInterest(username);
             user.friends = sqlite_database.GetFriends(username);
             user.wall = sqlite_database.GetEvents(username);
-
+            
             return user;
         }
 
@@ -198,6 +203,9 @@
             msg_to_send.data = (Object)data_to_send;
 
             tcp_server.SendMessage(received_data.username, msg_to_send);
+
+            //Add the user to the userlist on server
+            tcp_server.CacheUserInMemory(GetUserFromDB(received_data.username));
 
         }
 

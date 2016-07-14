@@ -25,6 +25,8 @@ namespace ServerNetworking
         /// <summary>A thread for listening for clients that wants to connect.</summary>
         private Thread connect_listener = null;
 
+        private Thread ping_clients = null;
+
         /// <summary>A client TCP listener</summary>
         private TcpListener client_listener = null;
 
@@ -57,6 +59,9 @@ namespace ServerNetworking
 
             connect_listener = new Thread(ListenForConnections);
             connect_listener.Start();
+
+            ping_clients = new Thread(PingSockets);
+            ping_clients.Start();
 
             Console.WriteLine(String.Format("Server is now listening for connections!"));
         }
@@ -144,15 +149,25 @@ namespace ServerNetworking
 
                         if (msg.type == TcpConst.PING)
                         {
-                            ServerMsg msg_to_send = new ServerMsg();
-                            msg_to_send.type = TcpConst.PING;
+                            Ping_data received_data = new Ping_data();
+                            received_data = (Ping_data)msg.data;
 
-                            PingReply_data data_to_send = new PingReply_data();
-                            data_to_send.message_code = TcpMessageCode.CONFIRMED;
+                            if (received_data.message_code == TcpMessageCode.REQUEST)
+                            {
+                                ServerMsg msg_to_send = new ServerMsg();
+                                msg_to_send.type = TcpConst.PING;
 
-                            msg_to_send.data = (Object)data_to_send;
+                                Ping_data data_to_send = new Ping_data();
+                                data_to_send.message_code = TcpMessageCode.REPLY;
+                                msg_to_send.data = (Object)data_to_send;
+                                SendMessageToSocket(msg_to_send, s);
+                            }
+                            else
+                            {
 
-                            SendMessageToSocket(msg_to_send, s);
+                                //client responded to ping: client is alive
+                            }
+
                         }
 
                         if (msg.type == TcpConst.JOIN)
@@ -165,6 +180,7 @@ namespace ServerNetworking
                         {
                             LoginRequest_data received_data = (LoginRequest_data)msg.data;
                             BindUserToSocket(s, received_data.username);
+
                         }
                     }
 
@@ -172,6 +188,21 @@ namespace ServerNetworking
                 }
                 else
                     s.Close();
+            }
+        }
+
+        private void PingSockets()
+        {
+            if(all_active_client_sockets != null && all_active_client_sockets.Count > 0)
+            {
+                foreach (Socket s in all_active_client_sockets)
+                {
+                    if(!s.Connected)
+                    {
+                        s.Close();
+                        all_active_client_sockets.Remove(s);
+                    }
+                }
             }
         }
 
@@ -215,14 +246,14 @@ namespace ServerNetworking
         }
 
         /// <summary>Add user to server user list, if user does not exist.</summary>
-        public void AddToUserList(User u)
+        public void CacheUserInMemory(User u)
         {
             if (!UserExistsInList(u.username))
                 users_data_list.Add(u);
         }
 
         /// <summary>Remove user from server user list, if user exists, and list isn't empty</summary>
-        public void RemoveUserFromList(String username)
+        public void RemoveCachedUser(String username)
         {
             if (users_data_list.Count > 0)
             {
