@@ -64,14 +64,13 @@ namespace SharedResources
         public int message_code { get; set; }
     }
 
-    /// <summary>A response to a ping request.</summary>
+    /// <summary>A ping request.</summary>
     [Serializable]
-    public class PingReply_data
+    public class Ping_data
     {
-        /// <summary>Code indicating the success or failure of the request.</summary>
-        public int message_code = TcpMessageCode.CONFIRMED;
+        /// <summary>Code indicating if message is a request or a reply</summary>
+        public int message_code = TcpMessageCode.REQUEST;
     }
-
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_users request.</summary>
     [Serializable]
@@ -192,7 +191,6 @@ namespace SharedResources
     public class User
     {
         public DateTime last_requested  { get; set; }
-        public bool online_status       { get; set; }
         public String username          { get; set; }
         public String password          { get; set; }
         public String name              { get; set; }
