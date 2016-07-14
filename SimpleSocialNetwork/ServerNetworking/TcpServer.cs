@@ -125,7 +125,7 @@ namespace ServerNetworking
             while (true)
             {
                 // Detect if client disconnected
-                if (s.Poll(0, SelectMode.SelectRead))
+                if (!s.Poll(0, SelectMode.SelectRead))
                 {
                     byte[] buff = new byte[1];
                     if (s.Receive(buff, SocketFlags.Peek) == 0)

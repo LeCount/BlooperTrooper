@@ -31,7 +31,7 @@ namespace WpfClient
         {
             // Close all threads in app
             ((App)Application.Current).App_Shutdown();
-
+            Environment.Exit(0);
             base.OnClosing(e);
         }
     }

@@ -285,6 +285,7 @@ namespace WpfClient
                 server_ping.Abort();
 
             tcp_client.Close();
+            
         }
     }
 
