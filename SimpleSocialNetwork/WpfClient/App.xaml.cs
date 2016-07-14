@@ -131,8 +131,11 @@ namespace WpfClient
             {
                 server_alive = false;
                 ClientMsg msg = new ClientMsg();
+                Ping_data pingdata = new Ping_data();
+                pingdata.message_code = TcpMessageCode.REQUEST;
 
                 msg.type = TcpConst.PING;
+                msg.data = pingdata;
 
                 Client_send(msg);
 
