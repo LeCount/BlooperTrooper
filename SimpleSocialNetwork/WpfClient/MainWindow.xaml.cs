@@ -26,5 +26,13 @@ namespace WpfClient
             InitializeComponent();
             
         }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            // Close all threads in app
+            ((App)Application.Current).App_Shutdown();
+
+            base.OnClosing(e);
+        }
     }
 }

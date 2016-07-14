@@ -21,23 +21,22 @@ namespace WpfClient
     {
         public RegisterWindow()
         {
-            if (App.JoinRequest(txtUsername.Text, txtPassword.Password, txtEmail.Text, txtFirstName.Text, txtLastName.Text, txtAbout.Text, txtInterests.Text))
-            {
-                MessageBox.Show("Registration Successful");
-                LoginWindow l = new LoginWindow();
-                l.Show();
-                this.Close();
-            }
+            
             InitializeComponent();
         }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            if (App.JoinRequest(txtUsername.Text, txtPassword.Password, txtEmail.Text, txtFirstName.Text, txtLastName.Text, txtAbout.Text, txtInterests.Text))
+            {
+                Close();
+            }
+            
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
+
             Close();
         }
     }

@@ -49,9 +49,8 @@ namespace WpfClient
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            //do my stuff before closing
+            // Close all threads in app
             ((App)Application.Current).App_Shutdown();
-
 
             base.OnClosing(e);
         }       
