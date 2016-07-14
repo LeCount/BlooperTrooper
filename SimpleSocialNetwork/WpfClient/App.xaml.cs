@@ -114,6 +114,7 @@ namespace WpfClient
 
                     server_ping = new Thread(ServerStatusPing);
                     server_ping.Start();
+
                 }
 
                 catch (Exception)
@@ -234,9 +235,7 @@ namespace WpfClient
                         lrd = (LoginReply_data)msg.data;
                     if (TcpMessageCode.ACCEPTED == lrd.message_code)
                     {
-                        MessageBox.Show("Logged in!");
                         logger.Info("User Logged in");
-
                     }
                     break;
                 case TcpConst.LOGOUT:
@@ -263,6 +262,7 @@ namespace WpfClient
 
         private void App_Startup(object sender, StartupEventArgs e)
         {
+            logger.Info("App is starting...");
             server_connect = new Thread(ConnectToServer);
             server_connect.Start();
 
@@ -276,12 +276,15 @@ namespace WpfClient
 
         public void App_Shutdown()
         {
+            logger.Info("App is shutting down.");
             if (server_connect.IsAlive)
                 server_connect.Abort();
             if (message_read.IsAlive)
                 message_read.Abort();
             if (server_ping.IsAlive)
                 server_ping.Abort();
+
+            tcp_client.Close();
         }
     }
 
