@@ -42,7 +42,7 @@ namespace WpfClient
 
         private string serverIPAddress = TcpMethods.GetIP();
 
-        private string current_username;
+        private static int registration_successful = 0;
 
         ///<summary>
         /// Login to server
@@ -65,6 +65,8 @@ namespace WpfClient
 
         public static bool JoinRequest(string username, string password, string email, string firstName, string lastName, string about, string interests)
         {
+            registration_successful = 0;
+
             JoinRequest_data j = new JoinRequest_data();
             j.password = password;
             j.username = username;
@@ -79,8 +81,21 @@ namespace WpfClient
             msg.data = (Object)j;
 
             Client_send(msg);
+            int i = 0;
 
-            return true;
+            // Wait for registration confirmation
+            while (registration_successful == 0 && i < 10)
+            {
+                Thread.Sleep(500);
+                i++;
+            }
+
+            if (registration_successful == 1)
+                return true;
+            else if (registration_successful == 0)
+                MessageBox.Show("Registration timeout");
+
+            return false;
         }
 
         /// <summary>Try until success to connect to the server.</summary>
@@ -96,17 +111,13 @@ namespace WpfClient
 
                     server_ping = new Thread(ServerStatusPing);
                     server_ping.Start();
-
                 }
 
                 catch (Exception)
                 {
                     MessageBox.Show("Server not available.");
                 }
-
-
             }
-
 
         }
 
@@ -121,7 +132,7 @@ namespace WpfClient
 
                 Client_send(msg);
 
-                Thread.Sleep(5000);
+                Thread.Sleep(10000);
                 
                 if (!server_alive)
                 {
@@ -130,12 +141,6 @@ namespace WpfClient
                 }
 
             }
-        }
-
-        public void ClientStop()
-        {
-            server_connect.Abort();
-            message_read.Abort();
         }
 
         /// <summary>Read messages from the server</summary>
@@ -155,7 +160,10 @@ namespace WpfClient
                 {
                     ServerMsg msg = s.DeserializeServerMsg(receive_buffer);
 
-                    HandleServerReplies(msg);
+                    if (msg != null)
+                    {
+                        HandleServerReplies(msg);
+                    }
 
                     numOfBytesRead = 0;
                 }
@@ -192,8 +200,21 @@ namespace WpfClient
 
                     break;
                 case TcpConst.JOIN:
-                    MessageBox.Show("Join response recieved");
+                    JoinReply_data joinreply = new JoinReply_data();
+                    joinreply = (JoinReply_data)msg.data;
+
+                    if (joinreply.message_code == TcpMessageCode.ACCEPTED)
+                    {
+                        registration_successful = 1;
+                        MessageBox.Show("Successfully Registered");
+                    }
+                    else
+                    {
+                        registration_successful = 2;
+                        MessageBox.Show("Registration Failed");
+                    }
                     break;
+
                 case TcpConst.LOGIN:
                     LoginReply_data lrd = new LoginReply_data();
                         lrd = (LoginReply_data)msg.data;
