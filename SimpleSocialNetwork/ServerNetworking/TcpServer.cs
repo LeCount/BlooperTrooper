@@ -294,19 +294,15 @@ namespace ServerNetworking
         {
             ClientMsg next = null;
 
-            Console.WriteLine(String.Format("About to pop next request..."));
             next = list.First();
             list.RemoveAt(list.IndexOf(list.First()));
-            Console.WriteLine(String.Format("Request poped !Current request count: {0}", list.Count));
 
             return next;
         }
 
         public void Push(ClientMsg msg)
         {
-            Console.WriteLine(String.Format("About to push new request..."));
             list.Add(msg);
-            Console.WriteLine(String.Format("Request pushed! Current request count: {0}",list.Count));
         }
     }
 }

@@ -99,9 +99,38 @@ namespace Program
             int occurrences = Convert.ToInt32(obj);
 
             if (occurrences > 0)
-                return false;
-            else
                 return true;
+            else
+                return false;
+        }
+
+        internal List<String> GetAllUsernames()
+        {
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "SELECT username FROM User";
+
+            string text = query.CommandText;
+
+            SQLiteDataReader reader = query.ExecuteReader();
+
+            List<String> all_users = new List<string>();
+
+            int i = 0;
+            try
+            {
+                while (reader.Read())
+                {
+                    all_users.Add(reader.GetString(i));
+                    i++;
+                }
+            }
+            catch (Exception) { }
+
+            reader.Close();
+            return all_users;
         }
 
         internal string GetMail(string username)

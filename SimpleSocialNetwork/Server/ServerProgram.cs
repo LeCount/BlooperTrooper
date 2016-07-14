@@ -5,7 +5,7 @@
     using System.Threading;
     using ServerNetworking;
     using SharedResources;
-
+    using System.Collections.Generic;
 
     public static class Entrypoint
     {
@@ -109,6 +109,9 @@
 
                     break;
                 case TcpConst.GET_USERS:
+
+                    HandleGetUsersRequest(msg.data);
+
                     break;
                 case TcpConst.ADD_FRIEND:
                     break;
@@ -165,9 +168,6 @@
             JoinReply_data data_to_send = new JoinReply_data();
             data_to_send.message_code = ValidateJoinRequest(received_data);
 
-            //if(reply_data.message_code == TcpMessageCode.ACCEPTED)
-            //    sqlite_database.AddNewUser(request_data.username, request_data.password)
-
             msg_to_send.data = (Object)data_to_send;
 
             tcp_server.SendMessage(received_data.username, msg_to_send);
@@ -175,15 +175,13 @@
 
         private int ValidateJoinRequest(JoinRequest_data data)
         {
-            //if (sqlite_database.EntryExistsInTable(data.username, "User", "user_id"))
-            //{
-            //    sqlite_database.AddNewUser(data.username, data.password, null);
-            //    return TcpMessageCode.ACCEPTED;
-            //}
-            //else
-            //    return TcpMessageCode.USER_EXISTS;
-
-            return TcpMessageCode.ACCEPTED;
+            if (sqlite_database.EntryExistsInTable(data.username, "User", "id_user"))
+                return TcpMessageCode.USER_EXISTS;
+            else
+            {
+                sqlite_database.AddNewUser(data.username, data.password, null);
+                return TcpMessageCode.ACCEPTED;
+            }
         }
 
         private void HandleLoginRequest(Object obj)
@@ -208,16 +206,41 @@
 
         private int ValidateLoginRequest(LoginRequest_data data)
         {
-            //if (!sqlite_database.EntryExistsInTable(data.username, "User", "username"))
-            //{
-            //    return TcpMessageCode.USER_DONT_EXISTS;
-            //}
-            //else if(!sqlite_database.EntryExistsInTable(data.password, "User", "password"))
-            //{
-            //    return TcpMessageCode.INCORRECT_PASSWORD;
-            //}
-            //else 
-            return TcpMessageCode.ACCEPTED;
+            if (!sqlite_database.EntryExistsInTable(data.username, "User", "username"))
+            {
+                return TcpMessageCode.USER_DONT_EXISTS;
+            }
+            else if (!sqlite_database.EntryExistsInTable(data.password, "User", "password"))
+            {
+                return TcpMessageCode.INCORRECT_PASSWORD;
+            }
+            else
+                return TcpMessageCode.ACCEPTED;
+        }
+
+        private void HandleGetUsersRequest(object obj)
+        {
+            GetUsersRequest_data received_data = (GetUsersRequest_data)obj;
+
+            List<String> all_usernames = GetAllUsersFromDB();
+
+            foreach(String u in all_usernames)
+            {
+                ServerMsg next_user = new ServerMsg();
+                next_user.type = TcpConst.GET_USERS;
+
+                GetUsersReply_data data_to_send = new GetUsersReply_data();
+
+                data_to_send.username = u;
+                next_user.data = (Object)data_to_send;
+
+                tcp_server.SendMessage(received_data.from, next_user);
+            }
+        }
+
+        private List<String> GetAllUsersFromDB()
+        {
+            return sqlite_database.GetAllUsernames();
         }
     }
 }

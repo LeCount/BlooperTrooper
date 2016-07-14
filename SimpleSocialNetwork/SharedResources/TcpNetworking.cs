@@ -305,7 +305,7 @@ namespace SharedResources
         public const int INVALID = -1;
 
         public const int SERVER_PORT = 8001;
-        public const string DATABASE_FILE = "serverDB.db";
+        public const string DATABASE_FILE = "..\\..\\serverDB.db";
         public const int BUFFER_SIZE = 1024 * 4;
 
         /// <summary>Convert an integer constant to its corresponding text.</summary>
