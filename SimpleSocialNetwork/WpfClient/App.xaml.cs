@@ -191,19 +191,21 @@ namespace WpfClient
             switch (msg.type)
             {
                 case TcpConst.PING:
-                    PingReply_data b = new PingReply_data();
-                    b = (PingReply_data)msg.data;
+                    Ping_data b = new Ping_data();
+                    b = (Ping_data)msg.data;
                    
-                    if(b.message_code == TcpMessageCode.CONFIRMED)
+                    if(b.message_code == TcpMessageCode.REPLY)
                     {
                         server_alive = true;
                     }
                     else
                     {
+                        logger.Info("Invalid Ping");
                         server_alive = false;
                     }
 
                     break;
+
                 case TcpConst.JOIN:
                     JoinReply_data joinreply = new JoinReply_data();
                     joinreply = (JoinReply_data)msg.data;
