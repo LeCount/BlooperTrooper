@@ -10,6 +10,7 @@ using System.Threading;
 using SharedResources;
 using System.Net;
 using System.Net.Sockets;
+using NLog;
 
 namespace WpfClient
 {
@@ -36,13 +37,15 @@ namespace WpfClient
 
         /// <summary>A byte-array based buffer, where incoming messages are stored.</summary>
         private byte[] receive_buffer = new byte[TcpConst.BUFFER_SIZE];
-
+        
+        /// <summary>Variables to set different connection states in the application</summary>
         private bool connected = false;
         private bool server_alive = false;
+        private static int registration_successful = 0;
 
         private string serverIPAddress = TcpMethods.GetIP();
 
-        private static int registration_successful = 0;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         ///<summary>
         /// Login to server
@@ -116,6 +119,7 @@ namespace WpfClient
                 catch (Exception)
                 {
                     MessageBox.Show("Server not available.");
+                    logger.Error("Server Disconnected");
                 }
             }
 
@@ -138,6 +142,7 @@ namespace WpfClient
                 {
                     connected = false;
                     MessageBox.Show("Server Disconnected!");
+                    logger.Error("Ping failed!");
                 }
 
             }
@@ -207,11 +212,15 @@ namespace WpfClient
                     {
                         registration_successful = 1;
                         MessageBox.Show("Successfully Registered");
+                        logger.Info("Successfully Registeded user");
+
                     }
                     else
                     {
                         registration_successful = 2;
                         MessageBox.Show("Registration Failed");
+                        logger.Info("Registration of user failed");
+
                     }
                     break;
 
@@ -221,6 +230,8 @@ namespace WpfClient
                     if (TcpMessageCode.ACCEPTED == lrd.message_code)
                     {
                         MessageBox.Show("Logged in!");
+                        logger.Info("User Logged in");
+
                     }
                     break;
                 case TcpConst.LOGOUT:
