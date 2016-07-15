@@ -12,9 +12,9 @@ namespace Program
         private SQLiteCommand query = null;
         private string dB_file;
 
-        internal SQLiteDB(string fiel)
+        internal SQLiteDB(string file)
         {
-                dB_file = fiel;
+                dB_file = file;
                 Connect();
         }
 
@@ -33,6 +33,24 @@ namespace Program
                 Console.ReadLine();
                 System.Environment.Exit(0);
             }
+
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+
+            query.CommandText = "SELECT username FROM User";
+
+            try
+            {
+                query.ExecuteScalar();
+            }
+            catch(Exception)
+            { 
+                // 'User'-table does not exist -> create tables 
+                query.CommandText = "CREATE TABLE 'User' ('id_user'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 'username' TEXT NOT NULL UNIQUE, 'password' TEXT NOT NULL, 'confirmation_code' TEXT";
+                query.ExecuteNonQuery();
+            }
+
+
         }
 
         public void Disconnect()
