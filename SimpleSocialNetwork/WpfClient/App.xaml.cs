@@ -121,6 +121,7 @@ namespace WpfClient
         public static bool GetUsersRequest()
         {
             session.users_list.Clear();
+            session.users_list_collected = false;
 
             GetUsersRequest_data request_data = new GetUsersRequest_data();
 
@@ -284,6 +285,13 @@ namespace WpfClient
                     udr = (GetUsersReply_data)msg.data;
                     session.AddUserToList(udr.username, udr.friend_status );
                     logger.Info("Added user {0}", udr.username);
+
+                    if (udr.no_more_users)
+                    {
+                        session.users_list_collected = true;
+                        // update list here
+                    }
+
                     break;
                 case TcpConst.ADD_FRIEND:
 

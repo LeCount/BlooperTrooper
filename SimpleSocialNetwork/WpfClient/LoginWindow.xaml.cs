@@ -27,8 +27,7 @@ namespace WpfClient
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
             if (App.LoginToServer(this.txtLogin.Text,this.txtPassword.Password)) {
-                MainWindow main = new MainWindow();
-                main.Show();
+                
                 this.Hide();
             }
             else

@@ -16,7 +16,7 @@ namespace WpfClient
         /// List to keep track of users in SSN
         /// </summary>
         public List<UserSimple> users_list = new List<UserSimple>();
-        public static bool users_list_collected;
+        public bool users_list_collected;
 
         private int registration = 0;
         /// <summary>User information in current session</summary>

@@ -30,7 +30,10 @@ namespace WpfClient
             lbUserList.Items.Refresh();
         }
 
-
+        public void UpdateUserList()
+        {
+            lbUserList.Items.Refresh();
+        }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
