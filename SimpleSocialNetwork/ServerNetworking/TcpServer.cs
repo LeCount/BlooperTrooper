@@ -32,7 +32,7 @@ namespace ServerNetworking
         private List<Thread> all_active_client_threads = new List<Thread>();
 
         /// <summary>List for keeping client's data in memory for easier access.</summary>
-        private List<User> users_data_list = new List<User>();
+        private List<User> cachedUsers = new List<User>();
 
         /// <summary>List containing all client sockets, assumed to be connected.</summary>
         private List<Socket> all_active_client_sockets = new List<Socket>();
@@ -50,7 +50,7 @@ namespace ServerNetworking
             if (ipAddr == null || port == null)
                 SetDefaultServerSettings();
 
-            Console.WriteLine(String.Format("Server is now running! Port: {0}, Ip: {1}", port, ipAddr));
+            Console.WriteLine(String.Format("Server is now running. Port: {0}, Ip: {1}", port, ipAddr));
 
             client_listener = new TcpListener(IPAddress.Parse(ipAddr), Int32.Parse(port));
             client_listener.Start();
@@ -58,7 +58,7 @@ namespace ServerNetworking
             connect_listener = new Thread(ListenForConnections);
             connect_listener.Start();
 
-            Console.WriteLine(String.Format("Server is now listening for connections!"));
+            Console.WriteLine("Server is now listening for connections. \n");
         }
 
         public void StopServer()
@@ -93,12 +93,7 @@ namespace ServerNetworking
 
                 ServerMsg reply = new ServerMsg();
 
-                Console.WriteLine(String.Format("Client connection occurred."));
-
-                reply.data = "Hi from mr Boaty Mc Boatface!";
-                reply.type = TcpConst.CONNECT;
-
-                SendMessageToSocket(reply, s);
+                Console.WriteLine(String.Format("Client connection occurred. \n"));
             }
         }
 
@@ -108,14 +103,10 @@ namespace ServerNetworking
             socket_listener.Start(s);
 
             all_active_client_threads.Add(socket_listener);
-
-            Console.WriteLine("Socketlistener added for client!");
         }
 
         private void ListenOnSocket(object client_socket)
         {
-            Console.WriteLine("Awaiting messages on new socket...");
-
             List<ClientMsg> request_list = new List<ClientMsg>();
 
             Socket s = (Socket)client_socket;
@@ -131,7 +122,7 @@ namespace ServerNetworking
                     if (s.Receive(buff, SocketFlags.Peek) == 0)
                     {
                         // Client disconnected
-                        Console.WriteLine("A client disconnected...");
+                        Console.WriteLine("A client disconnected...\n");
                         all_active_client_sockets.Remove(s);
                         s.Close();
                         break;
@@ -149,7 +140,7 @@ namespace ServerNetworking
                     {
                         ClientMsg msg = server_serializer.DeserializeClientMsg(receive_buffer);
 
-                        Console.WriteLine(String.Format("new message received of type: {0}", TcpConst.IntToText(msg.type)));
+                        Console.WriteLine(String.Format("Message received: {0} \n", TcpConst.IntToText(msg.type)));
 
                         inbox.Push(msg);
 
@@ -158,22 +149,13 @@ namespace ServerNetworking
                             Ping_data received_data = new Ping_data();
                             received_data = (Ping_data)msg.data;
 
-                            if (received_data.message_code == TcpMessageCode.REQUEST)
-                            {
-                                ServerMsg msg_to_send = new ServerMsg();
-                                msg_to_send.type = TcpConst.PING;
+                            ServerMsg msg_to_send = new ServerMsg();
+                            msg_to_send.type = TcpConst.PING;
 
-                                Ping_data data_to_send = new Ping_data();
-                                data_to_send.message_code = TcpMessageCode.REPLY;
-                                msg_to_send.data = (Object)data_to_send;
-                                SendMessageToSocket(msg_to_send, s);
-                            }
-                            else
-                            {
-
-                                //client responded to ping: client is alive
-                            }
-
+                            Ping_data data_to_send = new Ping_data();
+                            data_to_send.message_code = TcpMessageCode.REPLY;
+                            msg_to_send.data = (Object)data_to_send;
+                            SendMessageToSocket(msg_to_send, s);
                         }
 
                         if (msg.type == TcpConst.JOIN)
@@ -186,7 +168,6 @@ namespace ServerNetworking
                         {
                             LoginRequest_data received_data = (LoginRequest_data)msg.data;
                             BindUserToSocket(s, received_data.username);
-
                         }
                     }
 
@@ -224,6 +205,7 @@ namespace ServerNetworking
             try
             {
                 s.Send(byte_buffer);
+                Console.WriteLine(String.Format("Message sent:     {0} \n", TcpConst.IntToText(msg.type)));
             }
             catch(ObjectDisposedException)
             {
@@ -243,31 +225,31 @@ namespace ServerNetworking
         }
 
         /// <summary>Add user to server user list, if user does not exist.</summary>
-        public void CacheUserInMemory(User u)
+        public void CacheUser(User u)
         {
-            if (!UserExistsInList(u.username))
-                users_data_list.Add(u);
+            if (!UserIsCached(u.username))
+                cachedUsers.Add(u);
         }
 
         /// <summary>Remove user from server user list, if user exists, and list isn't empty</summary>
         public void RemoveCachedUser(String username)
         {
-            if (users_data_list.Count > 0)
+            if (cachedUsers.Count > 0)
             {
-                foreach (User u in users_data_list)
+                foreach (User u in cachedUsers)
                 {
                     if (u.name.Equals(username))
-                        users_data_list.Remove(u);
+                        cachedUsers.Remove(u);
                 }
             }
         }
 
         /// <summary>Check if server users list contains a specific user (by username)</summary>
-        public bool UserExistsInList(String username)
+        public bool UserIsCached(String username)
         {
-            if (users_data_list.Count > 0)
+            if (cachedUsers.Count > 0)
             {
-                foreach (User u in users_data_list)
+                foreach (User u in cachedUsers)
                 {
                     if (u.name.Equals(username))
                         return true;

@@ -16,9 +16,9 @@ namespace SharedResources
         public ClientMsg()
         {
             type = TcpConst.INVALID;
-            data = null;
+            data = new Object();
         }
-    }
+    }   
 
     /// <summary>Message to be sent from server, and received on client</summary>
     [Serializable]
@@ -34,7 +34,7 @@ namespace SharedResources
         public ServerMsg()
         {
             type = TcpConst.INVALID;
-            data = null;
+            data = new Object();
         }
     }
 }

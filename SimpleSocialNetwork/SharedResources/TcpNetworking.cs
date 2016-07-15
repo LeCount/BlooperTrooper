@@ -86,6 +86,9 @@ namespace SharedResources
     {
         /// <summary>One of the available users in the social network.</summary>
         public String username { get; set; }
+
+        /// <summary>Indication on whether you and this user are friends or not.</summary>
+        public bool friend_status { get; set; }
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_friends_status request.</summary>

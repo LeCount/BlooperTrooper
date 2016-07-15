@@ -48,7 +48,6 @@
 
         public ServerApp()
         {
-            Console.WriteLine("HERP!");
             Init(null, null);
         }
 
@@ -175,7 +174,7 @@
 
         private int ValidateJoinRequest(JoinRequest_data data)
         {
-            if (sqlite_database.EntryExistsInTable(data.username, "User", "id_user"))
+            if ( sqlite_database.EntryExistsInTable(data.username, "User", "username") )
                 return TcpMessageCode.USER_EXISTS;
             else
             {
@@ -232,10 +231,21 @@
                 GetUsersReply_data data_to_send = new GetUsersReply_data();
 
                 data_to_send.username = u;
-                next_user.data = (Object)data_to_send;
 
+                if(AreFriends(u, received_data.from))
+                    data_to_send.friend_status = true;
+                else
+                    data_to_send.friend_status = false;
+
+                next_user.data = (Object)data_to_send;
                 tcp_server.SendMessage(received_data.from, next_user);
             }
+        }
+
+        private bool AreFriends(string username_1, string username_2)
+        {
+            return false;
+            //return sqlite_database.CheckFriendStatus(username_1, username_2);
         }
 
         private List<String> GetAllUsersFromDB()
