@@ -24,6 +24,7 @@ namespace WpfClient
         public MainWindow()
         {
             InitializeComponent();
+            App.GetUsersRequest();
         }
 
 
