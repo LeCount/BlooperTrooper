@@ -41,7 +41,11 @@ namespace WpfClient
         /// <summary>Variables to set different connection states in the application</summary>
         private bool connected = false;
         private bool server_alive = false;
-        private static int registration_successful = 0;
+
+        /// <summary>Session class to keep track of current session</summary>
+        private static Session session = new Session();
+        /// <summary>Application main window</summary>
+        private static LoginWindow login = new LoginWindow();
 
         private string serverIPAddress = TcpMethods.GetIP();
 
@@ -52,6 +56,7 @@ namespace WpfClient
         ///</summary>
         public static bool LoginToServer(string username, string password)
         {
+            session.SetCurrentUsername(username);
             LoginRequest_data loginData = new LoginRequest_data();
 
             loginData.password = password;
@@ -66,9 +71,17 @@ namespace WpfClient
             return true;
         }
 
+        public static bool LogoutServer()
+        {
+            session.SetLoggedOut();
+            login.Show();
+            
+            return true;
+        }
+
         public static bool JoinRequest(string username, string password, string email, string firstName, string lastName, string about, string interests)
         {
-            registration_successful = 0;
+            session.SetRegistrationNotSet();
 
             JoinRequest_data j = new JoinRequest_data();
             j.password = password;
@@ -84,21 +97,42 @@ namespace WpfClient
             msg.data = (Object)j;
 
             Client_send(msg);
-            int i = 0;
 
             // Wait for registration confirmation
-            while (registration_successful == 0 && i < 10)
+            for (int i=0;  session.GetRegistrationStatus() == Session.REGISTRATION_NOTSET && i < 10; i++)
             {
+                if (session.GetRegistrationStatus() == Session.REGISTRATION_SUCCESS)
+                    return true;
+
+                else if (session.GetRegistrationStatus() == Session.REGISTRATION_FAILED)
+                {
+                    MessageBox.Show("Registration failed");
+                    return false;
+                }
+                    
                 Thread.Sleep(500);
-                i++;
             }
 
-            if (registration_successful == 1)
-                return true;
-            else if (registration_successful == 0)
-                MessageBox.Show("Registration timeout");
+            MessageBox.Show("Registration Timeout");
 
             return false;
+        }
+
+        public static bool GetUsersRequest()
+        {
+            session.users_list.Clear();
+
+            GetUsersRequest_data request_data = new GetUsersRequest_data();
+
+            request_data.from = session.GetCurrentUsername();
+
+            ClientMsg msg = new ClientMsg();
+            msg.type = TcpConst.GET_USERS;
+            msg.data = (object)request_data;
+
+            Client_send(msg);
+
+            return true;
         }
 
         /// <summary>Try until success to connect to the server.</summary>
@@ -120,7 +154,7 @@ namespace WpfClient
                 catch (Exception)
                 {
                     MessageBox.Show("Server not available.");
-                    logger.Error("Server Disconnected");
+                    logger.Error("App.ConnectToServer(): Server Disconnected");
                 }
             }
 
@@ -216,14 +250,14 @@ namespace WpfClient
 
                     if (joinreply.message_code == TcpMessageCode.ACCEPTED)
                     {
-                        registration_successful = 1;
+                        session.SetRegistrationSuccessful();
                         MessageBox.Show("Successfully Registered");
                         logger.Info("Successfully Registeded user");
 
                     }
                     else
                     {
-                        registration_successful = 2;
+                        session.SetRegistrationFailed();
                         MessageBox.Show("Registration Failed");
                         logger.Info("Registration of user failed");
 
@@ -232,9 +266,10 @@ namespace WpfClient
 
                 case TcpConst.LOGIN:
                     LoginReply_data lrd = new LoginReply_data();
-                        lrd = (LoginReply_data)msg.data;
+                    lrd = (LoginReply_data)msg.data;
                     if (TcpMessageCode.ACCEPTED == lrd.message_code)
                     {
+                        session.SetLoggedIn();
                         logger.Info("User Logged in");
                     }
                     break;
@@ -242,7 +277,9 @@ namespace WpfClient
 
                     break;
                 case TcpConst.GET_USERS:
-
+                    GetUsersReply_data udr = new GetUsersReply_data();
+                    udr = (GetUsersReply_data)msg.data;
+                    session.AddUserToList(udr.username, udr.friend_status );
                     break;
                 case TcpConst.ADD_FRIEND:
 
@@ -269,8 +306,9 @@ namespace WpfClient
             message_read = new Thread(ClientRead);
             message_read.Start();
 
+            
+
             // Show login window
-            LoginWindow login = new LoginWindow();
             login.Show();
         }
 

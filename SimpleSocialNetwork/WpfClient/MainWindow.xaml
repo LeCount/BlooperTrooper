@@ -21,7 +21,7 @@
             </Grid.RowDefinitions>
             <TextBlock Height="40" VerticalAlignment="Top" Padding="10" Background="Black" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Friends</TextBlock>
             <Button x:Name="btnAddFriend" Height="40" BorderThickness="0" Background="#FFE8E8E8" Grid.Row="2">Add Friend</Button>
-            <Button x:Name="btnLogOut" Height="40" Background="#FFE8E8E8" Grid.Row="3">Log out</Button>
+            <Button x:Name="btnLogOut" Height="40" Background="#FFE8E8E8" Grid.Row="3" Click="btnLogOut_Click">Log out</Button>
         </Grid>
     </Grid>
 </Window>

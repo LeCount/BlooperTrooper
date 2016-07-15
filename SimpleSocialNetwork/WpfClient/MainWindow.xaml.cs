@@ -24,8 +24,9 @@ namespace WpfClient
         public MainWindow()
         {
             InitializeComponent();
-            
         }
+
+
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
@@ -33,6 +34,12 @@ namespace WpfClient
             ((App)Application.Current).App_Shutdown();
             Environment.Exit(0);
             base.OnClosing(e);
+        }
+
+        private void btnLogOut_Click(object sender, RoutedEventArgs e)
+        {
+            App.LogoutServer();
+            Hide();
         }
     }
 }
