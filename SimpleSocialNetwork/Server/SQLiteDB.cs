@@ -78,7 +78,14 @@ namespace Program
 
             string text = query.CommandText;
 
-            query.ExecuteNonQuery();
+            try
+            {
+                query.ExecuteNonQuery();
+            }
+            catch (SQLiteException)
+            {
+                Console.WriteLine("Could not add new user. The database has been configured incorrectly.");
+            }
         }
 
         internal bool EntryExistsInTable(string entry, string table, string column)
@@ -87,13 +94,11 @@ namespace Program
             query = new SQLiteCommand();
             query.Connection = DBconnection;
 
-            SQLiteParameter param = new SQLiteParameter("@ENTRY", DbType.String) { Value = entry };
+            SQLiteParameter param0 = new SQLiteParameter("@ENTRY", DbType.String) { Value = entry };
 
-            query.Parameters.Add(param);
+            query.Parameters.Add(param0);
 
-            query.CommandText = "SELECT COUNT (" + column.ToString() + ") FROM " + table.ToString() + " WHERE " + column.ToString() + " = @ENTRY";
-
-            string text = query.CommandText;
+            query.CommandText = "SELECT count(*) FROM " + table + " WHERE " + column + " = @ENTRY";
 
             object obj = query.ExecuteScalar();
             int occurrences = Convert.ToInt32(obj);
@@ -119,15 +124,13 @@ namespace Program
             List<String> all_users = new List<string>();
 
             int i = 0;
-            try
+
+            while (reader.Read())
             {
-                while (reader.Read())
-                {
-                    all_users.Add(reader.GetString(i));
-                    i++;
-                }
+                all_users.Add(reader.GetString(i));
+                i++;
             }
-            catch (Exception) { }
+
 
             reader.Close();
             return all_users;
@@ -164,6 +167,11 @@ namespace Program
         }
 
         internal List<string> GetFriends(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool CheckFriendStatus(string username_1, string username_2)
         {
             throw new NotImplementedException();
         }
