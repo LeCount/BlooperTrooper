@@ -21,10 +21,13 @@ namespace WpfClient
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
             App.GetUsersRequest();
+            lbUserList.ItemsSource = App.session.users_list;
+            lbUserList.Items.Refresh();
         }
 
 

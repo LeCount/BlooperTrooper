@@ -43,7 +43,7 @@ namespace WpfClient
         private bool server_alive = false;
 
         /// <summary>Session class to keep track of current session</summary>
-        private static Session session = new Session();
+        public static Session session = new Session();
         /// <summary>Application main window</summary>
         private static LoginWindow login = new LoginWindow();
 
@@ -131,6 +131,9 @@ namespace WpfClient
             msg.data = (object)request_data;
 
             Client_send(msg);
+
+            // change to list check
+            Thread.Sleep(5000);
 
             return true;
         }
@@ -306,8 +309,6 @@ namespace WpfClient
 
             message_read = new Thread(ClientRead);
             message_read.Start();
-
-            
 
             // Show login window
             login.Show();

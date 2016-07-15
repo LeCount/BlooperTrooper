@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WpfClient
 {
-    class Session
+    public class Session
     {
         public const int REGISTRATION_FAILED = 0;
         public const int REGISTRATION_SUCCESS = 1;
@@ -16,6 +16,7 @@ namespace WpfClient
         /// List to keep track of users in SSN
         /// </summary>
         public List<UserSimple> users_list = new List<UserSimple>();
+        public static bool users_list_collected;
 
         private int registration = 0;
         /// <summary>User information in current session</summary>
@@ -65,14 +66,15 @@ namespace WpfClient
         {
             UserSimple u = new UserSimple();
             u.username = username;
-            u.friend = friend;
+            if (friend)
+                u.friend = "green";
             users_list.Add(u);
         }
     }
 
-    class UserSimple
+    public class UserSimple
     {
         public string username = "";
-        public bool friend = false;
+        public string friend = "gray";
     }
 }
