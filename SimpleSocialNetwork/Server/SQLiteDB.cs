@@ -44,13 +44,59 @@ namespace Program
                 query.ExecuteScalar();
             }
             catch(Exception)
-            { 
-                // 'User'-table does not exist -> create tables 
-                query.CommandText = "CREATE TABLE 'User' ('id_user'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 'username' TEXT NOT NULL UNIQUE, 'password' TEXT NOT NULL, 'confirmation_code' TEXT";
+            {
+                // Tables does not exist -> create the tables 
+                query.CommandText = "CREATE TABLE User(" + 
+                                    "id_user INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
+                                    "username TEXT NOT NULL UNIQUE," +
+                                    "password TEXT NOT NULL," +
+                                    "confirmation_code TEXT" +
+                                    ")";
+                query.ExecuteNonQuery();
+
+                query.CommandText = "CREATE TABLE Contact(" +
+                                    "id_user INTEGER NOT NULL PRIMARY KEY UNIQUE," +
+                                    "mail TEXT NOT NULL," +
+                                    "name TEXT," +
+                                    "surname TEXT," +
+                                    "FOREIGN KEY(`id_user`) REFERENCES User(id_user)" +
+                                    ")";
+                query.ExecuteNonQuery();
+
+                query.CommandText = "CREATE TABLE Info(" +
+                                    "id_user INTEGER NOT NULL PRIMARY KEY UNIQUE," +
+                                    "about TEXT," +
+                                    "interests TEXT," +
+                                    "FOREIGN KEY(`id_user`) REFERENCES User(id_user)" +
+                                    ")";
+                query.ExecuteNonQuery();
+
+                query.CommandText = "CREATE TABLE Relation(" +
+                                    "id_relationship INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
+                                    "id_user1 INTEGER NOT NULL," +
+                                    "id_user2 INTEGER NOT NULL," +
+                                    "FOREIGN KEY(`id_user1`) REFERENCES User(id_user)," +
+                                    "FOREIGN KEY(`id_user2`) REFERENCES User(id_user)" +
+                                    ")";
+                query.ExecuteNonQuery();
+
+                query.CommandText = "CREATE TABLE Ip(" +
+                                    "id_ip INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
+                                    "id_user INTEGER NOT NULL," +
+                                    "ip_addr TEXT NOT NULL," +
+                                    "name TEXT," +
+                                    "FOREIGN KEY(`id_user`) REFERENCES User(id_user)" +
+                                    ")";
+                query.ExecuteNonQuery();
+
+                query.CommandText = "CREATE TABLE Event(" +
+                                    "id_user INTEGER NOT NULL," +
+                                    "text TEXT," +
+                                    "date TEXT," +
+                                    "FOREIGN KEY(`id_user`) REFERENCES User(id_user)" +
+                                    ")";
                 query.ExecuteNonQuery();
             }
-
-
         }
 
         public void Disconnect()
