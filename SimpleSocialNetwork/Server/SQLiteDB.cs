@@ -141,12 +141,10 @@ namespace Program
 
             List<String> all_users = new List<string>();
 
-            int i = 0;
 
-            while (reader.Read())
+            while(reader.Read())
             {
-                all_users.Add(reader.GetString(i));
-                i++;
+                all_users.Add(reader.GetString(0));
             }
 
 

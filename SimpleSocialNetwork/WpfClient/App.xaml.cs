@@ -280,6 +280,7 @@ namespace WpfClient
                     GetUsersReply_data udr = new GetUsersReply_data();
                     udr = (GetUsersReply_data)msg.data;
                     session.AddUserToList(udr.username, udr.friend_status );
+                    logger.Info("Added user {0}", udr.username);
                     break;
                 case TcpConst.ADD_FRIEND:
 

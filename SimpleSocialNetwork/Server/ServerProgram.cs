@@ -239,6 +239,8 @@
 
                 next_user.data = (Object)data_to_send;
                 tcp_server.SendMessage(received_data.from, next_user);
+
+                Thread.Sleep(50);
             }
         }
 
