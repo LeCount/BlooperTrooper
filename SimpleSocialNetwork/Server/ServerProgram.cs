@@ -223,19 +223,24 @@
 
             List<String> all_usernames = GetAllUsersFromDB();
 
-            foreach(String u in all_usernames)
+            for(int i=0; i<all_usernames.Count; i++)
             {
                 ServerMsg next_user = new ServerMsg();
                 next_user.type = TcpConst.GET_USERS;
 
                 GetUsersReply_data data_to_send = new GetUsersReply_data();
 
-                data_to_send.username = u;
+                data_to_send.username = all_usernames.ElementAt(i);
 
-                if(AreFriends(u, received_data.from))
+                if(AreFriends(all_usernames.ElementAt(i), received_data.from))
                     data_to_send.friend_status = true;
                 else
                     data_to_send.friend_status = false;
+
+                if (i == all_usernames.Count - 1)
+                    data_to_send.no_more_users = true;
+                else
+                    data_to_send.no_more_users = false;
 
                 next_user.data = (Object)data_to_send;
                 tcp_server.SendMessage(received_data.from, next_user);

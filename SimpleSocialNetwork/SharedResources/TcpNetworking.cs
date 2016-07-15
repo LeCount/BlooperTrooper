@@ -89,6 +89,9 @@ namespace SharedResources
 
         /// <summary>Indication on whether you and this user are friends or not.</summary>
         public bool friend_status { get; set; }
+
+        /// <summary>Indication on whether there are any more users to send.</summary>
+        public bool no_more_users { get; set; }
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_friends_status request.</summary>
