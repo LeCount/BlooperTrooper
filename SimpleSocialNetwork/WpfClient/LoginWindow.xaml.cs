@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace WpfClient
 {
@@ -19,16 +9,20 @@ namespace WpfClient
     /// </summary>
     public partial class LoginWindow : Window
     {
+        private App wpf_app = null;
+
         public LoginWindow()
         {
             InitializeComponent();
+            wpf_app = (App)Application.Current;
         }
 
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
-            if (App.LoginToServer(this.txtLogin.Text,this.txtPassword.Password)) {
-                MainWindow main = new MainWindow();
-                main.Show();
+            if (wpf_app.LoginToServer(this.txtLogin.Text,this.txtPassword.Password))
+            {
+                wpf_app.main_window.initUserList(wpf_app);
+                wpf_app.main_window.Show();
                 this.Hide();
             }
             else
@@ -50,7 +44,7 @@ namespace WpfClient
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             // Close all threads in app
-            ((App)Application.Current).App_Shutdown();
+            wpf_app.AppShutdown();
             Environment.Exit(0);
             base.OnClosing(e);
         }       

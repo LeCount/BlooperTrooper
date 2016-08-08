@@ -1,18 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using SharedResources;
 
 namespace WpfClient
 {
@@ -22,28 +9,43 @@ namespace WpfClient
     public partial class MainWindow : Window
     {
 
+        private App wpf_app = null;
+
         public MainWindow()
         {
             InitializeComponent();
-            App.GetUsersRequest();
-            lbUserList.ItemsSource = App.session.users_list;
-            lbUserList.Items.Refresh();
+            wpf_app = (App)Application.Current;
         }
-
-
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             // Close all threads in app
-            ((App)Application.Current).App_Shutdown();
+            wpf_app.AppShutdown();
             Environment.Exit(0);
             base.OnClosing(e);
         }
 
         private void btnLogOut_Click(object sender, RoutedEventArgs e)
         {
-            App.LogoutServer();
+            wpf_app.LogoutServer();
             Hide();
         }
+
+        public void initUserList(App application)
+        {
+            lbUserList.ItemsSource = application.session.users_list;
+            application.RequestAllAvailableUsers();
+            lbUserList.Items.Refresh();
+        }
+
+        public void RefreshUserList()
+        {
+            Dispatcher.Invoke(new Action(delegate ()
+            {
+                lbUserList.Items.Refresh();
+            }
+            ));
+        }
+
     }
 }

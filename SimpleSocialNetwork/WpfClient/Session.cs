@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace WpfClient
         public const int REGISTRATION_SUCCESS = 1;
         public const int REGISTRATION_NOTSET = -1;
 
+        private int grubb { set; get; }
         /// <summary>
         /// List to keep track of users in SSN
         /// </summary>
@@ -21,12 +23,12 @@ namespace WpfClient
         private int registration = 0;
         /// <summary>User information in current session</summary>
         private string current_username = "";
-        private bool logged_in = false;
+        private int logged_in = 0; // 0 not set, -1 false, 1 true
 
         public int GetRegistrationStatus()
         {
             return registration;
-        }
+        } 
         public void SetRegistrationFailed()
         {
             registration = REGISTRATION_FAILED;
@@ -51,15 +53,19 @@ namespace WpfClient
 
         public void SetLoggedIn()
         {
-            logged_in = true;
+            logged_in = 1;
         }
         public void SetLoggedOut()
         {
-            logged_in = false;
+            logged_in = -1;
         }
-        public bool GetLoggedInStatus()
+        public int GetLoggedInStatus()
         {
             return logged_in;
+        }
+        public void SetLoggedInStatus(int status)
+        {
+            logged_in = status;
         }
 
         public void AddUserToList(string username, bool friend)
@@ -69,12 +75,13 @@ namespace WpfClient
             if (friend)
                 u.friend = "green";
             users_list.Add(u);
+
         }
     }
 
     public class UserSimple
     {
         public string username = "";
-        public string friend = "gray";
+        public string friend = "red";
     }
 }

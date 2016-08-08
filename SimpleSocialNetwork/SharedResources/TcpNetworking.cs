@@ -305,8 +305,9 @@ namespace SharedResources
         public const int UPDATE = 7;
         public const int GET_CLIENT_DATA = 8;
         public const int CHAT = 9;
-        public const int GET_WALL = 10;
-        public const int PING = 11;
+        public const int ADD_EVENT = 10;
+        public const int GET_WALL = 11;
+        public const int PING = 12;
 
         public const int INVALID = -1;
 
@@ -330,8 +331,9 @@ namespace SharedResources
                 case 7: return "UPDATE";
                 case 8: return "GET CLIENT DATA";
                 case 9: return "CHAT";
-                case 10: return "GET_WALL";
-                case 11: return "PING";
+                case 10: return "ADD EVENT";
+                case 11: return "GET_WALL";
+                case 12: return "PING";
                 default: return "INVALID";
             }
         }

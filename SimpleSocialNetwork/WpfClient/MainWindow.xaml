@@ -23,9 +23,9 @@
             <ListBox Name="lbUserList" Grid.Row="1">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Height="30px" Background="Aqua">
+                        <Grid Height="30px">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="100" />
                                 <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding username}" Foreground="Black"  />
