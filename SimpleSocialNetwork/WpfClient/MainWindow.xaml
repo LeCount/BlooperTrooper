@@ -28,8 +28,8 @@
                                 <ColumnDefinition Width="100" />
                                 <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding username}" Foreground="Black"  />
-                            <TextBlock Background="{Binding friend}" Grid.Column="1" />
+                            <TextBlock Text="{Binding Username}" Foreground="Black"  />
+                            <TextBlock Grid.Column="1" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

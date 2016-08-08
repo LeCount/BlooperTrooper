@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Threading;
+
+//To bind a collor to an bool:
+//http://www.wpf-tutorial.com/data-binding/value-conversion-with-ivalueconverter/
 
 namespace WpfClient
 {
@@ -17,7 +20,7 @@ namespace WpfClient
         /// <summary>
         /// List to keep track of users in SSN
         /// </summary>
-        public List<UserSimple> users_list = new List<UserSimple>();
+        public ObservableCollection<UserSimple> users_list = new ObservableCollection<UserSimple>();
         public bool users_list_collected;
 
         private int registration = 0;
@@ -71,17 +74,53 @@ namespace WpfClient
         public void AddUserToList(string username, bool friend)
         {
             UserSimple u = new UserSimple();
-            u.username = username;
-            if (friend)
-                u.friend = "green";
-            users_list.Add(u);
+            u.Username = username;
 
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => this.users_list.Add(u)));
         }
     }
 
-    public class UserSimple
+    public class UserSimple : INotifyPropertyChanged
     {
-        public string username = "";
-        public string friend = "red";
+        private string username = "";
+        public string Username
+        {
+            get
+            {
+                return username;
+            }
+
+            set
+            {
+                username = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string friend = "red";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public string Friend
+        {
+            get
+            {
+                return friend;
+            }
+
+            set
+            {
+                friend = value;
+                NotifyPropertyChanged();
+            }
+        }
     }
 }
