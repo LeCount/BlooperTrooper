@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace WpfClient
 {
@@ -45,16 +44,9 @@ namespace WpfClient
             ));
         }
 
-        private void lbUserList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void lbUserList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            ListBox lbx = sender as ListBox;
-            //MessageBox.Show( "   You selected " + ((UserSimple)lbx.SelectedItem).Username + ".");
-        }
 
-        private void btnAddFriend_Click(object sender, RoutedEventArgs e)
-        {
-            string selected_user = ((UserSimple)lbUserList.SelectedItem).Username;
-            MessageBox.Show(selected_user);
         }
     }
 }

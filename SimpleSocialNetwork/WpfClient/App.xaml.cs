@@ -135,6 +135,14 @@ namespace WpfClient
             return true;
         }
 
+        public bool AddFriendRequest(string username)
+        {
+            
+
+
+            return true;
+        }
+
         /// <summary>Depending on the reply that was received, handle it accordingly. </summary>
         /// <param name="msg">Received message.</param>
         private void HandleServerReplies(ServerMsg msg)

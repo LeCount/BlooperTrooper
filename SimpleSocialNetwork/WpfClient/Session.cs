@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Threading;
 
 //To bind a collor to an bool:
@@ -75,6 +76,7 @@ namespace WpfClient
         {
             UserSimple u = new UserSimple();
             u.Username = username;
+            u.Friend = friend;
 
             Application.Current.Dispatcher.BeginInvoke(new Action(() => this.users_list.Add(u)));
         }
@@ -97,19 +99,17 @@ namespace WpfClient
             }
         }
 
-        private string friend = "red";
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public string Friend
+
+        private bool friend = false;
+
+        public bool Friend
         {
             get
             {
@@ -123,4 +123,31 @@ namespace WpfClient
             }
         }
     }
+
+    public class FriendToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            switch ((bool)value) {
+                case true:
+                    return "green";
+                case false:
+                    return "red";
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            switch (value.ToString().ToLower())
+            {
+                case "green":
+                    return true;
+                case "red":
+                    return false;
+            }
+            return false;
+        }
+    }
+
 }

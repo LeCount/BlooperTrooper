@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="Simple Social Network" Height="500" Width="700">
 
+    <Window.Resources>
+        <local:FriendToColorConverter x:Key="FriendToColorConverter" />
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -20,22 +24,22 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <TextBlock Height="40" VerticalAlignment="Top" Padding="10" Background="Black" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Friends</TextBlock>
-            <ListBox Name="lbUserList" Grid.Row="1">
+            <ListBox Name="lbUserList" Grid.Row="1" SelectionMode="Single" SelectionChanged="lbUserList_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="30px">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Username}" Foreground="Black"  />
-                            <TextBlock Grid.Column="1" />
+                            <TextBlock Background="{Binding Friend, Converter={StaticResource FriendToColorConverter}}"  Margin="2" />
+                            <TextBlock Text="{Binding Username}" Foreground="Black" Grid.Column="1" Margin="5 0 0 0" VerticalAlignment="Center"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button x:Name="btnAddFriend" Height="40" BorderThickness="0" Background="#FFE8E8E8" Grid.Row="2">Add Friend</Button>
-            <Button x:Name="btnLogOut" Height="40" Background="#FFE8E8E8" Grid.Row="3" Click="btnLogOut_Click">Log out</Button>
+            <Button x:Name="btnAddFriend" Height="40" BorderThickness="0" Background="#F8F8F8" Grid.Row="2" Click="btnAddFriend_Click">Add Friend</Button>
+            <Button x:Name="btnLogOut" Height="40" Background="#F8F8F8" Grid.Row="3" Click="btnLogOut_Click">Log out</Button>
         </Grid>
     </Grid>
 </Window>
