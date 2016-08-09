@@ -59,7 +59,7 @@ namespace WpfClient
 
             ClientMsg msg = new ClientMsg();
             msg.type = TcpConst.LOGIN;
-            msg.data = (object)loginData;
+            msg.data = loginData;
 
             tcp_networking.Client_send(msg, client_stream);
 
@@ -137,8 +137,16 @@ namespace WpfClient
 
         public bool AddFriendRequest(string username)
         {
-            
+            AddFriendRequest_data req_data = new AddFriendRequest_data();
 
+            req_data.responder = username;
+            req_data.requester = session.GetCurrentUsername();
+
+            ClientMsg msg = new ClientMsg();
+            msg.type = TcpConst.ADD_FRIEND;
+            msg.data = req_data;
+
+            tcp_networking.Client_send(msg, client_stream);
 
             return true;
         }

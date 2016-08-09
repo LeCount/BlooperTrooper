@@ -54,7 +54,8 @@ namespace WpfClient
         private void btnAddFriend_Click(object sender, RoutedEventArgs e)
         {
             string selected_user = ((UserSimple)lbUserList.SelectedItem).Username;
-            MessageBox.Show(selected_user);
+
+            wpf_app.AddFriendRequest(selected_user);
         }
     }
 }
