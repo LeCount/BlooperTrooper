@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfClient"
         mc:Ignorable="d"
-        Title="Simple Social Network" Height="500" Width="700">
+        Title="Simple Social Network" Height="500" Width="700"
+        Left="800" Top="150">
 
     <Window.Resources>
         <local:FriendToColorConverter x:Key="FriendToColorConverter" />
