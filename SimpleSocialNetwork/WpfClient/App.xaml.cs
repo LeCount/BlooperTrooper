@@ -93,6 +93,10 @@ namespace WpfClient
 
         public void LogoutServer()
         {
+            ClientMsg msg = new ClientMsg();
+            msg.type = TcpConst.LOGOUT;
+            tcp_networking.Client_send(msg, client_stream);
+
             log.Add("User loged out from server.");
 
             if (add_messages.IsAlive)
