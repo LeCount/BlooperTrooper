@@ -10,7 +10,7 @@ using System.Net;
 
 namespace ServerNetworking
 {
-    /// <summary>A class for handling server and TCP related tasks.</summary>
+    /// <summary>A class responsible for handling TCP related tasks on the server.</summary>
     public class TcpServer
     {
         /// <summary>The port used by the server.</summary>
@@ -101,7 +101,6 @@ namespace ServerNetworking
         {
             Thread socket_listener = new Thread(ListenOnSocket);
             socket_listener.Start(s);
-
             all_active_client_threads.Add(socket_listener);
         }
 
@@ -205,11 +204,11 @@ namespace ServerNetworking
             try
             {
                 s.Send(byte_buffer);
-                Console.WriteLine(String.Format("Message sent:     {0} \n", TcpConst.IntToText(msg.type)));
+                Console.WriteLine(String.Format("Message sent:     {0}.", TcpConst.IntToText(msg.type)));
             }
             catch(ObjectDisposedException)
             {
-                //The client has disconnected
+                Console.WriteLine(String.Format("Message of type '{0}' could not be delivered. Client disconnected.", TcpConst.IntToText(msg.type)));
             }
         }
 
@@ -275,10 +274,8 @@ namespace ServerNetworking
         public ClientMsg Pop()
         {
             ClientMsg next = null;
-
             next = list.First();
             list.RemoveAt(list.IndexOf(list.First()));
-
             return next;
         }
 
