@@ -94,6 +94,31 @@ namespace SharedResources
         public bool no_more_users { get; set; }
     }
 
+    /// <summary>A class for representing the field "data", in the ClientMsg- or ServerMsg class, when a user sends an "add friend" request.</summary>
+    [Serializable]
+    public class AddFriendRequest_data
+    {
+        /// <summary>Username of the one who sent the request.</summary>
+        public String requester { get; set; }
+
+        /// <summary>Username of the one who the request concerns.</summary>
+        public String responder { get; set; }
+    }
+
+    /// <summary>A class for representing the field "data", in the ClientMsg- or ServerMsg class, when a user is responding to an "add friend" request.</summary>
+    [Serializable]
+    public class AddFriendResponse_data
+    {
+        /// <summary>Username of the one who initially sent the request.</summary>
+        public String requester { get; set; }
+
+        /// <summary>Username of the responder.</summary>
+        public String responder { get; set; }
+
+        /// <summary>Code indicating the acceptance or the denial, of the friend request.</summary>
+        public int message_code { get; set; }
+    }
+
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a get_friends_status request.</summary>
     [Serializable]
     public class GetFriendStatusRequest_data
@@ -301,13 +326,14 @@ namespace SharedResources
         public const int LOGOUT = 3;
         public const int GET_USERS = 4;
         public const int ADD_FRIEND = 5;
-        public const int GET_FRIEND_STATUS = 6;
-        public const int UPDATE = 7;
-        public const int GET_CLIENT_DATA = 8;
-        public const int CHAT = 9;
-        public const int ADD_EVENT = 10;
-        public const int GET_WALL = 11;
-        public const int PING = 12;
+        public const int RESPOND_ADD_FRIEND = 6;
+        public const int GET_FRIEND_STATUS = 7;
+        public const int UPDATE = 8;
+        public const int GET_CLIENT_DATA = 9;
+        public const int CHAT = 10;
+        public const int ADD_EVENT = 11;
+        public const int GET_WALL = 12;
+        public const int PING = 13;
 
         public const int INVALID = -1;
 
@@ -327,13 +353,14 @@ namespace SharedResources
                 case 3: return "LOGOUT";
                 case 4: return "GET USERS";
                 case 5: return "ADD FRIEND";
-                case 6: return "GET FRIEND STATUS";
-                case 7: return "UPDATE";
-                case 8: return "GET CLIENT DATA";
-                case 9: return "CHAT";
-                case 10: return "ADD EVENT";
-                case 11: return "GET_WALL";
-                case 12: return "PING";
+                case 6:return " RESPOND_ADD_FRIEND";
+                case 7: return "GET FRIEND STATUS";
+                case 8: return "UPDATE";
+                case 9: return "GET CLIENT DATA";
+                case 10: return "CHAT";
+                case 11: return "ADD EVENT";
+                case 12: return "GET_WALL";
+                case 13: return "PING";
                 default: return "INVALID";
             }
         }

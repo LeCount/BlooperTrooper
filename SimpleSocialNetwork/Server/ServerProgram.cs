@@ -23,6 +23,7 @@
         }
     }
 
+    /// <summary>Not used...</summary>
     public interface I_TcpServer
     {
         void Start();
@@ -43,8 +44,11 @@
     public class ServerApp
     {
         private SQLiteDB sqlite_database = new SQLiteDB(TcpConst.DATABASE_FILE);
+
         TcpServer tcp_server = null;
+
         private Thread get_next_request = null;
+
 
         public ServerApp()
         {
@@ -80,10 +84,7 @@
                     Thread.Sleep(100);
                 }
                 else
-                {
                     Thread.Sleep(1000);
-                }
-
             }
         }
 
@@ -113,6 +114,14 @@
 
                     break;
                 case TcpConst.ADD_FRIEND:
+
+                    ForwardFriendRequest(msg.data);
+
+                    break;
+                case TcpConst.RESPOND_ADD_FRIEND:
+
+                    ForwardAddFriendResponse(msg.data);
+
                     break;
                 case TcpConst.GET_FRIEND_STATUS:
                     break;
@@ -251,10 +260,46 @@
             }
         }
 
-        private bool AreFriends(string username_1, string username_2)
+        private void ForwardFriendRequest(object obj)
         {
-            return false;
-            //return sqlite_database.CheckFriendStatus(username_1, username_2);
+            AddFriendRequest_data received_data = (AddFriendRequest_data)obj;
+            ServerMsg msg = new ServerMsg();
+
+            if (AreFriends(received_data.requester, received_data.responder))
+            {
+                msg.type = TcpConst.RESPOND_ADD_FRIEND;
+                AddFriendResponse_data data_to_send = new AddFriendResponse_data();
+                data_to_send.requester = received_data.requester;
+                data_to_send.responder = received_data.responder;
+                data_to_send.message_code = TcpMessageCode.DECLINED;
+                msg.data = data_to_send;
+                tcp_server.SendMessage(data_to_send.responder, msg);
+            }
+            else
+            {
+                msg.type = TcpConst.ADD_FRIEND;
+                msg.data = received_data;
+                tcp_server.SendMessage(received_data.responder, msg);
+            }
+        }
+
+        private void ForwardAddFriendResponse(object obj)
+        {
+            AddFriendResponse_data received_data = (AddFriendResponse_data)obj;
+            ServerMsg msg = new ServerMsg();
+            msg.type = TcpConst.RESPOND_ADD_FRIEND;
+            msg.data = received_data;
+
+            if (received_data.message_code == TcpMessageCode.ACCEPTED)
+                sqlite_database.AddFriendRelation(received_data.requester, received_data.responder);
+
+            tcp_server.SendMessage(received_data.requester, msg);
+        }
+
+
+        private bool AreFriends(string username1, string username2)
+        {
+            return sqlite_database.CheckFriendStatus(username1, username2);
         }
 
         private List<String> GetAllUsersFromDB()
