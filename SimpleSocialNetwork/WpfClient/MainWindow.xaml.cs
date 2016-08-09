@@ -57,5 +57,10 @@ namespace WpfClient
 
             wpf_app.AddFriendRequest(selected_user);
         }
+
+        private void btnRefreshUserList_Click(object sender, RoutedEventArgs e)
+        {
+            wpf_app.RequestAllAvailableUsers();
+        }
     }
 }

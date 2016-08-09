@@ -78,7 +78,10 @@ namespace WpfClient
             while(timeout_counter < 100)
             {
                 if (session.GetLoggedInStatus() == 1)
+                {
+                    main_window.Title = "Simple Social Network - " + username;
                     return true;
+                }
                 else if (session.GetLoggedInStatus() == -1)
                     return false;
                 timeout_counter++;
@@ -217,9 +220,11 @@ namespace WpfClient
                     else
                         session.SetLoggedOut();
                     break;
+
                 case TcpConst.LOGOUT:
 
                     break;
+
                 case TcpConst.GET_USERS:
                     GetUsersReply_data udr = new GetUsersReply_data();
                     udr = (GetUsersReply_data)msg.data;
@@ -229,7 +234,28 @@ namespace WpfClient
                     main_window.RefreshUserList();
                     log.Add("Added user" + udr.username);
                     break;
+
                 case TcpConst.ADD_FRIEND:
+                    AddFriendRequest_data afreq = new AddFriendRequest_data();
+                    afreq = (AddFriendRequest_data)msg.data;
+
+                    MessageBoxResult result = MessageBox.Show("User " + afreq.requester + " wants to be your friend!\nDo you accept?", "Friend Request", MessageBoxButton.YesNo);
+
+                    AddFriendResponse_data afres = new AddFriendResponse_data();
+                    afres.responder = afreq.responder;
+                    afres.requester = afreq.requester;
+
+                    switch (result)
+                    {
+                        case MessageBoxResult.Yes:
+                            afres.message_code = TcpMessageCode.ACCEPTED;
+                            tcp_networking.Client_send(afres, TcpConst.RESPOND_ADD_FRIEND, client_stream);
+                            break;
+                        case MessageBoxResult.No:
+                            afres.message_code = TcpMessageCode.DECLINED;
+                            tcp_networking.Client_send(afres, TcpConst.RESPOND_ADD_FRIEND, client_stream);
+                            break;
+                    }
 
                     break;
                 case TcpConst.GET_FRIEND_STATUS:  
