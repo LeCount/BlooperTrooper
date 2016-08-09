@@ -143,7 +143,7 @@
                     break;
                 case TcpConst.GET_WALL:
                     break;
-                case TcpConst.ADD_EVENT:
+                case TcpConst.ADD_STATUS:
                     break;
                 case TcpConst.INVALID:
                     break;

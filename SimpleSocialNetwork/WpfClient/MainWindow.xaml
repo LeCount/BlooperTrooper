@@ -44,6 +44,14 @@
             <Button x:Name="btnAddFriend" Height="40" BorderThickness="0" Background="#F8F8F8" Grid.Row="3" Click="btnAddFriend_Click">Add Friend</Button>
             <Button x:Name="btnLogOut" Height="40" Background="#F8F8F8" Grid.Row="4" Click="btnLogOut_Click">Log out</Button>
         </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBox x:Name="txtStatus" Height="100" VerticalAlignment="Top" Grid.Row="0" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 0 50 0">Enter Status Message...</TextBox>
+            <Button x:Name="btnStatusSubmit" Grid.Row="0" HorizontalAlignment="Right" Width="50" Click="btnStatusSubmit_Click">Submit</Button>
+        </Grid>
     </Grid>
 </Window>
     

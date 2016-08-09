@@ -169,6 +169,14 @@ namespace WpfClient
             return true;
         }
 
+        public bool AddStatusMessage(string status)
+        {
+            AddStatus_data asd = new AddStatus_data();
+            asd.statusText = status;
+            tcp_networking.Client_send(asd, TcpConst.ADD_STATUS, client_stream);
+            return true;
+        }
+
         /// <summary>Depending on the reply that was received, handle it accordingly. </summary>
         /// <param name="msg">Received message.</param>
         private void HandleServerReplies(ServerMsg msg)
