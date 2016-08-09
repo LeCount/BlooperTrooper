@@ -77,6 +77,10 @@ namespace WpfClient
 
         public bool LogoutServer()
         {
+            ClientMsg msg = new ClientMsg();
+            msg.type = TcpConst.LOGOUT;
+            tcp_networking.Client_send(msg, client_stream);
+
             session.SetLoggedOut();
             login_window.Show();
             return true;
