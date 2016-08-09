@@ -75,14 +75,14 @@ namespace WpfClient
 
             tcp_networking.Client_send(loginData, TcpConst.LOGIN, client_stream);
 
-            while(timeout_counter < 1000)
+            while(timeout_counter < 100)
             {
                 if (session.GetLoggedInStatus() == 1)
                     return true;
                 else if (session.GetLoggedInStatus() == -1)
                     return false;
                 timeout_counter++;
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
             return false;
         }
