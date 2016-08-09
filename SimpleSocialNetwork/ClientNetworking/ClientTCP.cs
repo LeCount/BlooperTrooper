@@ -52,10 +52,7 @@ namespace ClientNetworking
                 Ping_data pingdata = new Ping_data();
                 pingdata.message_code = TcpMessageCode.REQUEST;
 
-                msg.type = TcpConst.PING;
-                msg.data = pingdata;
-
-                Client_send(msg, client_stream);
+                Client_send(pingdata, TcpConst.PING, client_stream);
 
                 Thread.Sleep(10000);
 
@@ -71,8 +68,12 @@ namespace ClientNetworking
 
         /// <summary>Send message from client to server over TCP.</summary>
         /// <param name="msg">Message to be sent over TCP.</param>
-        public void Client_send(ClientMsg msg, Stream client_stream)
+        public void Client_send(object msg_data, int msg_type, Stream client_stream)
         {
+            ClientMsg msg = new ClientMsg();
+            msg.type = msg_type;
+            msg.data = msg_data;
+
             byte[] byteBuffer = s.SerializeClientMsg(msg);
             try { client_stream.Write(byteBuffer, 0, byteBuffer.Length); }
             catch (Exception) { }
