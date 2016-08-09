@@ -87,11 +87,12 @@ namespace ServerNetworking
             while (true)
             {
                 while (!client_listener.Pending()) { }
+
+                Console.WriteLine(String.Format("Client connection occurred."));
+
                 s = client_listener.AcceptSocket();
                 all_active_client_sockets.Add(s);
                 AddSocketListener(s);
-
-                Console.WriteLine(String.Format("Client connection occurred. \n"));
             }
         }
 
@@ -119,7 +120,7 @@ namespace ServerNetworking
                     if (s.Receive(buff, SocketFlags.Peek) == 0)
                     {
                         // Client disconnected
-                        Console.WriteLine("A client disconnected...\n");
+                        Console.WriteLine("A client disconnected.");
 
                         if(usersOnSockets.ContainsValue(s))
                             usersOnSockets.Remove(s);
@@ -143,7 +144,7 @@ namespace ServerNetworking
                     {
                         ClientMsg msg = server_serializer.DeserializeClientMsg(receive_buffer);
 
-                        Console.WriteLine(String.Format("Message received: {0} \n", TcpConst.IntToText(msg.type)));
+                        Console.WriteLine(String.Format("Message received: {0}.", TcpConst.IntToText(msg.type)));
 
                         inbox.Push(msg);
 
@@ -175,22 +176,38 @@ namespace ServerNetworking
 
                         if (msg.type == TcpConst.LOGOUT)
                         {
-                            if (usersOnSockets.ContainsValue(s))
-                                usersOnSockets.Remove(s);
-
                             if (all_active_client_sockets.Contains(s))
                                 all_active_client_sockets.Remove(s);
 
-                            s.Close();
+                            string username = GetUserFromSocket(s);
+                            if (username == null)
+                            { 
+                                s.Close();
+                                return;
+                            }
 
-                            Console.WriteLine(String.Format("Message received: {0} \n", TcpConst.IntToText(msg.type)));
-                            return;//close;
+                            if (usersOnSockets.ContainsValue(s))
+                                usersOnSockets.Remove(username);
+
+                            s.Close();
+                            return;
                         }
                     }
 
                     num_of_bytes_read = 0;
                 }
             }
+        }
+
+        public string GetUserFromSocket(Socket s)
+        {
+            foreach (string user in usersOnSockets.Keys)
+            {
+                if(usersOnSockets[user] == s)
+                    return user;
+            }
+
+            return null;
         }
 
         public void BindUserToSocket(Socket s, String username)
@@ -235,7 +252,7 @@ namespace ServerNetworking
             }
             catch(ObjectDisposedException)
             {
-                Console.WriteLine(String.Format("Message of type '{0}' could not be delivered. Client disconnected.", TcpConst.IntToText(msg.type)));
+                Console.WriteLine(String.Format("Message of type '{0}' could not be sent. Target socket is 'null'.", TcpConst.IntToText(msg.type)));
             }
         }
 
