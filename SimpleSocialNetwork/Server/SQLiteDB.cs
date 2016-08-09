@@ -235,27 +235,6 @@ namespace Program
 
         internal bool CheckFriendStatus(string username1, string username2)
         {
-            query = new SQLiteCommand();
-            query.Connection = DBconnection;
-
-            SQLiteParameter param0 = new SQLiteParameter("@USER1", DbType.String) { Value = username1 };
-            SQLiteParameter param1 = new SQLiteParameter("@USER2", DbType.String) { Value = username2 };
-
-            query.Parameters.Add(param0);
-            query.Parameters.Add(param1);
-
-            query.CommandText = "SELECT count(*) FROM Relation WHERE (id_user1 = @USER1 AND id_user2 = @USER2) OR (id_user2 = @USER1 AND id_user1 = @USER2)";
-
-            object obj = query.ExecuteScalar();
-            int occurrences = Convert.ToInt32(obj);
-
-            if (occurrences > 0)
-                return true;
-            else
-            {
-
-            }
-
             return false;
         }
 
