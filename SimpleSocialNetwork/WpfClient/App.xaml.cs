@@ -73,11 +73,7 @@ namespace WpfClient
             loginData.password = password;
             loginData.username = username;
 
-            ClientMsg msg = new ClientMsg();
-            msg.type = TcpConst.LOGIN;
-            msg.data = loginData;
-
-            tcp_networking.Client_send(msg, client_stream);
+            tcp_networking.Client_send(loginData, TcpConst.LOGIN, client_stream);
 
             while(timeout_counter < 1000)
             {
@@ -93,9 +89,7 @@ namespace WpfClient
 
         public void LogoutServer()
         {
-            ClientMsg msg = new ClientMsg();
-            msg.type = TcpConst.LOGOUT;
-            tcp_networking.Client_send(msg, client_stream);
+            tcp_networking.Client_send(null, TcpConst.LOGOUT, client_stream);
 
             log.Add("User loged out from server.");
 
@@ -127,11 +121,7 @@ namespace WpfClient
             j.about_user = about;
             j.interests = interests;
 
-            ClientMsg msg = new ClientMsg();
-            msg.type = TcpConst.JOIN;
-            msg.data = (Object)j;
-
-            tcp_networking.Client_send(msg,client_stream);
+            tcp_networking.Client_send(j, TcpConst.JOIN, client_stream);
 
             // Wait for registration confirmation
             for (int i=0;  session.GetRegistrationStatus() == Session.REGISTRATION_NOTSET && i < 10; i++)
@@ -159,10 +149,7 @@ namespace WpfClient
             GetUsersRequest_data request_data = new GetUsersRequest_data();
             request_data.from = session.GetCurrentUsername();
 
-            ClientMsg msg = new ClientMsg();
-            msg.type = TcpConst.GET_USERS;
-            msg.data = (object)request_data;
-            tcp_networking.Client_send(msg, client_stream); 
+            tcp_networking.Client_send(request_data, TcpConst.GET_USERS, client_stream); 
 
             return true;
         }
@@ -174,11 +161,7 @@ namespace WpfClient
             req_data.responder = username;
             req_data.requester = session.GetCurrentUsername();
 
-            ClientMsg msg = new ClientMsg();
-            msg.type = TcpConst.ADD_FRIEND;
-            msg.data = req_data;
-
-            tcp_networking.Client_send(msg, client_stream);
+            tcp_networking.Client_send(req_data, TcpConst.ADD_FRIEND, client_stream);
 
             return true;
         }
