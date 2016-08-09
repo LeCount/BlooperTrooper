@@ -198,6 +198,13 @@ namespace ServerNetworking
         /// <param name="s">Socket to send msg to.</param>
         private void SendMessageToSocket(ServerMsg msg, Socket s)
         {
+            //user is not online, or something went very wrong 0o????
+            if(s == null)
+            {
+                //this should not be done HERE, but something that should happen, is that the msg should be saved in db as pending friend request
+                return;
+            }
+
             byte[] byte_buffer = new byte[TcpConst.BUFFER_SIZE];
             byte_buffer = server_serializer.SerializeServerMsg(msg);
 
