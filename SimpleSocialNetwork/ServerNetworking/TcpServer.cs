@@ -91,8 +91,6 @@ namespace ServerNetworking
                 all_active_client_sockets.Add(s);
                 AddSocketListener(s);
 
-                ServerMsg reply = new ServerMsg();
-
                 Console.WriteLine(String.Format("Client connection occurred. \n"));
             }
         }
@@ -122,9 +120,15 @@ namespace ServerNetworking
                     {
                         // Client disconnected
                         Console.WriteLine("A client disconnected...\n");
-                        all_active_client_sockets.Remove(s);
+
+                        if(usersOnSockets.ContainsValue(s))
+                            usersOnSockets.Remove(s);
+
+                        if(all_active_client_sockets.Contains(s))
+                            all_active_client_sockets.Remove(s);
+
                         s.Close();
-                        break;
+                        return;//close;
                     }
                 }
                 else
@@ -168,6 +172,20 @@ namespace ServerNetworking
                             LoginRequest_data received_data = (LoginRequest_data)msg.data;
                             BindUserToSocket(s, received_data.username);
                         }
+
+                        if (msg.type == TcpConst.LOGOUT)
+                        {
+                            if (usersOnSockets.ContainsValue(s))
+                                usersOnSockets.Remove(s);
+
+                            if (all_active_client_sockets.Contains(s))
+                                all_active_client_sockets.Remove(s);
+
+                            s.Close();
+
+                            Console.WriteLine(String.Format("Message received: {0} \n", TcpConst.IntToText(msg.type)));
+                            return;//close;
+                        }
                     }
 
                     num_of_bytes_read = 0;
@@ -187,6 +205,8 @@ namespace ServerNetworking
                 usersOnSockets.Remove(username);
         }
 
+
+
         public void SendMessage(String username,ServerMsg msg)
         {
             Socket s = GetSocketFromUser(username);
@@ -198,6 +218,13 @@ namespace ServerNetworking
         /// <param name="s">Socket to send msg to.</param>
         private void SendMessageToSocket(ServerMsg msg, Socket s)
         {
+            //user is not online, or something went very wrong 0o????
+            if(s == null)
+            {
+                //this should not be done HERE, but something that should happen, is that the msg should be saved in db as pending friend request
+                return;
+            }
+
             byte[] byte_buffer = new byte[TcpConst.BUFFER_SIZE];
             byte_buffer = server_serializer.SerializeServerMsg(msg);
 
@@ -220,6 +247,12 @@ namespace ServerNetworking
         private Socket GetSocketFromUser(string user)
         {
             object value = usersOnSockets[user];
+
+            if (value == null)
+            {
+                Console.WriteLine(String.Format("Message not delivered: User {0} is not online.", user));
+            }
+
             return (Socket)value;
         }
 
