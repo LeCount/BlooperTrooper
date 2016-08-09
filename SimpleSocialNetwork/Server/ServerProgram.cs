@@ -107,6 +107,7 @@
                     //Remove the user from the userlist on server
                     //networking.RemoveUserFromList(user.username);
 
+
                     break;
                 case TcpConst.GET_USERS:
 

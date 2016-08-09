@@ -17,7 +17,7 @@ namespace WpfClient
         private static Stream client_stream = null;
 
         /// <summary>A medium for providing client connections for TCP network services.</summary>
-        private TcpClient tcp_client = new TcpClient();
+        private TcpClient tcp_client = null;
 
         /// <summary>Session class to keep track of current session</summary>
         public Session session = new Session();
@@ -49,6 +49,22 @@ namespace WpfClient
         ///<summary>Login to server</summary>
         public bool LoginToServer(string username, string password)
         {
+            tcp_client = new TcpClient();
+
+            //TODO: Server ip is assumed to be local host at the moment.
+            client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
+
+            add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
+            add_messages.Start();
+
+            handle_messages = new Thread(GetNextMessage);
+            handle_messages.Start();
+
+            ping_server = new Thread(() => tcp_networking.ServerStatusPing(client_stream));
+            ping_server.Start();
+
+            Thread.Sleep(100);
+
             int timeout_counter = 0;
             session.SetLoggedInStatus(0);
             session.SetCurrentUsername(username);
@@ -75,11 +91,23 @@ namespace WpfClient
             return false;
         }
 
-        public bool LogoutServer()
+        public void LogoutServer()
         {
+            log.Add("User loged out from server.");
+
+            if (add_messages.IsAlive)
+                add_messages.Abort();
+
+            if (ping_server.IsAlive)
+                ping_server.Abort();
+
+            if (handle_messages.IsAlive)
+                handle_messages.Abort();
+
+            tcp_client.Close();
+
             session.SetLoggedOut();
             login_window.Show();
-            return true;
         }
 
         public bool RequestToJoinSocialNetwork(string username, string password, string email, string firstName, string lastName, string about, string interests)
@@ -233,17 +261,6 @@ namespace WpfClient
         private void AppStart(object sender, StartupEventArgs e)
         {
             log.Add("App is starting...");
-            //TODO: Server ip is assumed to be local host at the moment.
-            client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
-
-            add_messages = new Thread(() => tcp_networking.ClientRead(client_stream)); 
-            add_messages.Start();
-
-            handle_messages = new Thread(GetNextMessage);
-            handle_messages.Start();
-
-            ping_server = new Thread(() => tcp_networking.ServerStatusPing(client_stream));
-            ping_server.Start();
 
             // Show login window
             login_window.Show();
@@ -279,6 +296,7 @@ namespace WpfClient
 
             tcp_client.Close();  
         }
+
     }
 
 }
