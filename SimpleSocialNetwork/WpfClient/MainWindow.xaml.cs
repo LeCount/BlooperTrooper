@@ -48,7 +48,6 @@ namespace WpfClient
         private void lbUserList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListBox lbx = sender as ListBox;
-            //MessageBox.Show( "   You selected " + ((UserSimple)lbx.SelectedItem).Username + ".");
         }
 
         private void btnAddFriend_Click(object sender, RoutedEventArgs e)
@@ -56,6 +55,16 @@ namespace WpfClient
             string selected_user = ((UserSimple)lbUserList.SelectedItem).Username;
 
             wpf_app.AddFriendRequest(selected_user);
+        }
+
+        private void btnRefreshUserList_Click(object sender, RoutedEventArgs e)
+        {
+            wpf_app.RequestAllAvailableUsers();
+        }
+
+        private void btnStatusSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            wpf_app.AddStatusMessage(txtStatus.Text);
         }
     }
 }

@@ -218,6 +218,15 @@ namespace SharedResources
         public String to { get; set; }
     }
 
+    /// <summary>A class for representing the field "data", in the ClientMsg class, when the user wants to add a status message.</summary>
+    [Serializable]
+    public class AddStatus_data
+    {
+        /// <summary> Status text.</summary>
+        public String statusText { get; set; }
+
+    }
+
     /// <summary>A class for having parameterized user information available in memory, on the server and the client.</summary>
     public class User
     {
@@ -331,7 +340,7 @@ namespace SharedResources
         public const int UPDATE = 8;
         public const int GET_CLIENT_DATA = 9;
         public const int CHAT = 10;
-        public const int ADD_EVENT = 11;
+        public const int ADD_STATUS = 11;
         public const int GET_WALL = 12;
         public const int PING = 13;
 
@@ -358,7 +367,7 @@ namespace SharedResources
                 case 8: return "UPDATE";
                 case 9: return "GET CLIENT DATA";
                 case 10: return "CHAT";
-                case 11: return "ADD EVENT";
+                case 11: return "ADD STATUS";
                 case 12: return "GET_WALL";
                 case 13: return "PING";
                 default: return "INVALID";
