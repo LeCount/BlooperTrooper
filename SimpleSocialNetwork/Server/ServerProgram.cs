@@ -62,6 +62,8 @@
 
         private void Init(string ip, string port)
         {
+            Console.SetWindowPosition(0, 0);
+
             tcp_server = new TcpServer();
             tcp_server.ipAddr = ip;
             tcp_server.port = port;
@@ -191,6 +193,7 @@
             else
             {
                 sqlite_database.AddNewUser(data.username, data.password, null);
+                Console.WriteLine(String.Format("[{0}]:Joined the network.", data.username));
                 return TcpMessageCode.ACCEPTED;
             }
         }
@@ -198,6 +201,11 @@
         private void HandleLoginRequest(Object obj)
         {
             LoginRequest_data received_data = (LoginRequest_data)obj;
+            
+            while(!tcp_server.userIsBoundToSocket(received_data.username))
+            {
+                Thread.Sleep(100);
+            }
 
             ServerMsg msg_to_send = new ServerMsg();
             msg_to_send.type = TcpConst.LOGIN;
@@ -205,6 +213,11 @@
             LoginReply_data data_to_send = new LoginReply_data();
 
             data_to_send.message_code = ValidateLoginRequest(received_data);
+
+            if(data_to_send.message_code == TcpMessageCode.ACCEPTED)
+                Console.WriteLine(String.Format("[{0}]:Network access granted.", received_data.username));
+            else
+                Console.WriteLine(String.Format("[{0}]:Network access denied.", received_data.username));
 
             msg_to_send.data = (Object)data_to_send;
 

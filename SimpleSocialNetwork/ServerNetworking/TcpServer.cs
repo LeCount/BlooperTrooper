@@ -58,7 +58,7 @@ namespace ServerNetworking
             connect_listener = new Thread(ListenForConnections);
             connect_listener.Start();
 
-            Console.WriteLine("Server is now listening for connections. \n");
+            Console.WriteLine("Server is now listening for connections. \n\n");
         }
 
         public void StopServer()
@@ -88,7 +88,7 @@ namespace ServerNetworking
             {
                 while (!client_listener.Pending()) { }
 
-                Console.WriteLine(String.Format("Client connection occurred."));
+                Console.WriteLine(String.Format("[Server]Client connection occurred."));
 
                 s = client_listener.AcceptSocket();
                 all_active_client_sockets.Add(s);
@@ -106,8 +106,10 @@ namespace ServerNetworking
         private void ListenOnSocket(object client_socket)
         {
             List<ClientMsg> request_list = new List<ClientMsg>();
-
             Socket s = (Socket)client_socket;
+            string user_on_this_socket = null;
+
+
             int num_of_bytes_read = 0;
             byte[] receive_buffer = new byte[TcpConst.BUFFER_SIZE];
 
@@ -120,7 +122,7 @@ namespace ServerNetworking
                     if (s.Receive(buff, SocketFlags.Peek) == 0)
                     {
                         // Client disconnected
-                        Console.WriteLine("A client disconnected.");
+                        Console.WriteLine("User disconnected.");
 
                         if(usersOnSockets.ContainsValue(s))
                             usersOnSockets.Remove(s);
@@ -144,12 +146,46 @@ namespace ServerNetworking
                     {
                         ClientMsg msg = server_serializer.DeserializeClientMsg(receive_buffer);
 
-                        Console.WriteLine(String.Format("Message received: {0}.", TcpConst.IntToText(msg.type)));
-
                         inbox.Push(msg);
+
+                        if (msg.type == TcpConst.JOIN)
+                        {
+                            JoinRequest_data received_data = (JoinRequest_data)msg.data;
+                            BindUserToSocket(s, received_data.username);
+                            user_on_this_socket = GetUserFromSocket(s);
+                        }
+
+                        if (msg.type == TcpConst.LOGIN)
+                        {
+                            LoginRequest_data received_data = (LoginRequest_data)msg.data;
+                            BindUserToSocket(s, received_data.username);
+                            user_on_this_socket = GetUserFromSocket(s);
+                        }
+
+                        if (msg.type == TcpConst.LOGOUT)
+                        {
+                            if (all_active_client_sockets.Contains(s))
+                                all_active_client_sockets.Remove(s);
+
+                            if (user_on_this_socket == null)
+                            {
+                                Console.WriteLine(String.Format("[ERROR]:No name assosiated with this socket. Closing corresponding socket and stoping listener."));
+                                s.Close();
+                                return;
+                            }
+
+                            if (usersOnSockets.ContainsValue(s))
+                                usersOnSockets.Remove(user_on_this_socket);
+
+                            Console.WriteLine(String.Format("[{0}]:Logged out.", user_on_this_socket));
+                            return;
+                        }
 
                         if (msg.type == TcpConst.PING)
                         {
+                            if (user_on_this_socket != null)
+                                Console.WriteLine(String.Format("[{0}]:Ping server.", user_on_this_socket));
+
                             Ping_data received_data = new Ping_data();
                             received_data = (Ping_data)msg.data;
 
@@ -162,41 +198,29 @@ namespace ServerNetworking
                             SendMessageToSocket(msg_to_send, s);
                         }
 
-                        if (msg.type == TcpConst.JOIN)
-                        {
-                            JoinRequest_data received_data = (JoinRequest_data)msg.data;
-                            BindUserToSocket(s, received_data.username);
-                        }
-
-                        if (msg.type == TcpConst.LOGIN)
-                        {
-                            LoginRequest_data received_data = (LoginRequest_data)msg.data;
-                            BindUserToSocket(s, received_data.username);
-                        }
-
-                        if (msg.type == TcpConst.LOGOUT)
-                        {
-                            if (all_active_client_sockets.Contains(s))
-                                all_active_client_sockets.Remove(s);
-
-                            string username = GetUserFromSocket(s);
-                            if (username == null)
-                            { 
-                                s.Close();
-                                return;
-                            }
-
-                            if (usersOnSockets.ContainsValue(s))
-                                usersOnSockets.Remove(username);
-
-                            s.Close();
-                            return;
-                        }
+                        if(user_on_this_socket != null)
+                            Console.WriteLine(String.Format("[{0}]:Sent {1}-message.", user_on_this_socket, TcpConst.IntToText(msg.type)));
                     }
 
                     num_of_bytes_read = 0;
                 }
             }
+        }
+
+        public bool userIsBoundToSocket(string user)
+        {
+            if(usersOnSockets.ContainsKey(user))
+            {
+                //Console.WriteLine(String.Format("User IS bound to socket."));
+                return true;
+            }
+
+            else
+            {
+                //Console.WriteLine(String.Format("User NOT bound to socket."));
+                return false;
+            }
+
         }
 
         public string GetUserFromSocket(Socket s)
@@ -213,13 +237,17 @@ namespace ServerNetworking
         public void BindUserToSocket(Socket s, String username)
         {
             if (!usersOnSockets.ContainsKey(username))
+            {
                 usersOnSockets.Add(username, s);
+            }
         }
 
         public void UnbindUserToSocket(String username)
         {
             if (usersOnSockets.ContainsKey(username))
+            {
                 usersOnSockets.Remove(username);
+            }
         }
 
 
@@ -248,11 +276,11 @@ namespace ServerNetworking
             try
             {
                 s.Send(byte_buffer);
-                Console.WriteLine(String.Format("Message sent:     {0}.", TcpConst.IntToText(msg.type)));
+                Console.WriteLine(String.Format("[Server]:Sent {0}-message.", TcpConst.IntToText(msg.type)));
             }
-            catch(ObjectDisposedException)
+            catch(Exception)
             {
-                Console.WriteLine(String.Format("Message of type '{0}' could not be sent. Target socket is 'null'.", TcpConst.IntToText(msg.type)));
+               Console.WriteLine(String.Format("[Error]:Server '{0}'-message could not be sent. Target socket is 'dispoesed'.", TcpConst.IntToText(msg.type)));
             }
         }
 
@@ -261,13 +289,13 @@ namespace ServerNetworking
             return inbox.Pop();
         }
 
-        private Socket GetSocketFromUser(string user)
+        public Socket GetSocketFromUser(string user)
         {
             object value = usersOnSockets[user];
 
             if (value == null)
             {
-                Console.WriteLine(String.Format("Message not delivered: User {0} is not online.", user));
+                Console.WriteLine(String.Format("[ERROR]:Target user: {0}, is not bound to a socket, or user is not online. Socket = null.", user));
             }
 
             return (Socket)value;
