@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
+using SharedResources;
 
 namespace WpfClient
 {
@@ -61,12 +62,12 @@ namespace WpfClient
             Application.Current.Dispatcher.BeginInvoke(new Action(() => this.users_list.Add(u)));
         }
 
-        public void AddStatusToWall(string username, DateTime time, string status)
+        public void AddStatusToWall(string username, UserEvent user_event)
         {
             WallPost w = new WallPost();
             w.Username = username;
-            w.Time = time;
-            w.Status = status;
+            w.Time = user_event.time;
+            w.Status = user_event.text;
             Application.Current.Dispatcher.BeginInvoke(new Action(() => this.wall.Add(w)));
         }
     }

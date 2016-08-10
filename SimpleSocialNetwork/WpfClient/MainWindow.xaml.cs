@@ -50,6 +50,31 @@ namespace WpfClient
             ListBox lbx = sender as ListBox;
         }
 
+        /// <summary>Initialize and populate the wall</summary>
+        public void InitWall()
+        {
+            lbWall.ItemsSource = wpf_app.session.wall;
+
+            WallPost wp = new WallPost();
+            wp.Username = "Kalle";
+            wp.Status = "Hej! This is a test";
+            wp.Time = DateTime.Now;
+
+            wpf_app.session.wall.Add(wp);
+
+            RefreshWall();
+
+        }
+        /// <summary>Refresh wall</summary>
+        public void RefreshWall()
+        {
+            Dispatcher.Invoke(new Action(delegate ()
+            {
+                lbWall.Items.Refresh();
+            }
+            ));
+        }
+
         private void btnAddFriend_Click(object sender, RoutedEventArgs e)
         {
             if(lbUserList.SelectedItem != null)
