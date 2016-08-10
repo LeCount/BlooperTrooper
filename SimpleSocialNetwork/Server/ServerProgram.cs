@@ -157,10 +157,10 @@
         {
             GetWallRequest_data received_data = (GetWallRequest_data)data;
 
-            if(AreFriends(received_data.user, received_data.from))
-            {
+            //if(AreFriends(received_data.user, received_data.from))
+            //{
                 SendWall(received_data.user, received_data.from);
-            }
+            //}
         }
 
         private void SendWall(string user_owning_wall, string user_requesting_wall)
