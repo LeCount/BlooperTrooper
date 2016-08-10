@@ -42,6 +42,19 @@ namespace WpfClient
 
         public App()
         {
+            if (tcp_client == null)
+                tcp_client = new TcpClient();
+
+            //TODO: Server ip is assumed to be local host at the moment.
+            if (client_stream == null)
+                client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
+
+            handle_messages = new Thread(GetNextMessage);
+            handle_messages.Start();
+
+            add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
+            add_messages.Start();
+
             main_window = new MainWindow();
             login_window = new LoginWindow();
         }
@@ -64,12 +77,6 @@ namespace WpfClient
             loginData.username = username;
 
             tcp_networking.Client_send(loginData, TcpConst.LOGIN, client_stream);
-
-            handle_messages = new Thread(GetNextMessage);
-            handle_messages.Start();
-
-            add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
-            add_messages.Start();
 
             Thread.Sleep(100);
 
@@ -143,9 +150,8 @@ namespace WpfClient
 
             tcp_networking.Client_send(data_to_send, TcpConst.JOIN, client_stream);
 
-            // Wait for registration confirmation
-            Thread.Sleep(500);
-
+            //TODO This method for waiting for server reply is quite unreliable. Mby a more vell structured syncronization mechanism should be used, or the client should ask the server if the join request succeeded.
+            Thread.Sleep(1000);
 
             //registration is 0, but registration is successfull 0o????
             if (session.GetRegistrationStatus() == Session.REGISTRATION_SUCCESS)
