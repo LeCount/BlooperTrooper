@@ -52,9 +52,11 @@ namespace WpfClient
 
         private void btnAddFriend_Click(object sender, RoutedEventArgs e)
         {
-            string selected_user = ((UserSimple)lbUserList.SelectedItem).Username;
-
-            wpf_app.AddFriendRequest(selected_user);
+            if(lbUserList.SelectedItem != null)
+            {
+                string selected_user = ((UserSimple)lbUserList.SelectedItem).Username;
+                wpf_app.AddFriendRequest(selected_user);
+            }
         }
 
         private void btnRefreshUserList_Click(object sender, RoutedEventArgs e)

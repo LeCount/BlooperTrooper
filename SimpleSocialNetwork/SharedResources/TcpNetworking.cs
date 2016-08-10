@@ -153,6 +153,9 @@ namespace SharedResources
     [Serializable]
     public class GetWallReply_data
     {
+        /// <summary>The user who's wall is being requested.</summary>
+        public String user { get; set; }
+
         /// <summary>Date and time of wall post</summary>
         public DateTime time { get; set; }
 

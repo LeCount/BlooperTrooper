@@ -23,6 +23,8 @@ namespace WpfClient
         public ObservableCollection<UserSimple> users_list = new ObservableCollection<UserSimple>();
         public bool users_list_collected;
 
+        public ObservableCollection<UserSimple> wall = new ObservableCollection<UserSimple>();
+
         private int registration = REGISTRATION_NOTSET;
 
         /// <summary>User information in current session</summary>
@@ -57,6 +59,11 @@ namespace WpfClient
             u.Friend = friend;
 
             Application.Current.Dispatcher.BeginInvoke(new Action(() => this.users_list.Add(u)));
+        }
+
+        public void AddStatusToWall(string username, DateTime time, string status)
+        {
+
         }
     }
 
@@ -121,4 +128,50 @@ namespace WpfClient
         }
     }
 
+}
+
+public class WallPost : INotifyPropertyChanged
+{
+    private string username = "";
+    public string Username
+    {
+        get { return username; }
+        set
+        {
+            username = value;
+            NotifyPropertyChanged();
+        }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+
+    private string status = "";
+
+    public string Status
+    {
+        get { return status; }
+        set
+        {
+            status = value;
+            NotifyPropertyChanged();
+        }
+    }
+
+    private DateTime time;
+
+    public DateTime Time
+    {
+        get { return time; }
+        set
+        {
+            time = value;
+            NotifyPropertyChanged();
+        }
+    }
 }
