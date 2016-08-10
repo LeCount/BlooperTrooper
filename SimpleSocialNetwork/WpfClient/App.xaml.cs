@@ -67,7 +67,13 @@ namespace WpfClient
 
             //TODO: Server ip is assumed to be local host at the moment.
             if(client_stream == null)
-                client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT); 
+                client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
+
+            handle_messages = new Thread(GetNextMessage);
+            handle_messages.Start();
+
+            add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
+            add_messages.Start();
 
             session.SetLoggedInStatus(0);
             session.SetCurrentUsername(username);
