@@ -273,6 +273,12 @@ namespace ServerNetworking
             byte[] byte_buffer = new byte[TcpConst.BUFFER_SIZE];
             byte_buffer = server_serializer.SerializeServerMsg(msg);
 
+            if (byte_buffer == null)
+            {
+                Console.WriteLine(String.Format("[Error]:Server '{0}'-message could not be serialized.", TcpConst.IntToText(msg.type)));
+                return;
+            }
+
             try
             {
                 s.Send(byte_buffer);
