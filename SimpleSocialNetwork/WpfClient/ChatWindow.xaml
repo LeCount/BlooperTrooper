@@ -12,7 +12,7 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         
-        <ListBox Name="lbWall" Grid.Row="0" SelectionMode="Single">
+        <ListBox x:Name="listbox_chat_log" Grid.Row="0" SelectionMode="Single">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Height="30px">
@@ -27,7 +27,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <TextBox Grid.Row="1" Margin="0 0 50 0" />
+        <TextBox x:Name="txtbox_chat" Grid.Row="1" Margin="0 0 50 0" />
         <Button 
             x:Name="btnSubmit" 
             Grid.Row="1" 

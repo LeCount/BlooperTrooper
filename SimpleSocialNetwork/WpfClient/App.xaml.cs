@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using ClientNetworking;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace WpfClient
 {
@@ -21,7 +23,7 @@ namespace WpfClient
         /// <summary>A medium for providing client connections for TCP network services.</summary>
         private TcpClient tcp_client = null;
 
-        private Hashtable chat_table = new Hashtable();
+        private Hashtable chat_conversations = new Hashtable();
 
         /// <summary>Session class to keep track of current session</summary>
         public Session session = new Session();
@@ -222,13 +224,13 @@ namespace WpfClient
 
         public void StartChat(string username)
         {
-            ChatWindow chatwindow = new ChatWindow();
+            ChatWindow chat_window = new ChatWindow(username);
 
-            chatwindow.Title = username;
-            chatwindow.Show();
+            chat_window.Title = username;
+            chat_window.Show();
 
-            List<string> chat = new List<string>();
-            chat_table.Add(username, chat);
+            ObservableCollection<string> new_conversation = new ObservableCollection<string>();
+            chat_conversations.Add(username, new_conversation);
 
             return;
         }
@@ -241,9 +243,36 @@ namespace WpfClient
             textToSend.to = username;
             tcp_networking.Client_send(textToSend, TcpConst.CHAT, client_stream);
 
-            // Add to local chat list
-            ((List<string>)chat_table[username]).Add(text);
+            AddChatMsgToConversation(username, text);
+        }
 
+        public void AddChatMsgToConversation(string username, string text)
+        {
+            if (((ObservableCollection<string>)chat_conversations[username]) == null)
+                chat_conversations.Add(username, new ObservableCollection<string>());
+
+            ((ObservableCollection<string>)chat_conversations[username]).Add(text);
+        }
+
+        public string GetNextChatMsg(string username)
+        {
+            if(((ObservableCollection<string>)chat_conversations[username]) == null)
+                return null;
+
+            string next_chat_msg = null;
+
+            if (((ObservableCollection<string>)chat_conversations[username]).Count > 0)
+            {
+                try
+                {
+                    next_chat_msg = ((ObservableCollection<string>)chat_conversations[username]).ElementAt(0);
+                    ((ObservableCollection<string>)chat_conversations[username]).RemoveAt(0);
+                    return next_chat_msg;
+                }
+                catch(Exception){return null;}
+            }
+            else
+                return null;
         }
 
         /// <summary>Depending on the reply that was received, handle it accordingly. </summary>
@@ -347,17 +376,12 @@ namespace WpfClient
                 case TcpConst.CHAT:
                     Chat_data received_data = (Chat_data)msg.data;
 
-                    string chatuser = received_data.from;
+                    string chat_username = received_data.from;
 
-                    if (chat_table.ContainsKey(chatuser))
-                    {
-                        // Add message to chat list
-                        ((List<string>)chat_table[chatuser]).Add(received_data.text);
-                    }
+                    if (chat_conversations.ContainsKey(chat_username))
+                        ((ObservableCollection<string>)chat_conversations[chat_username]).Add(received_data.text);
                     else
-                    {
                         StartChat(received_data.from);
-                    }
 
                     break;
                 default: break;
