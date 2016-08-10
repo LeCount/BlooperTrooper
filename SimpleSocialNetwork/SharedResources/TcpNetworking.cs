@@ -242,6 +242,7 @@ namespace SharedResources
     }
 
     /// <summary>A class to contain information regarding an event/post/log, on a users "wall".</summary>
+    [Serializable]
     public class UserEvent
     {
         public DateTime time{ get; set; }
