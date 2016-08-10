@@ -48,6 +48,8 @@ namespace WpfClient
         private void lbUserList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListBox lbx = sender as ListBox;
+
+            wpf_app.GetWallFromUser(((UserSimple)lbUserList.SelectedItem).Username);
         }
 
         /// <summary>Initialize and populate the wall</summary>

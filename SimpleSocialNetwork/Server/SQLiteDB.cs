@@ -228,7 +228,7 @@ namespace Program
             //temp code...
             List<UserEvent> test = new List<UserEvent>();
 
-            for(int i=0; i<10; i++)
+            for(int i=1; i<10; i++)
             {
                 UserEvent nextEvent = new UserEvent();
                 nextEvent.text = String.Format("{0} has done some amazing shit this day...", username, i);

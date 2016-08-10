@@ -197,6 +197,19 @@ namespace WpfClient
             return true;
         }
 
+        public bool GetWallFromUser(string username)
+        {
+            session.wall.Clear();
+
+            GetWallRequest_data gwrd = new GetWallRequest_data();
+            gwrd.from = session.GetCurrentUsername();
+            gwrd.user = username;
+
+            tcp_networking.Client_send(gwrd, TcpConst.GET_WALL, client_stream);
+
+            return true;
+        }
+
         /// <summary>Depending on the reply that was received, handle it accordingly. </summary>
         /// <param name="msg">Received message.</param>
         private void HandleServerReplies(ServerMsg msg)
