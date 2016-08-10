@@ -343,7 +343,7 @@ namespace SharedResources
         public const int UPDATE = 8;
         public const int GET_CLIENT_DATA = 9;
         public const int CHAT = 10;
-        public const int ADD_STATUS = 11;
+        public const int ADD_WALL_EVENT = 11;
         public const int GET_WALL = 12;
         public const int PING = 13;
 

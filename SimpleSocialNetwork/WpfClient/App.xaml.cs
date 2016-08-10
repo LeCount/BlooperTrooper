@@ -199,7 +199,7 @@ namespace WpfClient
         {
             AddStatus_data asd = new AddStatus_data();
             asd.statusText = status;
-            tcp_networking.Client_send(asd, TcpConst.ADD_STATUS, client_stream);
+            tcp_networking.Client_send(asd, TcpConst.ADD_WALL_EVENT, client_stream);
             return true;
         }
 

@@ -14,10 +14,10 @@ namespace ServerNetworking
     public class TcpServer
     {
         /// <summary>The port used by the server.</summary>
-        public String port { get; set; }
+        private String port { get; set; }
 
         /// <summary>The ip address used by the server</summary>
-        public String ipAddr { get; set; }
+        private String ipAddr { get; set; }
 
         /// <summary>A hash table associating usernames(key) with sockets(value). </summary>
         private Hashtable usersOnSockets = new Hashtable();
@@ -32,7 +32,7 @@ namespace ServerNetworking
         private List<Thread> all_active_client_threads = new List<Thread>();
 
         /// <summary>List for keeping client's data in memory for easier access.</summary>
-        private List<User> cachedUsers = new List<User>();
+        private List<User> cachedUsers = null;
 
         /// <summary>List containing all client sockets, assumed to be connected.</summary>
         private List<Socket> all_active_client_sockets = new List<Socket>();
@@ -44,6 +44,12 @@ namespace ServerNetworking
         Serializer server_serializer = new Serializer();
 
         public TcpServer() { }
+
+        public TcpServer(string ip_to_use, string port_to_use)
+        {
+            ipAddr = ip_to_use;
+            port = port_to_use;
+        }
 
         public void StartServer()
         { 
@@ -63,13 +69,27 @@ namespace ServerNetworking
 
         public void StopServer()
         {
+            try {client_listener.Stop();}
+            catch (Exception) {}
+            
+
             if (connect_listener.IsAlive)
                 connect_listener.Abort();
 
-            foreach (Thread t in all_active_client_threads)
-                t.Abort();
 
-            client_listener.Stop();
+            foreach (Socket s in all_active_client_sockets)
+            { 
+                try { s.Close();}
+                catch (Exception) {}
+                all_active_client_sockets.Remove(s);
+            }
+
+            foreach (Thread t in all_active_client_threads)
+            {
+                if (t.IsAlive)
+                    t.Abort();
+                all_active_client_threads.Remove(t);
+            }
         }
 
         public void SetDefaultServerSettings()
@@ -105,12 +125,11 @@ namespace ServerNetworking
 
         private void ListenOnSocket(object client_socket)
         {
+            string user_on_this_socket = null;
+            int num_of_bytes_read = 0;
+
             List<ClientMsg> request_list = new List<ClientMsg>();
             Socket s = (Socket)client_socket;
-            string user_on_this_socket = null;
-
-
-            int num_of_bytes_read = 0;
             byte[] receive_buffer = new byte[TcpConst.BUFFER_SIZE];
 
             while (true)
@@ -195,6 +214,7 @@ namespace ServerNetworking
                             Ping_data data_to_send = new Ping_data();
                             data_to_send.message_code = TcpMessageCode.REPLY;
                             msg_to_send.data = (Object)data_to_send;
+
                             SendMessageToSocket(msg_to_send, s);
                         }
 
@@ -250,11 +270,13 @@ namespace ServerNetworking
             }
         }
 
-
-
-        public void SendMessage(String username,ServerMsg msg)
+        public void SendMessage(object msg_data, int msg_type, string destination_user)
         {
-            Socket s = GetSocketFromUser(username);
+            ServerMsg msg = new ServerMsg();
+            msg.type = msg_type;
+            msg.data = msg_data;
+
+            Socket s = GetSocketFromUser(destination_user);
             SendMessageToSocket(msg, s);
         }
 
