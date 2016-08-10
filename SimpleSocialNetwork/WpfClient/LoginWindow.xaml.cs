@@ -22,6 +22,7 @@ namespace WpfClient
             if (wpf_app.LoginToServer(this.txtLogin.Text,this.txtPassword.Password))
             {
                 wpf_app.main_window.InitUserList(wpf_app);
+                wpf_app.main_window.InitWall();
                 wpf_app.main_window.Show();
                 this.Hide();
             }            
