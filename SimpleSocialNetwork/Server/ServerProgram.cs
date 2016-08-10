@@ -255,7 +255,7 @@
                 data_to_send.responder = received_data.responder;
                 data_to_send.message_code = TcpMessageCode.DECLINED;
 
-                tcp_server.SendMessage(data_to_send, TcpConst.RESPOND_ADD_FRIEND, received_data.responder);
+                tcp_server.SendMessage(data_to_send, TcpConst.RESPOND_ADD_FRIEND, received_data.requester);
             }
             else
                 tcp_server.SendMessage(received_data, TcpConst.ADD_FRIEND, received_data.responder);
@@ -268,7 +268,7 @@
             if (received_data.message_code == TcpMessageCode.ACCEPTED)
                 sqlite_database.AddFriendRelation(received_data.requester, received_data.responder);
 
-            tcp_server.SendMessage(received_data, TcpConst.ADD_FRIEND, received_data.requester);
+            tcp_server.SendMessage(received_data, TcpConst.RESPOND_ADD_FRIEND, received_data.requester);
         }
 
         private bool AreFriends(string username1, string username2)
