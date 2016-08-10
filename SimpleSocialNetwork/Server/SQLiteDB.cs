@@ -223,9 +223,16 @@ namespace Program
             throw new NotImplementedException();
         }
 
-        internal List<UserEvent> GetEvents(string username)
+        public List<UserEvent> GetAllEventsFromUser( string username)
         {
-            throw new NotImplementedException();
+            List<UserEvent> test = new List<UserEvent>();
+
+            for(int i=0; i<10; i++)
+            {
+                UserEvent nextEvent = new UserEvent();
+                nextEvent.text = String.Format("");
+            }
+            return null;
         }
 
         internal List<string> GetFriends(string username)

@@ -165,12 +165,26 @@
 
         private void SendWall(string user_owning_wall, string user_requesting_wall)
         {
-            List<>
+            List<UserEvent> wall = null;
+
+            wall = sqlite_database.GetAllEventsFromUser(user_owning_wall);
+
             ServerMsg msg_to_send = new ServerMsg();
             msg_to_send.type = TcpConst.GET_WALL;
 
-            GetWallReply_data data_to_send = new GetWallReply_data();
-            data_to_send.
+            if (wall == null)
+                return;
+
+            foreach(UserEvent e in wall)
+            {
+                GetWallReply_data data_to_send = new GetWallReply_data();
+                data_to_send.user = user_owning_wall;
+                data_to_send.wall_event = e;
+
+                msg_to_send.data = data_to_send;
+
+                tcp_server.SendMessage(user_requesting_wall, msg_to_send);
+            }
         }
 
         /// <summary>Gets the data on a specific user from local db, and puts it parameterized into a user-class object.</summary>
@@ -187,7 +201,7 @@
             user.about_user = sqlite_database.GetAbout(username);
             user.interests = sqlite_database.GetInterest(username);
             user.friends = sqlite_database.GetFriends(username);
-            user.wall = sqlite_database.GetEvents(username);
+            user.wall = sqlite_database.GetAllEventsFromUser(username);
             
             return user;
         }
