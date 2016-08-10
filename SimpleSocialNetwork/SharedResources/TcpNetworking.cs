@@ -156,11 +156,7 @@ namespace SharedResources
         /// <summary>The user who's wall is being requested.</summary>
         public String user { get; set; }
 
-        /// <summary>Date and time of wall post</summary>
-        public DateTime time { get; set; }
-
-        /// <summary>Text of post</summary>
-        public String text { get; set; }
+        public UserEvent wall_event { get; set; }
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a update request.</summary>
@@ -248,7 +244,7 @@ namespace SharedResources
     /// <summary>A class to contain information regarding an event/post/log, on a users "wall".</summary>
     public class UserEvent
     {
-        public String time { get; set; }
+        public DateTime time{ get; set; }
         public String text { get; set; }
     }
 

@@ -157,6 +157,20 @@
         {
             GetWallRequest_data received_data = (GetWallRequest_data)data;
 
+            if(AreFriends(received_data.user, received_data.from))
+            {
+                SendWall(received_data.user, received_data.from);
+            }
+        }
+
+        private void SendWall(string user_owning_wall, string user_requesting_wall)
+        {
+            List<>
+            ServerMsg msg_to_send = new ServerMsg();
+            msg_to_send.type = TcpConst.GET_WALL;
+
+            GetWallReply_data data_to_send = new GetWallReply_data();
+            data_to_send.
         }
 
         /// <summary>Gets the data on a specific user from local db, and puts it parameterized into a user-class object.</summary>
