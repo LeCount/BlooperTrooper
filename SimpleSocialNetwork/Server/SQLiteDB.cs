@@ -225,14 +225,18 @@ namespace Program
 
         public List<UserEvent> GetAllEventsFromUser( string username)
         {
+            //temp code...
             List<UserEvent> test = new List<UserEvent>();
 
             for(int i=0; i<10; i++)
             {
                 UserEvent nextEvent = new UserEvent();
-                nextEvent.text = String.Format("");
+                nextEvent.text = String.Format("{0} has done some amazing shit this day...", username, i);
+                nextEvent.time = new DateTime(2016, 8, i);
+                test.Add(nextEvent);
             }
-            return null;
+
+            return test;
         }
 
         internal List<string> GetFriends(string username)
