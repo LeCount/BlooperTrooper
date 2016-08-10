@@ -140,6 +140,9 @@
 
                     break;
                 case TcpConst.CHAT:
+
+                    HandleChatRequest(msg.data);
+
                     break;
                 case TcpConst.GET_WALL:
 
@@ -151,6 +154,25 @@
                 case TcpConst.INVALID:
                     break;
             }
+        }
+
+        private void HandleChatRequest(object data)
+        {
+            //if(AreFriends(received_data.from, received_data.to))
+            //{
+            ForwardChatMessage(data);
+            //}
+        }
+
+        private void ForwardChatMessage(object data)
+        {
+            Chat_data data_to_send = (Chat_data)data;
+
+            ServerMsg msg_to_send = new ServerMsg();
+            msg_to_send.type = TcpConst.CHAT;
+            msg_to_send.data = data_to_send;
+
+            tcp_server.SendMessage(data_to_send.to, msg_to_send);
         }
 
         private void HandleGetWallRequest(object data)

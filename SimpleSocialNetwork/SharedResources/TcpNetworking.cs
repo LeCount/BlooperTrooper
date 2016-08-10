@@ -215,6 +215,9 @@ namespace SharedResources
 
         /// <summary>The user to send message to</summary>
         public String to { get; set; }
+
+        /// <summary>The message</summary>
+        public String text { get; set; }
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when the user wants to add a status message.</summary>
