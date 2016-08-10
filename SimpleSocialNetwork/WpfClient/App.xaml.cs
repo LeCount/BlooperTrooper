@@ -283,7 +283,7 @@ namespace WpfClient
 
                     break;
                 case TcpConst.GET_FRIEND_STATUS:  
-
+                    
                     break;
                 case TcpConst.GET_CLIENT_DATA:
 
