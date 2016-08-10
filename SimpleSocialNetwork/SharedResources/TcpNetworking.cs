@@ -215,6 +215,9 @@ namespace SharedResources
 
         /// <summary>The user to send message to</summary>
         public String to { get; set; }
+
+        /// <summary>The message</summary>
+        public String text { get; set; }
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when the user wants to add a status message.</summary>
@@ -342,7 +345,7 @@ namespace SharedResources
         public const int UPDATE = 8;
         public const int GET_CLIENT_DATA = 9;
         public const int CHAT = 10;
-        public const int ADD_STATUS = 11;
+        public const int ADD_WALL_EVENT = 11;
         public const int GET_WALL = 12;
         public const int PING = 13;
 
