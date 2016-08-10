@@ -119,7 +119,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="$(ProjectDir)serverDB.db" DestinationFolder="$(OutDir)" ContinueOnError="true" />
-  </Target>
+  
 </Project>
