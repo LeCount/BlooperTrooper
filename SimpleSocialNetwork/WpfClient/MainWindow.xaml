@@ -47,11 +47,27 @@
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="100" />
+                <RowDefinition Height="50" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBox x:Name="txtStatus" Height="100" VerticalAlignment="Top" Grid.Row="0" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 0 50 0">Enter Status Message...</TextBox>
+            <TextBox x:Name="txtStatus" Height="50" VerticalAlignment="Top" Grid.Row="0" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 0 50 0">Enter Status Message...</TextBox>
             <Button x:Name="btnStatusSubmit" Grid.Row="0" HorizontalAlignment="Right" Width="50" Click="btnStatusSubmit_Click">Submit</Button>
+
+            <ListBox Name="lbWall" Grid.Row="2" SelectionMode="Single" SelectionChanged="">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Height="30px">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Username}" Foreground="Black" Grid.Column="1" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Username}" Foreground="Black" Grid.Column="1" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
         </Grid>
     </Grid>
 </Window>

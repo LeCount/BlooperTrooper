@@ -281,6 +281,13 @@ namespace WpfClient
                     }
 
                     break;
+                case TcpConst.GET_WALL:
+                    GetWallReply_data gwr = new GetWallReply_data();
+                    gwr = (GetWallReply_data)msg.data;
+
+                    session.AddStatusToWall(gwr.user, gwr.time, gwr.text);
+
+                    break;
                 case TcpConst.GET_FRIEND_STATUS:  
                     
                     break;
