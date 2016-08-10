@@ -23,7 +23,7 @@ namespace WpfClient
         public ObservableCollection<UserSimple> users_list = new ObservableCollection<UserSimple>();
         public bool users_list_collected;
 
-        public ObservableCollection<UserSimple> wall = new ObservableCollection<UserSimple>();
+        public ObservableCollection<WallPost> wall = new ObservableCollection<WallPost>();
 
         private int registration = REGISTRATION_NOTSET;
 
@@ -63,7 +63,11 @@ namespace WpfClient
 
         public void AddStatusToWall(string username, DateTime time, string status)
         {
-
+            WallPost w = new WallPost();
+            w.Username = username;
+            w.Time = time;
+            w.Status = status;
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => this.wall.Add(w)));
         }
     }
 
