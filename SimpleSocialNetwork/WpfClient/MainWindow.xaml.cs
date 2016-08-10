@@ -50,7 +50,10 @@ namespace WpfClient
             ListBox lbx = sender as ListBox;
 
             if(lbUserList.SelectedItem != null)
+            {
                 wpf_app.GetWallFromUser(((UserSimple)lbUserList.SelectedItem).Username);
+                txtWall.Text = "Wall of " + ((UserSimple)lbUserList.SelectedItem).Username;
+            }
         }
 
         /// <summary>Initialize and populate the wall</summary>

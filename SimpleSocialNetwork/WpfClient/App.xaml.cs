@@ -216,6 +216,15 @@ namespace WpfClient
             return true;
         }
 
+        public void CreateChatWindow(string username)
+        {
+            ChatWindow chatwindow = new ChatWindow();
+
+            chatwindow.Show();
+
+            return;
+        }
+
         /// <summary>Depending on the reply that was received, handle it accordingly. </summary>
         /// <param name="msg">Received message.</param>
         private void HandleServerReplies(ServerMsg msg)
@@ -268,8 +277,7 @@ namespace WpfClient
                     break;
 
                 case TcpConst.GET_USERS:
-                    GetUsersReply_data udr = new GetUsersReply_data();
-                    udr = (GetUsersReply_data)msg.data;
+                    GetUsersReply_data udr = (GetUsersReply_data)msg.data;
 
                     session.AddUserToList(udr.username, udr.friend_status );
 
@@ -278,8 +286,7 @@ namespace WpfClient
                     break;
 
                 case TcpConst.ADD_FRIEND:
-                    AddFriendRequest_data afreq = new AddFriendRequest_data();
-                    afreq = (AddFriendRequest_data)msg.data;
+                    AddFriendRequest_data afreq = (AddFriendRequest_data)msg.data;
 
                     MessageBoxResult result = MessageBox.Show("User " + afreq.requester + " wants to be your friend!\nDo you accept?", "Friend Request", MessageBoxButton.YesNo);
 
@@ -298,6 +305,9 @@ namespace WpfClient
                             tcp_networking.Client_send(afres, TcpConst.RESPOND_ADD_FRIEND, client_stream);
                             break;
                     }
+
+                    break;
+                case TcpConst.RESPOND_ADD_FRIEND:
 
                     break;
                 case TcpConst.GET_WALL:

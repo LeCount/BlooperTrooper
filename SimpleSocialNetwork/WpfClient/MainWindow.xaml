@@ -47,18 +47,20 @@
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="40" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBox x:Name="txtStatus" Height="50" VerticalAlignment="Top" Grid.Row="0" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 0 50 0">Enter Status Message...</TextBox>
-            <Button x:Name="btnStatusSubmit" Grid.Row="0" HorizontalAlignment="Right" Width="50" Click="btnStatusSubmit_Click">Submit</Button>
+            <TextBlock x:Name="txtWall" Height="40" VerticalAlignment="Top" Padding="10" Background="Black" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Wall</TextBlock>
+            <TextBox x:Name="txtStatus" Height="40" VerticalAlignment="Top" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 0 50 0">Enter Status Message...</TextBox>
+            <Button x:Name="btnStatusSubmit" Grid.Row="1" HorizontalAlignment="Right" Width="50" Click="btnStatusSubmit_Click">Submit</Button>
 
             <ListBox Name="lbWall" Grid.Row="2" SelectionMode="Single">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="30px">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding Username}" Foreground="Black" Grid.Column="0" Margin="5 0 0 0" VerticalAlignment="Center"/>

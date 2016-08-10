@@ -249,6 +249,8 @@ namespace SharedResources
         public String text { get; set; }
     }
 
+
+
     /// <summary>A class with methods for validating expressions and formats.</summary>
     public static class Validation
     {
