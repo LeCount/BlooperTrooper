@@ -24,6 +24,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <TextBlock Height="40" VerticalAlignment="Top" Padding="10" Background="Black" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Users</TextBlock>
             <Button x:Name="btnRefreshUserList" Height="20" BorderThickness="0"  BorderBrush="#F8F8F8" Background="#FFFFFF" Grid.Row="1" Click="btnRefreshUserList_Click" Padding="0">Refresh</Button>
@@ -42,8 +43,9 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button x:Name="btnAddFriend" Height="40" BorderThickness="0" Background="#F8F8F8" Grid.Row="3" Click="btnAddFriend_Click">Add Friend</Button>
-            <Button x:Name="btnLogOut" Height="40" Background="#F8F8F8" Grid.Row="4" Click="btnLogOut_Click">Log out</Button>
+            <Button x:Name="btnStartChat" Height="40" BorderThickness="0" Background="#F8F8F8" Grid.Row="3" Click="btnStartChat_Click">Chat</Button>
+            <Button x:Name="btnAddFriend" Height="40" BorderThickness="0" Background="#F8F8F8" Grid.Row="4" Click="btnAddFriend_Click">Add Friend</Button>
+            <Button x:Name="btnLogOut" Height="40" Background="#F8F8F8" Grid.Row="5" Click="btnLogOut_Click">Log out</Button>
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>

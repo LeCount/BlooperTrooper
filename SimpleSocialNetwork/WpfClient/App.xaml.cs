@@ -5,6 +5,8 @@ using System.Threading;
 using SharedResources;
 using System.Net.Sockets;
 using ClientNetworking;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace WpfClient
 {
@@ -18,6 +20,8 @@ namespace WpfClient
 
         /// <summary>A medium for providing client connections for TCP network services.</summary>
         private TcpClient tcp_client = null;
+
+        private Hashtable chat_table = new Hashtable();
 
         /// <summary>Session class to keep track of current session</summary>
         public Session session = new Session();
@@ -216,13 +220,30 @@ namespace WpfClient
             return true;
         }
 
-        public void CreateChatWindow(string username)
+        public void StartChat(string username)
         {
             ChatWindow chatwindow = new ChatWindow();
 
+            chatwindow.Title = username;
             chatwindow.Show();
 
+            List<string> chat = new List<string>();
+            chat_table.Add(username, chat);
+
             return;
+        }
+
+        public void SendChatMessage(string text, string username)
+        {
+            Chat_data textToSend = new Chat_data();
+            textToSend.text = text;
+            textToSend.from = session.GetCurrentUsername();
+            textToSend.to = username;
+            tcp_networking.Client_send(textToSend, TcpConst.CHAT, client_stream);
+
+            // Add to local chat list
+            ((List<string>)chat_table[username]).Add(text);
+
         }
 
         /// <summary>Depending on the reply that was received, handle it accordingly. </summary>
@@ -324,6 +345,19 @@ namespace WpfClient
 
                     break;
                 case TcpConst.CHAT:
+                    Chat_data received_data = (Chat_data)msg.data;
+
+                    string chatuser = received_data.from;
+
+                    if (chat_table.ContainsKey(chatuser))
+                    {
+                        // Add message to chat list
+                        ((List<string>)chat_table[chatuser]).Add(received_data.text);
+                    }
+                    else
+                    {
+                        StartChat(received_data.from);
+                    }
 
                     break;
                 default: break;

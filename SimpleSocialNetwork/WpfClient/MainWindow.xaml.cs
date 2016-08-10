@@ -99,5 +99,11 @@ namespace WpfClient
         {
             wpf_app.AddStatusMessage(txtStatus.Text);
         }
+
+        private void btnStartChat_Click(object sender, RoutedEventArgs e)
+        {
+            string selected_user = ((UserSimple)lbUserList.SelectedItem).Username;
+            wpf_app.StartChat(selected_user);
+        }
     }
 }
