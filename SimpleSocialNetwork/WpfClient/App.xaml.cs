@@ -153,7 +153,6 @@ namespace WpfClient
             //TODO This method for waiting for server reply is quite unreliable. Mby a more vell structured syncronization mechanism should be used, or the client should ask the server if the join request succeeded.
             Thread.Sleep(1000);
 
-            //registration is 0, but registration is successfull 0o????
             if (session.GetRegistrationStatus() == Session.REGISTRATION_SUCCESS)
             {
                 MessageBox.Show("Registration succeeded.");

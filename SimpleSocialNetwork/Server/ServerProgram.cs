@@ -49,7 +49,6 @@
 
         private Thread get_next_request = null;
 
-
         public ServerApp()
         {
             Init(null, null);
@@ -106,9 +105,8 @@
                     break;
                 case TcpConst.LOGOUT:
 
-                    //Remove the user from the userlist on server
+                    //Remove the user from the userlist of cached users on the server
                     //networking.RemoveUserFromList(user.username);
-
 
                     break;
                 case TcpConst.GET_USERS:
@@ -144,12 +142,35 @@
                 case TcpConst.CHAT:
                     break;
                 case TcpConst.GET_WALL:
+
+                    HandleGetWallRequest(msg.data);
+
                     break;
                 case TcpConst.ADD_STATUS:
                     break;
                 case TcpConst.INVALID:
                     break;
             }
+        }
+
+        private void HandleGetWallRequest(object data)
+        {
+            GetWallRequest_data received_data = (GetWallRequest_data)data;
+
+            if(AreFriends(received_data.user, received_data.from))
+            {
+                SendWall(received_data.user, received_data.from);
+            }
+        }
+
+        private void SendWall(string user_owning_wall, string user_requesting_wall)
+        {
+            List<>
+            ServerMsg msg_to_send = new ServerMsg();
+            msg_to_send.type = TcpConst.GET_WALL;
+
+            GetWallReply_data data_to_send = new GetWallReply_data();
+            data_to_send.
         }
 
         /// <summary>Gets the data on a specific user from local db, and puts it parameterized into a user-class object.</summary>
@@ -309,7 +330,6 @@
 
             tcp_server.SendMessage(received_data.requester, msg);
         }
-
 
         private bool AreFriends(string username1, string username2)
         {
