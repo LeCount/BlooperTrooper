@@ -49,23 +49,13 @@ namespace WpfClient
         ///<summary>Login to server</summary>
         public bool LoginToServer(string username, string password)
         {
-            tcp_client = new TcpClient();
+            if(tcp_client==null)
+                tcp_client = new TcpClient();
 
             //TODO: Server ip is assumed to be local host at the moment.
-            client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
+            if(client_stream == null)
+                client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT); 
 
-            add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
-            add_messages.Start();
-
-            handle_messages = new Thread(GetNextMessage);
-            handle_messages.Start();
-
-            ping_server = new Thread(() => tcp_networking.ServerStatusPing(client_stream));
-            ping_server.Start();
-
-            Thread.Sleep(100);
-
-            int timeout_counter = 0;
             session.SetLoggedInStatus(0);
             session.SetCurrentUsername(username);
             LoginRequest_data loginData = new LoginRequest_data();
@@ -75,11 +65,24 @@ namespace WpfClient
 
             tcp_networking.Client_send(loginData, TcpConst.LOGIN, client_stream);
 
-            while(timeout_counter < 100)
+            handle_messages = new Thread(GetNextMessage);
+            handle_messages.Start();
+
+            add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
+            add_messages.Start();
+
+            Thread.Sleep(100);
+
+            int timeout_counter = 0;
+            while (timeout_counter < 100)
             {
                 if (session.GetLoggedInStatus() == 1)
                 {
                     main_window.Title = "Simple Social Network - " + username;
+
+                    ping_server = new Thread(() => tcp_networking.ServerStatusPing(client_stream));
+                    ping_server.Start();
+
                     return true;
                 }
                 else if (session.GetLoggedInStatus() == -1)
@@ -105,7 +108,15 @@ namespace WpfClient
             if (handle_messages.IsAlive)
                 handle_messages.Abort();
 
-            tcp_client.Close();
+            try
+            {
+                tcp_client.Close();
+                client_stream.Close();
+            }
+            catch(Exception){}
+
+            tcp_client = null;
+            client_stream = null;
 
             session.SetLoggedOut();
             login_window.Show();
@@ -113,36 +124,40 @@ namespace WpfClient
 
         public bool RequestToJoinSocialNetwork(string username, string password, string email, string firstName, string lastName, string about, string interests)
         {
+            if (tcp_client == null)
+                tcp_client = new TcpClient();
+
+            if (client_stream == null)
+                client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
+
             session.SetRegistrationNotSet();
 
-            JoinRequest_data j = new JoinRequest_data();
-            j.password = password;
-            j.username = username;
-            j.mail = email;
-            j.name = firstName;
-            j.surname = lastName;
-            j.about_user = about;
-            j.interests = interests;
+            JoinRequest_data data_to_send = new JoinRequest_data();
+            data_to_send.password = password;
+            data_to_send.username = username;
+            data_to_send.mail = email;
+            data_to_send.name = firstName;
+            data_to_send.surname = lastName;
+            data_to_send.about_user = about;
+            data_to_send.interests = interests;
 
-            tcp_networking.Client_send(j, TcpConst.JOIN, client_stream);
+            tcp_networking.Client_send(data_to_send, TcpConst.JOIN, client_stream);
 
             // Wait for registration confirmation
-            for (int i=0;  session.GetRegistrationStatus() == Session.REGISTRATION_NOTSET && i < 10; i++)
+            Thread.Sleep(500);
+
+
+            //registration is 0, but registration is successfull 0o????
+            if (session.GetRegistrationStatus() == Session.REGISTRATION_SUCCESS)
             {
-                if (session.GetRegistrationStatus() == Session.REGISTRATION_SUCCESS)
-                    return true;
-
-                else if (session.GetRegistrationStatus() == Session.REGISTRATION_FAILED)
-                {
-                    MessageBox.Show("Registration failed");
-                    return false;
-                }
-                    
-                Thread.Sleep(500);
+                MessageBox.Show("Registration succeeded.");
+                return true;
             }
-
-            MessageBox.Show("Registration Timeout");
-            return false;
+            else
+            {
+                MessageBox.Show("Registration failed.");
+                return false;
+            }
         }
 
         public bool RequestAllAvailableUsers()
@@ -198,22 +213,17 @@ namespace WpfClient
                     break;
 
                 case TcpConst.JOIN:
-                    JoinReply_data joinreply = new JoinReply_data();
-                    joinreply = (JoinReply_data)msg.data;
+                    JoinReply_data join_reply = (JoinReply_data)msg.data;
 
-                    if (joinreply.message_code == TcpMessageCode.ACCEPTED)
+                    if (join_reply.message_code == TcpMessageCode.ACCEPTED)
                     {
                         session.SetRegistrationSuccessful();
-                        MessageBox.Show("Successfully Registered");
                         log.Add("Successfully Registeded user");
-
                     }
                     else
                     {
                         session.SetRegistrationFailed();
-                        MessageBox.Show("Registration Failed");
                         log.Add("Registration of user failed");
-
                     }
                     break;
 
@@ -317,7 +327,5 @@ namespace WpfClient
 
             tcp_client.Close();  
         }
-
     }
-
 }

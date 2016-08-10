@@ -29,11 +29,11 @@ namespace WpfClient
             Hide();
         }
 
-        public void initUserList(App application)
+        public void InitUserList(App application)
         {
             lbUserList.ItemsSource = application.session.users_list;
-            application.RequestAllAvailableUsers();
-            lbUserList.Items.Refresh();
+            wpf_app.RequestAllAvailableUsers();
+            //lbUserList.Items.Refresh();
         }
 
         public void RefreshUserList()

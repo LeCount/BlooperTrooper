@@ -21,15 +21,10 @@ namespace WpfClient
         {
             if (wpf_app.LoginToServer(this.txtLogin.Text,this.txtPassword.Password))
             {
-                wpf_app.main_window.initUserList(wpf_app);
+                wpf_app.main_window.InitUserList(wpf_app);
                 wpf_app.main_window.Show();
                 this.Hide();
-            }
-            else
-            {
-                MessageBox.Show("Login Failed.");
-            }
-            
+            }            
         }
 
         private void lblRegister_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -37,7 +32,7 @@ namespace WpfClient
             Hide();
             RegisterWindow register = new RegisterWindow();
             register.Owner = this;
-            Nullable<bool> dialogResult = register.ShowDialog();
+            bool? dialogResult = register.ShowDialog();
             Show();
         }
 
