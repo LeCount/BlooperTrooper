@@ -79,6 +79,7 @@
                 case TcpConst.GET_FRIEND_STATUS:
                     break;
                 case TcpConst.ADD_WALL_EVENT:
+                    AddWallPostToDB(msg.data);
                     break;
                 case TcpConst.GET_WALL:
                     HandleGetWallRequest(msg.data);
@@ -100,6 +101,13 @@
                 default:
                     break;
             }
+        }
+
+        private void AddWallPostToDB(object data)
+        {
+            AddStatus_data received_data = (AddStatus_data)data;
+
+            AddWallPost(received_data.from, received_data.statusText);
         }
 
         private void HandleChatRequest(object data)
