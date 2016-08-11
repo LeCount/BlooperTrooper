@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using SharedResources;
+using System.Linq;
 
 namespace Program
 {
@@ -97,6 +98,20 @@ namespace Program
                                     ")";
                 query.ExecuteNonQuery();
             }
+        }
+
+        internal void AddWallPost(string wall_owner, string text)
+        {
+            int u_id = GetUserId(wall_owner);
+
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = string.Format("INSERT INTO Event(id_user, text, date) VALUES('{0}', '{1}', '{2}')",u_id, text, DateTime.Now.ToString());
+
+            query.ExecuteNonQuery();
+
         }
 
         public void Disconnect()
@@ -199,34 +214,56 @@ namespace Program
             return all_users;
         }
 
-        internal string GetMail(string username)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal string GetName(string username)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal string GetSurname(string username)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal string GetAbout(string username)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal string GetInterest(string username)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<UserEvent> GetAllEventsFromUser( string username)
         {
-            //temp code...
+            int u_id = GetUserId(username);
+
+            List<UserEvent> all_events = new List<UserEvent>();
+
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+            query.CommandType = CommandType.Text;
+            query.CommandText = string.Format("SELECT text FROM Event WHERE id_user = {0}", u_id);
+
+            SQLiteDataReader reader = query.ExecuteReader();
+            List<String> all_event_texts = new List<string>();
+
+
+            while (reader.Read())
+            {
+                all_event_texts.Add(reader.GetString(0));
+            }
+
+            reader.Close();
+
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+            query.CommandType = CommandType.Text;
+            query.CommandText = string.Format("SELECT date FROM Event WHERE id_user = {0}", u_id);
+
+            reader = query.ExecuteReader();
+            List<string> all_event_dates = new List<string>();
+
+
+            while (reader.Read())
+            {
+                all_event_dates.Add(reader.GetString(0));
+            }
+
+            reader.Close();
+
+            for (int i = 0; i < all_event_texts.Count; i++)
+            {
+                UserEvent e = new UserEvent();
+                e.text = all_event_texts.ElementAt(i);
+                e.time = Convert.ToDateTime(all_event_dates.ElementAt(i));
+
+                all_events.Add(e);
+            }
+
+            return all_events;
+
+
             List<UserEvent> test = new List<UserEvent>();
 
             for(int i=1; i<10; i++)
@@ -240,17 +277,6 @@ namespace Program
             return test;
         }
 
-        internal List<string> GetFriends(string username)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// It works!
-        /// </summary>
-        /// <param name="user_id1"></param>
-        /// <param name="user_id2"></param>
-        /// <returns></returns>
         internal bool FriendRelationExists(int user_id1, int user_id2)
         {
             
@@ -258,9 +284,6 @@ namespace Program
             query.Connection = DBconnection;
 
             query.CommandText = string.Format("SELECT Count(*) FROM Relation WHERE user1 = {0} AND user2 = {1} OR user1 = {1} AND user2 = {0}", user_id1, user_id2);
-
-            //this works
-            //query.CommandText = "SELECT COUNT(*) FROM Relation WHERE user1 = 'test2'  AND user2 = 'test1'  OR user1 = 'test1' AND user2 = 'test2'";
 
             object obj = query.ExecuteScalar();
             int occurrences = Convert.ToInt32(obj);
@@ -271,11 +294,6 @@ namespace Program
                 return false;
         }
 
-        /// <summary>
-        /// It works!
-        /// </summary>
-        /// <param name="requester_name"></param>
-        /// <param name="responder_name"></param>
         internal void AddFriendRelation(string requester_name, string responder_name)
         {
             if (!FriendRelationExists(GetUserId(requester_name), GetUserId(responder_name)))
