@@ -78,6 +78,8 @@
                     break;
                 case TcpConst.GET_FRIEND_STATUS:
                     break;
+                case TcpConst.ADD_WALL_EVENT:
+                    break;
                 case TcpConst.GET_WALL:
                     HandleGetWallRequest(msg.data);
                     break;
@@ -93,8 +95,7 @@
                     //Add requested user to userlist on server
                     //networking.AddToUserList(GetUserFromDB(user.username));
                     break;
-                case TcpConst.ADD_WALL_EVENT:
-                    break;
+
                 case TcpConst.INVALID:
                 default:
                     break;
@@ -119,10 +120,10 @@
         {
             GetWallRequest_data received_data = (GetWallRequest_data)data;
 
-            //if(AreFriends(received_data.user, received_data.from))
-            //{
+            if(AreFriends(received_data.user, received_data.from))
+            {
                 SendWall(received_data.user, received_data.from);
-            //}
+            }
         }
 
         private void SendWall(string user_owning_wall, string user_requesting_wall)
@@ -152,12 +153,6 @@
 
             user.last_requested = DateTime.Today;
             user.name = username;
-            user.mail = sqlite_database.GetMail(username);
-            user.name = sqlite_database.GetName(username);
-            user.surname = sqlite_database.GetSurname(username);
-            user.about_user = sqlite_database.GetAbout(username);
-            user.interests = sqlite_database.GetInterest(username);
-            user.friends = sqlite_database.GetFriends(username);
             user.wall = sqlite_database.GetAllEventsFromUser(username);
             
             return user;
@@ -223,7 +218,7 @@
         {
             GetUsersRequest_data received_data = (GetUsersRequest_data)obj;
 
-            List<String> all_usernames = GetAllUsersFromDB();
+            List<string> all_usernames = GetAllUsersFromDB();
 
             for(int i=0; i<all_usernames.Count; i++)
             {
@@ -273,7 +268,7 @@
 
         private bool AreFriends(string username1, string username2)
         {
-            return sqlite_database.CheckFriendStatus(username1, username2);
+            return sqlite_database.FriendRelationExists(sqlite_database.GetUserId(username1), sqlite_database.GetUserId(username2));
         }
 
         private List<String> GetAllUsersFromDB()
