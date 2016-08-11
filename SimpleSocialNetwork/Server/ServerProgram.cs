@@ -39,6 +39,11 @@
 
             get_next_request = new Thread(executeRequests);
             get_next_request.Start();
+
+            //Testcases
+            //sqlite_database.GetUserId("A");//works
+            //sqlite_database.AddFriendRelation("A", "B"); //works!
+            //sqlite_database.FriendRelationExists(sqlite_database.GetUserId("A"), sqlite_database.GetUserId("B")); //works!
         }
 
         private void executeRequests()
@@ -223,7 +228,7 @@
         {
             GetUsersRequest_data received_data = (GetUsersRequest_data)obj;
 
-            List<String> all_usernames = GetAllUsersFromDB();
+            List<string> all_usernames = GetAllUsersFromDB();
 
             for(int i=0; i<all_usernames.Count; i++)
             {
@@ -273,7 +278,7 @@
 
         private bool AreFriends(string username1, string username2)
         {
-            return sqlite_database.CheckFriendStatus(username1, username2);
+            return sqlite_database.FriendRelationExists(sqlite_database.GetUserId(username1), sqlite_database.GetUserId(username2));
         }
 
         private List<String> GetAllUsersFromDB()

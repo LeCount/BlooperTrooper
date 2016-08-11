@@ -106,17 +106,18 @@ namespace Program
 
         internal int GetUserId(String username)
         {
-            int id = -1;
+            int id;
 
             if(EntryExistsInTable(username, "User", "username"))
             {
                 query = new SQLiteCommand();
                 query.Connection = DBconnection;
 
-                query.CommandText = "SELECT user_id, * FROM User WHERE username = " + username;
+                query.CommandText = string.Format("SELECT id_user FROM User WHERE username = '{0}'", username); 
                 string text = query.CommandText;
 
-                object obj = query.ExecuteNonQuery();
+                object obj = query.ExecuteScalar();
+                
                 id = Convert.ToInt32(obj);
 
                 return id;
@@ -244,14 +245,52 @@ namespace Program
             throw new NotImplementedException();
         }
 
-        internal bool CheckFriendStatus(string username1, string username2)
+        /// <summary>
+        /// It works!
+        /// </summary>
+        /// <param name="user_id1"></param>
+        /// <param name="user_id2"></param>
+        /// <returns></returns>
+        internal bool FriendRelationExists(int user_id1, int user_id2)
         {
-            return false;
+            
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+
+            query.CommandText = string.Format("SELECT Count(*) FROM Relation WHERE user1 = {0} AND user2 = {1} OR user1 = {1} AND user2 = {0}", user_id1, user_id2);
+
+            //this works
+            //query.CommandText = "SELECT COUNT(*) FROM Relation WHERE user1 = 'test2'  AND user2 = 'test1'  OR user1 = 'test1' AND user2 = 'test2'";
+
+            object obj = query.ExecuteScalar();
+            int occurrences = Convert.ToInt32(obj);
+
+            if (occurrences > 0)
+                return true;
+            else
+                return false;
         }
 
-        internal void AddFriendRelation(string requester, string responder)
+        /// <summary>
+        /// It works!
+        /// </summary>
+        /// <param name="requester_name"></param>
+        /// <param name="responder_name"></param>
+        internal void AddFriendRelation(string requester_name, string responder_name)
         {
-            return;
+            if (!FriendRelationExists(GetUserId(requester_name), GetUserId(responder_name)))
+            {
+                int id_req_user = GetUserId(requester_name);
+                int id_res_user = GetUserId(responder_name);
+
+                query = new SQLiteCommand();
+                query.Connection = DBconnection;
+                query.CommandType = CommandType.Text;
+
+                query.CommandText = string.Format("INSERT INTO Relation(user1, user2) VALUES({0}, {1})", id_req_user, id_res_user);
+
+                query.ExecuteNonQuery();
+            }
         }
     }
 }

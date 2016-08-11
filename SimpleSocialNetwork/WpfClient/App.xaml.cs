@@ -452,7 +452,8 @@ namespace WpfClient
             if (handle_messages.IsAlive)
                 handle_messages.Abort();
 
-            tcp_client.Close();  
+            try {tcp_client.Close();}
+            catch (Exception) { }
         }
     }
 }
