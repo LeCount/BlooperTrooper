@@ -263,18 +263,6 @@ namespace Program
 
             return all_events;
 
-
-            List<UserEvent> test = new List<UserEvent>();
-
-            for(int i=1; i<10; i++)
-            {
-                UserEvent nextEvent = new UserEvent();
-                nextEvent.text = String.Format("{0} has done some amazing shit this day...", username, i);
-                nextEvent.time = new DateTime(2016, 8, i);
-                test.Add(nextEvent);
-            }
-
-            return test;
         }
 
         internal bool FriendRelationExists(int user_id1, int user_id2)
