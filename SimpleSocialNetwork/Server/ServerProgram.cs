@@ -107,7 +107,7 @@
         {
             AddStatus_data received_data = (AddStatus_data)data;
 
-            AddWallPost(received_data.from, received_data.statusText);
+            AddWallPost(received_data.to, received_data.statusText);
         }
 
         private void HandleChatRequest(object data)
