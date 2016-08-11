@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 
@@ -21,7 +22,8 @@ namespace WpfClient
         {
             if (wpf_app.LoginToServer(this.txtLogin.Text,this.txtPassword.Password))
             {
-                wpf_app.main_window.InitUserList(wpf_app);
+                Thread.Sleep(100);
+                wpf_app.main_window.InitUserList();
                 wpf_app.main_window.InitWall();
                 wpf_app.main_window.Show();
                 this.Hide();
