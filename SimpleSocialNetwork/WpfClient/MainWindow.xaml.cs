@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -29,11 +30,10 @@ namespace WpfClient
             Hide();
         }
 
-        public void InitUserList(App application)
+        public void InitUserList()
         {
-            lbUserList.ItemsSource = application.session.users_list;
+            lbUserList.ItemsSource = wpf_app.session.users_list;
             wpf_app.RequestAllAvailableUsers();
-            //lbUserList.Items.Refresh();
         }
 
         public void RefreshUserList()
@@ -41,6 +41,24 @@ namespace WpfClient
             Dispatcher.Invoke(new Action(delegate ()
             {
                 lbUserList.Items.Refresh();
+            }
+            ));
+        }
+
+        /// <summary>Initialize and populate the wall</summary>
+        public void InitWall()
+        {
+            lbWall.ItemsSource = wpf_app.session.wall;
+
+            RefreshWall();
+        }
+
+        /// <summary>Refresh wall</summary>
+        public void RefreshWall()
+        {
+            Dispatcher.Invoke(new Action(delegate ()
+            {
+                lbWall.Items.Refresh();
             }
             ));
         }
@@ -54,23 +72,6 @@ namespace WpfClient
                 wpf_app.GetWallFromUser(((UserSimple)lbUserList.SelectedItem).Username);
                 txtWall.Text = "Wall of " + ((UserSimple)lbUserList.SelectedItem).Username;
             }
-        }
-
-        /// <summary>Initialize and populate the wall</summary>
-        public void InitWall()
-        {
-            lbWall.ItemsSource = wpf_app.session.wall;
-
-            RefreshWall();
-        }
-        /// <summary>Refresh wall</summary>
-        public void RefreshWall()
-        {
-            Dispatcher.Invoke(new Action(delegate ()
-            {
-                lbWall.Items.Refresh();
-            }
-            ));
         }
 
         private void btnAddFriend_Click(object sender, RoutedEventArgs e)

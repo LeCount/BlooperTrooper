@@ -55,11 +55,11 @@ namespace WpfClient
             if (client_stream == null)
                 client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
 
-            handle_messages = new Thread(GetNextMessage);
+           /* handle_messages = new Thread(GetNextMessage);
             handle_messages.Start();
 
             add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
-            add_messages.Start();
+            add_messages.Start();*/
 
             main_window = new MainWindow();
             login_window = new LoginWindow();
@@ -75,9 +75,11 @@ namespace WpfClient
             if(client_stream == null)
                 client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
 
+            log.Add("Starting handle message thread");
             handle_messages = new Thread(GetNextMessage);
             handle_messages.Start();
 
+            log.Add("Starting add message thread");
             add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
             add_messages.Start();
 
@@ -353,11 +355,8 @@ namespace WpfClient
 
                 case TcpConst.GET_USERS:
                     GetUsersReply_data udr = (GetUsersReply_data)msg.data;
-
-                    session.AddUserToList(udr.username, udr.friend_status );
-
-                    main_window.RefreshUserList();
                     log.Add("Added user" + udr.username);
+                    session.AddUserToList(udr.username, udr.friend_status );
                     break;
 
                 case TcpConst.ADD_FRIEND:

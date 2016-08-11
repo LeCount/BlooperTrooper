@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -11,7 +12,9 @@ namespace ClientNetworking
 {
     public class ClientTCP
     {
-        private List<ServerMsg> message_list = new List<ServerMsg>();
+        private AppLogger log = new AppLogger();
+
+        private Queue<ServerMsg> message_list = new Queue<ServerMsg>();
         private bool server_alive = false;
         private bool connected = false;
         private static Serializer s = new Serializer();
@@ -98,7 +101,7 @@ namespace ClientNetworking
 
                     if (msg != null)
                     {
-                        message_list.Add(msg);
+                        message_list.Enqueue(msg);
                     }
 
                     numOfBytesRead = 0;
@@ -117,8 +120,7 @@ namespace ClientNetworking
 
             if (message_list.Count > 0 && message_list != null)
             {
-                msg = message_list.ElementAt(0);
-                message_list.RemoveAt(0);
+                msg = message_list.Dequeue();
             }
 
             return msg;
