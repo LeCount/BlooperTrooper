@@ -203,9 +203,11 @@ namespace WpfClient
             return true;
         }
 
-        public bool AddStatusMessage(string status)
+        public bool AddStatusMessage(string status, string to)
         {
             AddStatus_data asd = new AddStatus_data();
+            asd.from = session.GetCurrentUsername();
+            asd.to = to;
             asd.statusText = status;
             tcp_networking.Client_send(asd, TcpConst.ADD_WALL_EVENT, client_stream);
             return true;

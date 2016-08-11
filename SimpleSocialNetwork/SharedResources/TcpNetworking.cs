@@ -226,7 +226,8 @@ namespace SharedResources
     {
         /// <summary> Status text.</summary>
         public String statusText { get; set; }
-
+        public String from { get; set; }
+        public String to { get; set; }
     }
 
     /// <summary>A class for having parameterized user information available in memory, on the server and the client.</summary>

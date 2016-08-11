@@ -267,11 +267,14 @@ namespace Program
 
         internal bool FriendRelationExists(int user_id1, int user_id2)
         {
-            
+
+            if (user_id1 == user_id2)
+                return false;
+
             query = new SQLiteCommand();
             query.Connection = DBconnection;
 
-            query.CommandText = string.Format("SELECT Count(*) FROM Relation WHERE user1 = {0} AND user2 = {1} OR user1 = {1} AND user2 = {0}", user_id1, user_id2);
+            query.CommandText = string.Format("SELECT Count(*) FROM Relation WHERE id_user1 = {0} AND id_user2 = {1} OR id_user1 = {1} AND id_user2 = {0}", user_id1, user_id2);
 
             object obj = query.ExecuteScalar();
             int occurrences = Convert.ToInt32(obj);
@@ -293,7 +296,7 @@ namespace Program
                 query.Connection = DBconnection;
                 query.CommandType = CommandType.Text;
 
-                query.CommandText = string.Format("INSERT INTO Relation(user1, user2) VALUES({0}, {1})", id_req_user, id_res_user);
+                query.CommandText = string.Format("INSERT INTO Relation(id_user1, id_user2) VALUES({0}, {1})", id_req_user, id_res_user);
 
                 query.ExecuteNonQuery();
             }
