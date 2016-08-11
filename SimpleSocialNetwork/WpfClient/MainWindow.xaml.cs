@@ -61,15 +61,7 @@ namespace WpfClient
         {
             lbWall.ItemsSource = wpf_app.session.wall;
 
-            WallPost wp = new WallPost();
-            wp.Username = "Kalle";
-            wp.Status = "Hej! This is a test";
-            wp.Time = DateTime.Now;
-
-            wpf_app.session.wall.Add(wp);
-
             RefreshWall();
-
         }
         /// <summary>Refresh wall</summary>
         public void RefreshWall()

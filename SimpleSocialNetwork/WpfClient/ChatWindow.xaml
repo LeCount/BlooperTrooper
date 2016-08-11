@@ -15,19 +15,24 @@
         <ListBox x:Name="listbox_chat_log" Grid.Row="0" SelectionMode="Single">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Height="30px">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="40" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="230" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Username}" Foreground="Black" Grid.Column="0" Margin="5 0 0 0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Message}" Foreground="Black" Grid.Column="1" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="10"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{Binding Username}" Foreground="Black" Grid.Column="0" Grid.Row="0" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding MessageText}" Foreground="Black" Grid.Column="1" Grid.Row="0" Margin="5 0 0 0" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding Time}" Grid.Column="1" Grid.Row="1" Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="8" Foreground="#e5e5e5"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <TextBox x:Name="txtbox_chat" Grid.Row="1" Margin="0 0 50 0" />
+        <TextBox x:Name="txtbox_chat" Grid.Row="1" Margin="0 0 50 0" KeyUp="txtbox_chat_KeyDown" TextWrapping="Wrap"/>
         <Button 
             x:Name="btnSubmit" 
             Grid.Row="1" 

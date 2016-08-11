@@ -23,7 +23,7 @@ namespace WpfClient
         /// <summary>A medium for providing client connections for TCP network services.</summary>
         private TcpClient tcp_client = null;
 
-        private Hashtable chat_conversations = new Hashtable();
+        public Hashtable chat_conversations = new Hashtable();
 
         /// <summary>Session class to keep track of current session</summary>
         public Session session = new Session();
@@ -224,14 +224,21 @@ namespace WpfClient
 
         public void StartChat(string username)
         {
-            ChatWindow chat_window = new ChatWindow(username);
+            if (!chat_conversations.ContainsKey(username))
+            {
+                ObservableCollection<ChatMessage> new_conversation = new ObservableCollection<ChatMessage>();
+                chat_conversations.Add(username, new_conversation);
+            }
 
-            chat_window.Title = username;
-            chat_window.Show();
-
-            ObservableCollection<string> new_conversation = new ObservableCollection<string>();
-            chat_conversations.Add(username, new_conversation);
-
+            Dispatcher.Invoke(new Action(delegate ()
+            {
+                ChatWindow chat_window = new ChatWindow(username);
+                chat_window.Title = string.Format("[{0}] \tConversation with {1}", session.GetCurrentUsername(), username);
+                chat_window.Show();
+            }
+            ));
+            
+                
             return;
         }
 
@@ -243,36 +250,54 @@ namespace WpfClient
             textToSend.to = username;
             tcp_networking.Client_send(textToSend, TcpConst.CHAT, client_stream);
 
-            AddChatMsgToConversation(username, text);
+            AddChatMessage(new ChatMessage(username, text), true);
         }
 
-        public void AddChatMsgToConversation(string username, string text)
+        private void AddChatMessage(ChatMessage msg, bool self)
         {
-            if (((ObservableCollection<string>)chat_conversations[username]) == null)
-                chat_conversations.Add(username, new ObservableCollection<string>());
+            string from_user = "";
 
-            ((ObservableCollection<string>)chat_conversations[username]).Add(text);
+            if (self)
+                from_user = session.GetCurrentUsername();
+            else
+                from_user = msg.Username;
+
+            Dispatcher.Invoke(new Action(delegate ()
+            {
+                if (((ObservableCollection<ChatMessage>)chat_conversations[msg.Username]) == null)
+                    chat_conversations.Add(msg.Username, new ObservableCollection<ChatMessage>());
+
+                
+                ((ObservableCollection<ChatMessage>)chat_conversations[msg.Username]).Add(new ChatMessage(from_user, msg.MessageText));
+            }
+            ));
         }
 
-        public string GetNextChatMsg(string username)
+        public ChatMessage GetNextChatMsg(string username)
         {
-            if(((ObservableCollection<string>)chat_conversations[username]) == null)
+            if(((ObservableCollection<ChatMessage>)chat_conversations[username]) == null)
                 return null;
 
-            string next_chat_msg = null;
+            ChatMessage next_chat_msg = null;
 
-            if (((ObservableCollection<string>)chat_conversations[username]).Count > 0)
+            if (((ObservableCollection<ChatMessage>)chat_conversations[username]).Count > 0)
             {
                 try
                 {
-                    next_chat_msg = ((ObservableCollection<string>)chat_conversations[username]).ElementAt(0);
-                    ((ObservableCollection<string>)chat_conversations[username]).RemoveAt(0);
+                    next_chat_msg = ((ObservableCollection<ChatMessage>)chat_conversations[username]).ElementAt(0);
+                    ((ObservableCollection<ChatMessage>)chat_conversations[username]).RemoveAt(0);
                     return next_chat_msg;
                 }
                 catch(Exception){return null;}
             }
             else
                 return null;
+        }
+
+        internal void RemoveConversation(string uname)
+        {
+            if (chat_conversations.ContainsKey(uname))
+                chat_conversations.Remove(uname);
         }
 
         /// <summary>Depending on the reply that was received, handle it accordingly. </summary>
@@ -376,13 +401,16 @@ namespace WpfClient
                 case TcpConst.CHAT:
                     Chat_data received_data = (Chat_data)msg.data;
 
-                    string chat_username = received_data.from;
-
-                    if (chat_conversations.ContainsKey(chat_username))
-                        ((ObservableCollection<string>)chat_conversations[chat_username]).Add(received_data.text);
+                    if (chat_conversations.ContainsKey(received_data.from))
+                    {
+                        AddChatMessage(new ChatMessage(received_data.from, received_data.text), false);
+                    }
                     else
+                    {
                         StartChat(received_data.from);
-
+                        AddChatMessage(new ChatMessage(received_data.from, received_data.text), false);
+                    }
+                        
                     break;
                 default: break;
             }

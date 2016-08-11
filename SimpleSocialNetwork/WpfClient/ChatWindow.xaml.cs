@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows;
 
@@ -10,55 +11,39 @@ namespace WpfClient
     public partial class ChatWindow : Window
     {
         private App wpf_app = null;
-        private string name_of_chater;
-        private Thread chat_msg_reader = null;
-        private string new_message = null;
+        private string username_chatter;
 
         public ChatWindow(string name)
         {
             InitializeComponent();
             wpf_app = (App)Application.Current;
-            name_of_chater = name;
-
-            chat_msg_reader = new Thread(GetNext);
-            chat_msg_reader.Start();
+            username_chatter = name;
+            listbox_chat_log.ItemsSource = (ObservableCollection<ChatMessage>)wpf_app.chat_conversations[name];
         }
 
-        private void GetNext()
-        {
-            while(true)
-            {
-                new_message = wpf_app.GetNextChatMsg(name_of_chater);
-
-                if (new_message != null)
-                    AddMessageToListbox(new_message);
-                else
-                    Thread.Sleep(1000);
-            }
-        }
-
-        private void AddMessageToListbox(string msg)
-        {
-            Dispatcher.Invoke(new Action(delegate ()
-            {
-                listbox_chat_log.Items.Add(msg);
-            }
-            ));
-        }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            wpf_app.SendChatMessage(txtbox_chat.Text, name_of_chater);
-            wpf_app.AddChatMsgToConversation(txtbox_chat.Text, name_of_chater);
+            if (txtbox_chat.Text.Length != 0)
+                wpf_app.SendChatMessage(txtbox_chat.Text, username_chatter);
             txtbox_chat.Clear();
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            if (chat_msg_reader.IsAlive)
-                chat_msg_reader.Abort();
-
+            wpf_app.RemoveConversation(username_chatter);
             base.OnClosing(e);
+        }
+
+        private void txtbox_chat_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key != System.Windows.Input.Key.Enter) return;
+
+            // your event handler here
+            e.Handled = true;
+            if(txtbox_chat.Text.Length != 0)
+                wpf_app.SendChatMessage(txtbox_chat.Text, username_chatter);
+            txtbox_chat.Clear();
         }
     }
 }
