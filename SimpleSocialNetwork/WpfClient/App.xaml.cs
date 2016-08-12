@@ -204,8 +204,8 @@ namespace WpfClient
         public bool AddWallPost(string status, string to)
         {
             AddStatus_data asd = new AddStatus_data();
-            asd.writer = session.GetCurrentUsername();
-            asd.owner_of_wall = to;
+            asd.poster = session.GetCurrentUsername();
+            asd.owner = to;
             asd.wall_post = status;
             tcp_networking.Client_send(asd, TcpConst.ADD_WALL_EVENT, client_stream);
             return true;

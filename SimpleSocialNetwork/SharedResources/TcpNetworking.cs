@@ -226,8 +226,8 @@ namespace SharedResources
     {
         /// <summary> Status text.</summary>
         public String wall_post { get; set; }
-        public String writer { get; set; }
-        public String owner_of_wall { get; set; }
+        public String poster { get; set; }
+        public String owner { get; set; }
     }
 
     /// <summary>A class for having parameterized user information available in memory, on the server and the client.</summary>
@@ -250,6 +250,7 @@ namespace SharedResources
     public class WallPost
     {
         public String writer { get; set; }
+        public String owner { get; set; }
         public DateTime time{ get; set; }
         public String text { get; set; }
     }

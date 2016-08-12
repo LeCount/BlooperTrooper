@@ -27,7 +27,7 @@
         private SQLiteDB sqlite_database = new SQLiteDB(TcpConst.DATABASE_FILE);
         private TcpServer tcp_server = null;
         private Thread get_next_request = null;
-
+    
         public ServerApp(){InitServerApp(null, null);}
 
         public ServerApp(string ipaddr, string port){InitServerApp(ipaddr, port);}
@@ -101,7 +101,7 @@
         private void AddWallPostToDB(object data)
         {
             AddStatus_data received_data = (AddStatus_data)data;
-            sqlite_database.AddWallPost(received_data.owner_of_wall, received_data.wall_post);
+            sqlite_database.AddWallPost(received_data.poster, received_data.owner, received_data.wall_post);
         }
 
         private void HandleChatRequest(object data)

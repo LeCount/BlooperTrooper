@@ -91,24 +91,27 @@ namespace Program
                 query.ExecuteNonQuery();
 
                 query.CommandText = "CREATE TABLE Event(" +
-                                    "id_user INTEGER NOT NULL," +
+                                    "id_poster INTEGER NOT NULL," +
+                                    "id_wall_owner INTEGER NOT NULL," +
                                     "text TEXT," +
                                     "date TEXT," +
-                                    "FOREIGN KEY(`id_user`) REFERENCES User(id_user)" +
+                                    "FOREIGN KEY(`id_poster`) REFERENCES User(id_user)" +
+                                    "FOREIGN KEY(`id_wall_owner`) REFERENCES User(id_user)" +
                                     ")";
                 query.ExecuteNonQuery();
             }
         }
 
-        internal void AddWallPost(string wall_owner, string text)
+        internal void AddWallPost(string poster, string wall_owner, string text)
         {
-            int u_id = GetUserId(wall_owner);
+            int id_poster = GetUserId(poster);
+            int id_owner = GetUserId(wall_owner);
 
             query = new SQLiteCommand();
             query.Connection = DBconnection;
             query.CommandType = CommandType.Text;
 
-            query.CommandText = string.Format("INSERT INTO Event(id_user, text, date) VALUES('{0}', '{1}', '{2}')",u_id, text, DateTime.Now.ToString());
+            query.CommandText = string.Format("INSERT INTO Event(id_poster, id_wall_owner, text, date) VALUES('{0}', '{1}', '{2}', '{3}')",id_poster, id_owner, text, DateTime.Now.ToString());
 
             query.ExecuteNonQuery();
 
@@ -139,6 +142,24 @@ namespace Program
             }
             else
                 return - 1;
+        }
+
+        internal string GetUsername(int id)
+        {
+            string username = null;
+
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+
+            query.CommandText = string.Format("SELECT username FROM User WHERE id_user = {0}", id);
+            string text = query.CommandText;
+
+            object obj = query.ExecuteScalar();
+
+            username = Convert.ToString(obj);
+
+            return username;
+
         }
 
         internal void AddNewUser(string suggested_username, string suggested_password, string code)
@@ -216,50 +237,31 @@ namespace Program
 
         public List<WallPost> GetAllEventsFromUser( string username)
         {
-            int u_id = GetUserId(username);
+            int id_owner_of_wall = GetUserId(username);
 
             List<WallPost> all_events = new List<WallPost>();
 
             query = new SQLiteCommand();
             query.Connection = DBconnection;
             query.CommandType = CommandType.Text;
-            query.CommandText = string.Format("SELECT text FROM Event WHERE id_user = {0}", u_id);
+            query.CommandText = string.Format("SELECT * FROM Event WHERE id_wall_owner = {0}", id_owner_of_wall);
 
             SQLiteDataReader reader = query.ExecuteReader();
             List<String> all_event_texts = new List<string>();
 
-
             while (reader.Read())
             {
-                all_event_texts.Add(reader.GetString(0));
+                WallPost wp = new WallPost();
+
+                wp.writer = GetUsername(Convert.ToInt32(reader["id_poster"])); 
+                wp.owner = GetUsername(Convert.ToInt32(reader["id_wall_owner"])); 
+                wp.text = Convert.ToString(reader["text"]);  
+                wp.time = Convert.ToDateTime(reader["date"]); 
+
+                all_events.Add(wp);
             }
 
             reader.Close();
-
-            query = new SQLiteCommand();
-            query.Connection = DBconnection;
-            query.CommandType = CommandType.Text;
-            query.CommandText = string.Format("SELECT date FROM Event WHERE id_user = {0}", u_id);
-
-            reader = query.ExecuteReader();
-            List<string> all_event_dates = new List<string>();
-
-
-            while (reader.Read())
-            {
-                all_event_dates.Add(reader.GetString(0));
-            }
-
-            reader.Close();
-
-            for (int i = 0; i < all_event_texts.Count; i++)
-            {
-                WallPost e = new WallPost();
-                e.text = all_event_texts.ElementAt(i);
-                e.time = Convert.ToDateTime(all_event_dates.ElementAt(i));
-
-                all_events.Add(e);
-            }
 
             return all_events;
 
