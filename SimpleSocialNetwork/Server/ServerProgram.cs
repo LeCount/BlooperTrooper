@@ -106,17 +106,28 @@
 
         private void HandleChatRequest(object data)
         {
+            
             Chat_data data_to_send = (Chat_data)data;
+            Chat_data error_data = new Chat_data();
+
+            if (data_to_send.from == data_to_send.to)
+                return;
 
             if (!AreFriends(data_to_send.from, data_to_send.to))
-            { 
-                data_to_send.text = string.Format("Looks like you and user {0} are not friends yet. Send {0} a fried request.", data_to_send.to);
-                var temp = data_to_send.to;
-                data_to_send.to = data_to_send.from;
-                data_to_send.from = temp;
+            {
+                error_data.text = string.Format("Looks like you and user {0} are not friends yet. Send {0} a fried request.", data_to_send.to);
+                error_data.from = data_to_send.to;
+                error_data.to = data_to_send.from;
+                return;
             }
 
-            tcp_server.SendMessage(data_to_send, TcpConst.CHAT, data_to_send.to);
+            if(!tcp_server.SendMessage(data_to_send, TcpConst.CHAT, data_to_send.to))
+            {
+                error_data.text = string.Format("I am offline. Please try again later...", data_to_send.to);
+                error_data.from = data_to_send.to;
+                error_data.to = data_to_send.from;
+                tcp_server.SendMessage(error_data, TcpConst.CHAT, error_data.to);
+            }
         }
 
         private void HandleGetWallRequest(object data)
