@@ -101,7 +101,7 @@
         private void AddWallPostToDB(object data)
         {
             AddStatus_data received_data = (AddStatus_data)data;
-            sqlite_database.AddWallPost(received_data.to, received_data.statusText);
+            sqlite_database.AddWallPost(received_data.owner_of_wall, received_data.wall_post);
         }
 
         private void HandleChatRequest(object data)
@@ -122,7 +122,7 @@
         private void HandleGetWallRequest(object data)
         {
             GetWallRequest_data received_data = (GetWallRequest_data)data;
-            SendWall(received_data.user, received_data.from);
+            SendWall(received_data.owner_of_wall, received_data.requesting_user);
         }
 
         private void SendWall(string user_owning_wall, string user_requesting_wall)
@@ -144,7 +144,7 @@
                 foreach (UserEvent e1 in wall)
                 {
                     
-                    data_to_send.user = user_owning_wall;
+                    data_to_send.owner_of_wall = user_owning_wall;
                     data_to_send.wall_event = e1;
 
                     tcp_server.SendMessage(data_to_send, TcpConst.GET_WALL, user_requesting_wall);
@@ -155,7 +155,7 @@
                 UserEvent e2 = new UserEvent();
                 e2.text = string.Format("Looks like you and user {0} are not friends yet. Send {0} a fried request to see his wall.", user_owning_wall);
                 e2.time = DateTime.Now;
-                data_to_send.user = user_owning_wall;
+                data_to_send.owner_of_wall = user_owning_wall;
                 data_to_send.wall_event = e2;
 
                 tcp_server.SendMessage(data_to_send, TcpConst.GET_WALL, user_requesting_wall);

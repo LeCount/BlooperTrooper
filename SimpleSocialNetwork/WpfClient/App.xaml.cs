@@ -206,9 +206,9 @@ namespace WpfClient
         public bool AddStatusMessage(string status, string to)
         {
             AddStatus_data asd = new AddStatus_data();
-            asd.from = session.GetCurrentUsername();
-            asd.to = to;
-            asd.statusText = status;
+            asd.poster = session.GetCurrentUsername();
+            asd.owner_of_wall = to;
+            asd.wall_post = status;
             tcp_networking.Client_send(asd, TcpConst.ADD_WALL_EVENT, client_stream);
             return true;
         }
@@ -218,8 +218,8 @@ namespace WpfClient
             session.wall.Clear();
 
             GetWallRequest_data gwrd = new GetWallRequest_data();
-            gwrd.from = session.GetCurrentUsername();
-            gwrd.user = username;
+            gwrd.requesting_user = session.GetCurrentUsername();
+            gwrd.owner_of_wall = username;
 
             tcp_networking.Client_send(gwrd, TcpConst.GET_WALL, client_stream);
 
@@ -390,7 +390,7 @@ namespace WpfClient
                     GetWallReply_data gwr = new GetWallReply_data();
                     gwr = (GetWallReply_data)msg.data;
 
-                    session.AddStatusToWall(gwr.user, gwr.wall_event);
+                    session.AddStatusToWall(gwr.owner_of_wall, gwr.wall_event);
 
                     break;
                 case TcpConst.GET_FRIEND_STATUS:  

@@ -143,10 +143,10 @@ namespace SharedResources
     public class GetWallRequest_data
     {
         /// <summary>Username of the one who sent the request.</summary>
-        public String from { get; set; }
+        public String requesting_user { get; set; }
 
         /// <summary>The user who's wall is being requested.</summary>
-        public String user { get; set; }
+        public String owner_of_wall { get; set; }
     }
 
     /// <summary>A class for representing the field "data", in the ServerMsg class, when the server wants to reply to a GET_WALL request.</summary>
@@ -154,7 +154,7 @@ namespace SharedResources
     public class GetWallReply_data
     {
         /// <summary>The user who's wall is being requested.</summary>
-        public String user { get; set; }
+        public String owner_of_wall { get; set; }
 
         public UserEvent wall_event { get; set; }
     }
@@ -225,9 +225,9 @@ namespace SharedResources
     public class AddStatus_data
     {
         /// <summary> Status text.</summary>
-        public String statusText { get; set; }
-        public String from { get; set; }
-        public String to { get; set; }
+        public String wall_post { get; set; }
+        public String poster { get; set; }
+        public String owner_of_wall { get; set; }
     }
 
     /// <summary>A class for having parameterized user information available in memory, on the server and the client.</summary>
