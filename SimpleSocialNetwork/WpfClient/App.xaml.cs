@@ -181,8 +181,6 @@ namespace WpfClient
 
         public bool RequestAllAvailableUsers()
         {
-            session.users_list.Clear();
-
             GetUsersRequest_data request_data = new GetUsersRequest_data();
             request_data.from = session.GetCurrentUsername();
 
@@ -357,8 +355,17 @@ namespace WpfClient
 
                 case TcpConst.GET_USERS:
                     GetUsersReply_data udr = (GetUsersReply_data)msg.data;
-                    log.Add("Added user" + udr.username);
-                    session.AddUserToList(udr.username, udr.friend_status );
+
+                    if (!session.UserListContains(udr.username))
+                    {
+                        session.AddUserToList(udr.username, udr.friend_status);
+                        log.Add("Added user" + udr.username);
+                    }  
+                    else
+                        session.UserListUpdateFriendStatus(udr.username, udr.friend_status);
+
+                    
+
                     break;
 
                 case TcpConst.ADD_FRIEND:

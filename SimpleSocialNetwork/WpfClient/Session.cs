@@ -59,7 +59,27 @@ namespace WpfClient
             u.Username = username;
             u.Friend = friend;
 
-            Application.Current.Dispatcher.BeginInvoke(new Action(() => this.users_list.Add(u)));
+            if (!UserListContains(username))
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => this.users_list.Add(u)));
+        }
+
+        public bool UserListContains(string username)
+        {
+            foreach(UserSimple u in users_list)
+            {
+                if (u.Username == username)
+                    return true;
+            }
+            return false;
+        }
+
+        public void UserListUpdateFriendStatus(string username, bool friend_status)
+        {
+            foreach (UserSimple u in users_list)
+            {
+                if (u.Username == username)
+                    u.Friend = friend_status;
+            }
         }
 
         public void AddStatusToWall(string username, UserEvent user_event)
