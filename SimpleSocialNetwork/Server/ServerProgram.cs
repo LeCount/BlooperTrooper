@@ -140,10 +140,7 @@
         {
             GetWallReply_data data_to_send = new GetWallReply_data();
 
-            if (user_owning_wall == user_requesting_wall)
-                return;
-
-            if (AreFriends(user_owning_wall, user_requesting_wall))
+            if (AreFriends(user_owning_wall, user_requesting_wall) || user_owning_wall == user_requesting_wall)
             {
                 List<UserEvent> wall = null;
 
