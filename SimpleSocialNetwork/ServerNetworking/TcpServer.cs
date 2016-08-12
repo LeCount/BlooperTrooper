@@ -270,26 +270,26 @@ namespace ServerNetworking
             }
         }
 
-        public void SendMessage(object msg_data, int msg_type, string destination_user)
+        public bool SendMessage(object msg_data, int msg_type, string destination_user)
         {
             ServerMsg msg = new ServerMsg();
             msg.type = msg_type;
             msg.data = msg_data;
 
             Socket s = GetSocketFromUser(destination_user);
-            SendMessageToSocket(msg, s);
+            return SendMessageToSocket(msg, s);
         }
 
         /// <summary>Send message to specific socket (client).</summary>
         /// <param name="msg">Message to send.</param>
         /// <param name="s">Socket to send msg to.</param>
-        private void SendMessageToSocket(ServerMsg msg, Socket s)
+        private bool SendMessageToSocket(ServerMsg msg, Socket s)
         {
             //user is not online, or something went very wrong 0o????
             if(s == null)
             {
-                //this should not be done HERE, but something that should happen, is that the msg should be saved in db as pending friend request
-                return;
+                Console.WriteLine(String.Format("[Error]:Server '{0}'-message could not be sent. User is offline or does not exist.", TcpConst.IntToText(msg.type)));
+                return false;
             }
 
             byte[] byte_buffer = new byte[TcpConst.BUFFER_SIZE];
@@ -298,17 +298,19 @@ namespace ServerNetworking
             if (byte_buffer == null)
             {
                 Console.WriteLine(String.Format("[Error]:Server '{0}'-message could not be serialized.", TcpConst.IntToText(msg.type)));
-                return;
+                return false;
             }
 
             try
             {
                 s.Send(byte_buffer);
                 Console.WriteLine(String.Format("[Server]:Sent {0}-message.", TcpConst.IntToText(msg.type)));
+                return true;
             }
             catch(Exception)
             {
                Console.WriteLine(String.Format("[Error]:Server '{0}'-message could not be sent. Target socket is 'dispoesed'.", TcpConst.IntToText(msg.type)));
+                return false;
             }
         }
 
