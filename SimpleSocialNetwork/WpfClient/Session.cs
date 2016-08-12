@@ -24,7 +24,7 @@ namespace WpfClient
         public ObservableCollection<UserSimple> users_list = new ObservableCollection<UserSimple>();
         public bool users_list_collected;
 
-        public ObservableCollection<WallPost> wall = new ObservableCollection<WallPost>();
+        public ObservableCollection<WallPostItem> wall = new ObservableCollection<WallPostItem>();
 
         private int registration = REGISTRATION_NOTSET;
 
@@ -82,9 +82,9 @@ namespace WpfClient
             }
         }
 
-        public void AddStatusToWall(string username, UserEvent user_event)
+        public void AddStatusToWall(string username, WallPost user_event)
         {
-            WallPost w = new WallPost();
+            WallPostItem w = new WallPostItem();
             w.Username = username;
             w.Writer = user_event.writer;
             w.Time = user_event.time;

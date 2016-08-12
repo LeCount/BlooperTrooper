@@ -134,14 +134,14 @@
 
             if (AreFriends(user_owning_wall, user_requesting_wall))
             {
-                List<UserEvent> wall = null;
+                List<WallPost> wall = null;
 
                 wall = sqlite_database.GetAllEventsFromUser(user_owning_wall);
 
                 if (wall == null)
                     return;
 
-                foreach (UserEvent e1 in wall)
+                foreach (WallPost e1 in wall)
                 {
                     
                     data_to_send.owner_of_wall = user_owning_wall;
@@ -152,7 +152,7 @@
             }
             else
             {
-                UserEvent e2 = new UserEvent();
+                WallPost e2 = new WallPost();
                 e2.text = string.Format("Looks like you and user {0} are not friends yet. Send {0} a fried request to see his wall.", user_owning_wall);
                 e2.time = DateTime.Now;
                 data_to_send.owner_of_wall = user_owning_wall;

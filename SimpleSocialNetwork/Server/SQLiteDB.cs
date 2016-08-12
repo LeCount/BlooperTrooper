@@ -214,11 +214,11 @@ namespace Program
             return all_users;
         }
 
-        public List<UserEvent> GetAllEventsFromUser( string username)
+        public List<WallPost> GetAllEventsFromUser( string username)
         {
             int u_id = GetUserId(username);
 
-            List<UserEvent> all_events = new List<UserEvent>();
+            List<WallPost> all_events = new List<WallPost>();
 
             query = new SQLiteCommand();
             query.Connection = DBconnection;
@@ -254,7 +254,7 @@ namespace Program
 
             for (int i = 0; i < all_event_texts.Count; i++)
             {
-                UserEvent e = new UserEvent();
+                WallPost e = new WallPost();
                 e.text = all_event_texts.ElementAt(i);
                 e.time = Convert.ToDateTime(all_event_dates.ElementAt(i));
 

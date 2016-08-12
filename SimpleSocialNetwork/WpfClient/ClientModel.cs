@@ -7,7 +7,7 @@ namespace WpfClient
     /// <summary>
     /// Stores wall posts in client
     /// </summary>
-    public class WallPost : INotifyPropertyChanged
+    public class WallPostItem : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

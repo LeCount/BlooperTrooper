@@ -156,9 +156,7 @@ namespace SharedResources
         /// <summary>The user who's wall is being requested.</summary>
         public String owner_of_wall { get; set; }
 
-        public String writer { get; set; }
-
-        public UserEvent wall_event { get; set; }
+        public WallPost wall_event { get; set; }
     }
 
     /// <summary>A class for representing the field "data", in the ClientMsg class, when a user want to send a update request.</summary>
@@ -244,12 +242,12 @@ namespace SharedResources
         public String about_user        { get; set; }
         public String interests         { get; set; }
         public List<String> friends = new List<String>();
-        public List<UserEvent> wall = new List<UserEvent>();
+        public List<WallPost> wall = new List<WallPost>();
     }
 
     /// <summary>A class to contain information regarding an event/post/log, on a users "wall".</summary>
     [Serializable]
-    public class UserEvent
+    public class WallPost
     {
         public String writer { get; set; }
         public DateTime time{ get; set; }
