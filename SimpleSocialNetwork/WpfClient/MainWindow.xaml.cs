@@ -83,9 +83,10 @@ namespace WpfClient
             }
         }
 
-        private void btnRefreshUserList_Click(object sender, RoutedEventArgs e)
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
             wpf_app.RequestAllAvailableUsers();
+            wpf_app.GetWallFromUser(((UserSimple)lbUserList.SelectedItem).Username);
         }
 
         private void btnStatusSubmit_Click(object sender, RoutedEventArgs e)

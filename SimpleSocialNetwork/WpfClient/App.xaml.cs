@@ -275,27 +275,6 @@ namespace WpfClient
             ));
         }
 
-        public ChatMessage GetNextChatMsg(string username)
-        {
-            if(((ObservableCollection<ChatMessage>)chat_conversations[username]) == null)
-                return null;
-
-            ChatMessage next_chat_msg = null;
-
-            if (((ObservableCollection<ChatMessage>)chat_conversations[username]).Count > 0)
-            {
-                try
-                {
-                    next_chat_msg = ((ObservableCollection<ChatMessage>)chat_conversations[username]).ElementAt(0);
-                    ((ObservableCollection<ChatMessage>)chat_conversations[username]).RemoveAt(0);
-                    return next_chat_msg;
-                }
-                catch(Exception){return null;}
-            }
-            else
-                return null;
-        }
-
         internal void RemoveConversation(string uname)
         {
             if (chat_conversations.ContainsKey(uname))
@@ -363,9 +342,6 @@ namespace WpfClient
                     }  
                     else
                         session.UserListUpdateFriendStatus(udr.username, udr.friend_status);
-
-                    
-
                     break;
 
                 case TcpConst.ADD_FRIEND:

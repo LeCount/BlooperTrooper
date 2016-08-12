@@ -27,7 +27,7 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <TextBlock Height="40" VerticalAlignment="Top" Padding="10" Background="Black" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Users</TextBlock>
-            <Button x:Name="btnRefreshUserList" Height="20" BorderThickness="0"  BorderBrush="#F8F8F8" Background="#FFFFFF" Grid.Row="1" Click="btnRefreshUserList_Click" Padding="0">Refresh</Button>
+            <Button x:Name="btnRefreshUserList" Height="20" BorderThickness="0"  BorderBrush="#F8F8F8" Background="#FFFFFF" Grid.Row="1" Click="btnRefresh_Click" Padding="0">Refresh</Button>
 
             <ListBox Name="lbUserList" Grid.Row="2" SelectionMode="Single" SelectionChanged="lbUserList_SelectionChanged">
                 <ListBox.ItemTemplate>
