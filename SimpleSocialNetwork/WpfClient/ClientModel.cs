@@ -9,6 +9,13 @@ namespace WpfClient
     /// </summary>
     public class WallPost : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private string username = "";
         public string Username
         {
@@ -20,11 +27,15 @@ namespace WpfClient
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private string writer = "";
+        public string Writer
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            get { return writer; }
+            set
+            {
+                writer = value;
+                NotifyPropertyChanged();
+            }
         }
 
 

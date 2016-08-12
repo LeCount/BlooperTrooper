@@ -86,9 +86,11 @@ namespace WpfClient
         {
             WallPost w = new WallPost();
             w.Username = username;
+            w.Writer = user_event.writer;
             w.Time = user_event.time;
             w.Status = user_event.text;
-            Application.Current.Dispatcher.BeginInvoke(new Action(() => this.wall.Add(w)));
+
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => wall.Add(w)));
         }
     }
 

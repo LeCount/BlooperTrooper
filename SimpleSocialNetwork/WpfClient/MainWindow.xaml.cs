@@ -91,7 +91,7 @@ namespace WpfClient
 
         private void btnStatusSubmit_Click(object sender, RoutedEventArgs e)
         {
-            wpf_app.AddStatusMessage(txtStatus.Text, ((UserSimple)lbUserList.SelectedItem).Username);
+            wpf_app.AddWallPost(txtStatus.Text, ((UserSimple)lbUserList.SelectedItem).Username);
         }
 
         private void btnStartChat_Click(object sender, RoutedEventArgs e)

@@ -65,7 +65,7 @@
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Username}" Foreground="Black" Grid.Column="0" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Writer}" Foreground="Black" Grid.Column="0" Margin="5 0 0 0" VerticalAlignment="Center"/>
                             <TextBlock Text="{Binding Status}" Foreground="Black" Grid.Column="1" Margin="5 0 0 0" VerticalAlignment="Center"/>
                         </Grid>
                     </DataTemplate>

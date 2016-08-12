@@ -156,6 +156,8 @@ namespace SharedResources
         /// <summary>The user who's wall is being requested.</summary>
         public String owner_of_wall { get; set; }
 
+        public String writer { get; set; }
+
         public UserEvent wall_event { get; set; }
     }
 
@@ -226,7 +228,7 @@ namespace SharedResources
     {
         /// <summary> Status text.</summary>
         public String wall_post { get; set; }
-        public String poster { get; set; }
+        public String writer { get; set; }
         public String owner_of_wall { get; set; }
     }
 
@@ -249,6 +251,7 @@ namespace SharedResources
     [Serializable]
     public class UserEvent
     {
+        public String writer { get; set; }
         public DateTime time{ get; set; }
         public String text { get; set; }
     }
