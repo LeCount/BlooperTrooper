@@ -115,7 +115,7 @@
 
             if (!AreFriends(data_to_send.from, data_to_send.to))
             {
-                error_data.text = string.Format("Looks like you and user {0} are not friends yet. Send {0} a fried request.", data_to_send.to);
+                error_data.text = string.Format("We are not friends yet. Send me a fried request.", data_to_send.to);
                 error_data.from = data_to_send.to;
                 error_data.to = data_to_send.from;
                 tcp_server.SendMessage(error_data, TcpConst.CHAT, error_data.to);
