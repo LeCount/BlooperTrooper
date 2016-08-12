@@ -88,13 +88,8 @@
                     HandleChatRequest(msg.data);
                     break;
                 case TcpConst.UPDATE:
-                    //Update the user, that was updated, in the userlist on server
-                    //networking.RemoveUserFromList(user.username);
-                    //networking.AddToUserList(GetUserFromDB(user.username));
                     break;
                 case TcpConst.GET_CLIENT_DATA:
-                    //Add requested user to userlist on server
-                    //networking.AddToUserList(GetUserFromDB(user.username));
                     break;
 
                 case TcpConst.INVALID:
@@ -106,48 +101,62 @@
         private void AddWallPostToDB(object data)
         {
             AddStatus_data received_data = (AddStatus_data)data;
-
             sqlite_database.AddWallPost(received_data.to, received_data.statusText);
         }
 
         private void HandleChatRequest(object data)
         {
-            //if(AreFriends(received_data.from, received_data.to))
-            //{
-            ForwardChatMessage(data);
-            //}
-        }
-
-        private void ForwardChatMessage(object data)
-        {
             Chat_data data_to_send = (Chat_data)data;
+
+            if (!AreFriends(data_to_send.from, data_to_send.to))
+            { 
+                data_to_send.text = string.Format("Looks like you and user {0} are not friends yet. Send {0} a fried request.", data_to_send.to);
+                var temp = data_to_send.to;
+                data_to_send.to = data_to_send.from;
+                data_to_send.from = temp;
+            }
+
             tcp_server.SendMessage(data_to_send, TcpConst.CHAT, data_to_send.to);
         }
 
         private void HandleGetWallRequest(object data)
         {
             GetWallRequest_data received_data = (GetWallRequest_data)data;
-
-            if(AreFriends(received_data.user, received_data.from))
-            {
-                SendWall(received_data.user, received_data.from);
-            }
+            SendWall(received_data.user, received_data.from);
         }
 
         private void SendWall(string user_owning_wall, string user_requesting_wall)
         {
-            List<UserEvent> wall = null;
+            GetWallReply_data data_to_send = new GetWallReply_data();
 
-            wall = sqlite_database.GetAllEventsFromUser(user_owning_wall);
-
-            if (wall == null)
+            if (user_owning_wall == user_requesting_wall)
                 return;
 
-            foreach(UserEvent e in wall)
+            if (AreFriends(user_owning_wall, user_requesting_wall))
             {
-                GetWallReply_data data_to_send = new GetWallReply_data();
+                List<UserEvent> wall = null;
+
+                wall = sqlite_database.GetAllEventsFromUser(user_owning_wall);
+
+                if (wall == null)
+                    return;
+
+                foreach (UserEvent e1 in wall)
+                {
+                    
+                    data_to_send.user = user_owning_wall;
+                    data_to_send.wall_event = e1;
+
+                    tcp_server.SendMessage(data_to_send, TcpConst.GET_WALL, user_requesting_wall);
+                }
+            }
+            else
+            {
+                UserEvent e2 = new UserEvent();
+                e2.text = string.Format("Looks like you and user {0} are not friends yet. Send {0} a fried request to see his wall.", user_owning_wall);
+                e2.time = DateTime.Now;
                 data_to_send.user = user_owning_wall;
-                data_to_send.wall_event = e;
+                data_to_send.wall_event = e2;
 
                 tcp_server.SendMessage(data_to_send, TcpConst.GET_WALL, user_requesting_wall);
             }
