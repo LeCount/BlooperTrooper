@@ -78,20 +78,32 @@ namespace WpfClient
         {
             if(lbUserList.SelectedItem != null)
             {
-                string selected_user = ((UserSimple)lbUserList.SelectedItem).Username;
-                wpf_app.AddFriendRequest(selected_user);
+                try
+                {
+                    string selected_user = ((UserSimple)lbUserList.SelectedItem).Username;
+                    wpf_app.AddFriendRequest(selected_user);
+                }
+                catch(Exception){/**No selection**/}
             }
         }
 
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            wpf_app.RequestAllAvailableUsers();
-            wpf_app.GetWallFromUser(((UserSimple)lbUserList.SelectedItem).Username);
+            try
+            {
+                wpf_app.RequestAllAvailableUsers();
+                wpf_app.GetWallFromUser(((UserSimple)lbUserList.SelectedItem).Username);
+            }
+            catch(Exception){/**No selection**/}
         }
 
         private void btnStatusSubmit_Click(object sender, RoutedEventArgs e)
         {
-            wpf_app.AddWallPost(txtStatus.Text, ((UserSimple)lbUserList.SelectedItem).Username);
+            try
+            {
+                wpf_app.AddWallPost(txtStatus.Text, ((UserSimple)lbUserList.SelectedItem).Username);
+            }
+            catch(Exception){/**No selection**/}
         }
 
         private void btnStartChat_Click(object sender, RoutedEventArgs e)

@@ -3,17 +3,47 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using SharedResources;
-using System.Linq;
 
 namespace Program
 {
     class SQLiteDB
     {
+        private const string COL_USER_ID_FK = "id_user";
+
+        private const string TBL_USER = "User";
+        private const string COL_USERNAME = "username";
+        private const string COL_PASSWORD = "password";
+        private const string COL_VERIFICATION = "confirmation_code";
+
+        private const string TBL_CONTACT = "Contact";
+        private const string COL_NAME = "name";
+        private const string COL_SURENAME = "surname";
+        private const string COL_MAIL = "confirmation_code";
+
+        private const string TBL_INFO = "Info";
+        private const string COL_ABOUT = "about";
+        private const string COL_INTERESTS = "interests";
+
+        private const string TBL_RELATION = "Relation";
+        private const string COL_RELATION_ID = "id_relation";
+        private const string COL_USER1 = "id_user1";
+        private const string COL_USER2 = "id_user2";
+
+        private const string TBL_IP = "Ip";
+        private const string COL_IP_ID = "id_ip";
+        private const string COL_IP_ADDR = "id_addr";
+
+        private const string TBL_EVENT = "Event";
+        private const string COL_POSTER = "id_poster";
+        private const string COL_WALL_OWNER = "id_wall_owner";
+        private const string COL_TEXT = "text";
+        private const string COL_DATE = "date";
+
         private SQLiteConnection DBconnection = null;
         private SQLiteCommand query = null;
         private string dB_file;
 
-        internal SQLiteDB(string file)
+        public SQLiteDB(string file)
         {
                 dB_file = file;
                 Connect();
@@ -32,13 +62,14 @@ namespace Program
             {
                 Console.WriteLine("Could not open database: " + dB_file.ToString());
                 Console.ReadLine();
-                System.Environment.Exit(0);
+                Environment.Exit(0);
             }
 
             query = new SQLiteCommand();
             query.Connection = DBconnection;
+            query.CommandType = CommandType.Text;
 
-            query.CommandText = "SELECT username FROM User";
+            query.CommandText = "SELECT " + COL_USERNAME + " FROM " + TBL_USER;
 
             try
             {
@@ -47,157 +78,74 @@ namespace Program
             catch(Exception)
             {
                 // Tables does not exist -> create the tables 
-                query.CommandText = "CREATE TABLE User(" + 
-                                    "id_user INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
-                                    "username TEXT NOT NULL UNIQUE," +
-                                    "password TEXT NOT NULL," +
-                                    "confirmation_code TEXT" +
+                query.CommandText = "CREATE TABLE " + TBL_USER + "(" + 
+                                    COL_USER_ID_FK + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
+                                    COL_USERNAME + " TEXT NOT NULL UNIQUE," +
+                                    COL_PASSWORD + " TEXT NOT NULL," +
+                                    COL_VERIFICATION + " TEXT" +
                                     ")";
                 query.ExecuteNonQuery();
 
-                query.CommandText = "CREATE TABLE Contact(" +
-                                    "id_user INTEGER NOT NULL PRIMARY KEY UNIQUE," +
-                                    "mail TEXT NOT NULL," +
-                                    "name TEXT," +
-                                    "surname TEXT," +
-                                    "FOREIGN KEY(`id_user`) REFERENCES User(id_user)" +
+                query.CommandText = "CREATE TABLE " + TBL_CONTACT + "(" +
+                                    COL_USER_ID_FK + " INTEGER NOT NULL PRIMARY KEY UNIQUE," +
+                                    COL_MAIL + " TEXT NOT NULL," +
+                                    COL_NAME + " TEXT," +
+                                    COL_SURENAME + " TEXT," +
+                                    "FOREIGN KEY(`"+ COL_USER_ID_FK + "`) REFERENCES " + TBL_USER + "(" + COL_USER_ID_FK + ")" +
                                     ")";
                 query.ExecuteNonQuery();
 
-                query.CommandText = "CREATE TABLE Info(" +
-                                    "id_user INTEGER NOT NULL PRIMARY KEY UNIQUE," +
-                                    "about TEXT," +
-                                    "interests TEXT," +
-                                    "FOREIGN KEY(`id_user`) REFERENCES User(id_user)" +
+                query.CommandText = "CREATE TABLE " + TBL_INFO + "(" +
+                                    COL_USER_ID_FK + " INTEGER NOT NULL PRIMARY KEY UNIQUE," +
+                                    COL_ABOUT + " TEXT," +
+                                    COL_INTERESTS + " TEXT," +
+                                    "FOREIGN KEY(`" + COL_USER_ID_FK + "`) REFERENCES " + TBL_USER + "(" + COL_USER_ID_FK + ")" +
                                     ")";
                 query.ExecuteNonQuery();
 
-                query.CommandText = "CREATE TABLE Relation(" +
-                                    "id_relationship INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
-                                    "id_user1 INTEGER NOT NULL," +
-                                    "id_user2 INTEGER NOT NULL," +
-                                    "FOREIGN KEY(`id_user1`) REFERENCES User(id_user)," +
-                                    "FOREIGN KEY(`id_user2`) REFERENCES User(id_user)" +
+                query.CommandText = "CREATE TABLE " + TBL_RELATION + "(" +
+                                    COL_RELATION_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
+                                    COL_USER1 + " INTEGER NOT NULL," +
+                                    COL_USER2 + " INTEGER NOT NULL," +
+                                    "FOREIGN KEY(`" + COL_USER1 + "`) REFERENCES " + TBL_USER + "(" + COL_USER_ID_FK + ")," +
+                                    "FOREIGN KEY(`" + COL_USER2 + "`) REFERENCES " + TBL_USER + "(" + COL_USER_ID_FK + ")" +
                                     ")";
                 query.ExecuteNonQuery();
 
-                query.CommandText = "CREATE TABLE Ip(" +
-                                    "id_ip INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
-                                    "id_user INTEGER NOT NULL," +
-                                    "ip_addr TEXT NOT NULL," +
-                                    "name TEXT," +
-                                    "FOREIGN KEY(`id_user`) REFERENCES User(id_user)" +
+                query.CommandText = "CREATE TABLE " + TBL_IP + "(" +
+                                    COL_IP_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
+                                    COL_USER_ID_FK + " INTEGER NOT NULL," +
+                                    COL_IP_ADDR + " TEXT NOT NULL," +
+                                    "FOREIGN KEY(`" + COL_USER_ID_FK + "`) REFERENCES " + TBL_USER + "(" + COL_USER_ID_FK + ")" +
                                     ")";
                 query.ExecuteNonQuery();
 
-                query.CommandText = "CREATE TABLE Event(" +
-                                    "id_poster INTEGER NOT NULL," +
-                                    "id_wall_owner INTEGER NOT NULL," +
-                                    "text TEXT," +
-                                    "date TEXT," +
-                                    "FOREIGN KEY(`id_poster`) REFERENCES User(id_user)" +
-                                    "FOREIGN KEY(`id_wall_owner`) REFERENCES User(id_user)" +
+                query.CommandText = "CREATE TABLE " + TBL_EVENT + "(" +
+                                    COL_POSTER + " INTEGER NOT NULL," +
+                                    COL_WALL_OWNER + " INTEGER NOT NULL," +
+                                    COL_TEXT + " TEXT," +
+                                    COL_DATE + " TEXT," +
+                                    "FOREIGN KEY(`" + COL_POSTER + "`) REFERENCES " + TBL_USER + "(" + COL_USER_ID_FK + ")" +
+                                    "FOREIGN KEY(`" + COL_WALL_OWNER + "`) REFERENCES " + TBL_USER + "(" + COL_USER_ID_FK + ")" +
                                     ")";
                 query.ExecuteNonQuery();
             }
         }
 
-        internal void AddWallPost(string poster, string wall_owner, string text)
+        internal void Disconnect()
         {
-            int id_poster = GetUserId(poster);
-            int id_owner = GetUserId(wall_owner);
-
-            query = new SQLiteCommand();
-            query.Connection = DBconnection;
-            query.CommandType = CommandType.Text;
-
-            query.CommandText = string.Format("INSERT INTO Event(id_poster, id_wall_owner, text, date) VALUES('{0}', '{1}', '{2}', '{3}')",id_poster, id_owner, text, DateTime.Now.ToString());
-
-            query.ExecuteNonQuery();
-
-        }
-
-        public void Disconnect()
-        {
-            DBconnection.Close();
-        }
-
-        internal int GetUserId(String username)
-        {
-            int id;
-
-            if(EntryExistsInTable(username, "User", "username"))
-            {
-                query = new SQLiteCommand();
-                query.Connection = DBconnection;
-
-                query.CommandText = string.Format("SELECT id_user FROM User WHERE username = '{0}'", username); 
-                string text = query.CommandText;
-
-                object obj = query.ExecuteScalar();
-                
-                id = Convert.ToInt32(obj);
-
-                return id;
-            }
-            else
-                return - 1;
-        }
-
-        internal string GetUsername(int id)
-        {
-            string username = null;
-
-            query = new SQLiteCommand();
-            query.Connection = DBconnection;
-
-            query.CommandText = string.Format("SELECT username FROM User WHERE id_user = {0}", id);
-            string text = query.CommandText;
-
-            object obj = query.ExecuteScalar();
-
-            username = Convert.ToString(obj);
-
-            return username;
-
-        }
-
-        internal void AddNewUser(string suggested_username, string suggested_password, string code)
-        {
-            query = new SQLiteCommand();
-            query.Connection = DBconnection;
-
-            SQLiteParameter param1 = new SQLiteParameter("@USER", DbType.String) { Value = suggested_username };
-            SQLiteParameter param2 = new SQLiteParameter("@PASSWORD", DbType.String) { Value = suggested_password };
-            SQLiteParameter param3 = new SQLiteParameter("@CODE", DbType.String) { Value = code };
-
-            query.Parameters.Add(param1);
-            query.Parameters.Add(param2);
-            query.Parameters.Add(param3);
-
-            query.CommandText = "INSERT INTO User(username, password, confirmation_code) VALUES(@USER, @PASSWORD, @CODE)";
-
-            string text = query.CommandText;
-
-            try
-            {
-                query.ExecuteNonQuery();
-            }
-            catch (SQLiteException)
-            {
-                Console.WriteLine("Could not add new user. The database has been configured incorrectly.");
-            }
+            try { DBconnection.Close(); }
+            catch (Exception) { }
         }
 
         internal bool EntryExistsInTable(string entry, string table, string column)
         {
-
             query = new SQLiteCommand();
             query.Connection = DBconnection;
 
             SQLiteParameter param0 = new SQLiteParameter("@ENTRY", DbType.String) { Value = entry };
-
             query.Parameters.Add(param0);
+            query.CommandType = CommandType.Text;
 
             query.CommandText = "SELECT count(*) FROM " + table + " WHERE " + column + " = @ENTRY";
 
@@ -210,20 +158,90 @@ namespace Program
                 return false;
         }
 
+        internal string GetUsername(int id)
+        {
+            string username = null;
+
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = string.Format("SELECT {0} FROM {1} WHERE {2} = {3}",
+                COL_USERNAME,
+                TBL_USER,
+                COL_USER_ID_FK,
+                id);
+
+            object obj = query.ExecuteScalar();
+            username = Convert.ToString(obj);
+            return username;
+        }
+
+        internal int GetUserId(String username)
+        {
+            int user_id;
+
+            if (EntryExistsInTable(username, TBL_USER, COL_USERNAME))
+            {
+                query = new SQLiteCommand();
+                query.Connection = DBconnection;
+                query.CommandType = CommandType.Text;
+
+                query.CommandText = string.Format("SELECT {0} FROM {1} WHERE {2} = '{3}'",
+                    COL_USER_ID_FK,
+                    TBL_USER,
+                    COL_USERNAME,
+                    username
+                    );
+
+                object obj = query.ExecuteScalar();
+                user_id = Convert.ToInt32(obj);
+                return user_id;
+            }
+            else
+                return -1;
+        }
+
+        internal void AddNewUser(string username, string password, string verification_code)
+        {
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+            query.CommandType = CommandType.Text;
+
+            SQLiteParameter param1 = new SQLiteParameter("@USER", DbType.String) { Value = username };
+            SQLiteParameter param2 = new SQLiteParameter("@PASSWORD", DbType.String) { Value = password };
+            SQLiteParameter param3 = new SQLiteParameter("@CODE", DbType.String) { Value = verification_code };
+
+            query.Parameters.Add(param1);
+            query.Parameters.Add(param2);
+            query.Parameters.Add(param3);
+
+            query.CommandText = string.Format("INSERT INTO {0}({1}, {2}, {3}) VALUES(@USER, @PASSWORD, @CODE)",
+                TBL_USER,
+                COL_USERNAME,
+                COL_PASSWORD,
+                COL_VERIFICATION
+                );
+
+            try{query.ExecuteNonQuery();}
+            catch (SQLiteException){Console.WriteLine("[Error] DB could not add new user. The database has been configured incorrectly.");}
+        }
+
         internal List<String> GetAllUsernames()
         {
             query = new SQLiteCommand();
             query.Connection = DBconnection;
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "SELECT username FROM User";
-
-            string text = query.CommandText;
+            query.CommandText = 
+                string.Format("SELECT {0} FROM {1}",
+                COL_USERNAME,
+                TBL_USER
+                );
 
             SQLiteDataReader reader = query.ExecuteReader();
 
             List<String> all_users = new List<string>();
-
 
             while(reader.Read())
             {
@@ -235,7 +253,30 @@ namespace Program
             return all_users;
         }
 
-        public List<WallPost> GetAllEventsFromUser( string username)
+        internal void AddWallPost(string poster, string wall_owner, string text)
+        {
+            int poster_id = GetUserId(poster);
+            int wall_owner_id = GetUserId(wall_owner);
+
+            query = new SQLiteCommand();
+            query.Connection = DBconnection;
+            query.CommandType = CommandType.Text;
+
+            query.CommandText =
+                string.Format("INSERT INTO " + TBL_EVENT + "({0}, {1}, {2}, {3}) VALUES('{4}', '{5}', '{6}', '{7}')",
+                COL_POSTER,
+                COL_WALL_OWNER,
+                COL_TEXT, COL_DATE,
+                poster_id,
+                wall_owner_id,
+                text,
+                DateTime.Now.ToString()
+                );
+
+            query.ExecuteNonQuery();
+        }
+
+        internal List<WallPost> GetAllEventsFromUser( string username)
         {
             int id_owner_of_wall = GetUserId(username);
 
@@ -244,7 +285,13 @@ namespace Program
             query = new SQLiteCommand();
             query.Connection = DBconnection;
             query.CommandType = CommandType.Text;
-            query.CommandText = string.Format("SELECT * FROM Event WHERE id_wall_owner = {0}", id_owner_of_wall);
+
+            query.CommandText = 
+                string.Format("SELECT * FROM {0} WHERE {1} = {2}", 
+                TBL_EVENT,
+                COL_WALL_OWNER,
+                id_owner_of_wall
+                );
 
             SQLiteDataReader reader = query.ExecuteReader();
             List<String> all_event_texts = new List<string>();
@@ -253,30 +300,63 @@ namespace Program
             {
                 WallPost wp = new WallPost();
 
-                wp.writer = GetUsername(Convert.ToInt32(reader["id_poster"])); 
-                wp.owner = GetUsername(Convert.ToInt32(reader["id_wall_owner"])); 
-                wp.text = Convert.ToString(reader["text"]);  
-                wp.time = Convert.ToDateTime(reader["date"]); 
+                wp.writer = GetUsername(Convert.ToInt32(reader[COL_POSTER])); 
+                wp.owner = GetUsername(Convert.ToInt32(reader[COL_WALL_OWNER])); 
+                wp.text = Convert.ToString(reader[COL_TEXT]);  
+                wp.time = Convert.ToDateTime(reader[COL_DATE]); 
 
                 all_events.Add(wp);
             }
 
             reader.Close();
-
             return all_events;
-
         }
 
-        internal bool FriendRelationExists(int user_id1, int user_id2)
+        internal void AddFriendRelation(string requester, string responder)
         {
+            if (!FriendRelationExists(GetUserId(requester), GetUserId(responder)))
+            {
+                int id_requester = GetUserId(requester);
+                int id_responder = GetUserId(responder);
 
-            if (user_id1 == user_id2)
+                query = new SQLiteCommand();
+                query.Connection = DBconnection;
+                query.CommandType = CommandType.Text;
+
+                query.CommandText =
+                    string.Format("INSERT INTO {0}({1}, {2}) VALUES({3}, {4})",
+                    TBL_RELATION,
+                    COL_USER1,
+                    COL_USER2,
+                    id_requester,
+                    id_responder
+                    );
+
+                query.ExecuteNonQuery();
+            }
+        }
+
+        internal bool FriendRelationExists(int id_1st_user, int id_2nd_user)
+        {
+            if (id_1st_user == id_2nd_user)
                 return false;
 
             query = new SQLiteCommand();
             query.Connection = DBconnection;
+            query.CommandType = CommandType.Text;
 
-            query.CommandText = string.Format("SELECT Count(*) FROM Relation WHERE id_user1 = {0} AND id_user2 = {1} OR id_user1 = {1} AND id_user2 = {0}", user_id1, user_id2);
+            query.CommandText = 
+                string.Format("SELECT Count(*) FROM {0} WHERE {1} = {2} AND {3} = {4} OR {5} = {6} AND {7} = {8}", 
+                TBL_RELATION,
+                COL_USER1,
+                id_1st_user,
+                COL_USER2, 
+                id_2nd_user,
+                COL_USER1,
+                id_2nd_user,
+                COL_USER2,
+                id_1st_user
+                );
 
             object obj = query.ExecuteScalar();
             int occurrences = Convert.ToInt32(obj);
@@ -285,23 +365,6 @@ namespace Program
                 return true;
             else
                 return false;
-        }
-
-        internal void AddFriendRelation(string requester_name, string responder_name)
-        {
-            if (!FriendRelationExists(GetUserId(requester_name), GetUserId(responder_name)))
-            {
-                int id_req_user = GetUserId(requester_name);
-                int id_res_user = GetUserId(responder_name);
-
-                query = new SQLiteCommand();
-                query.Connection = DBconnection;
-                query.CommandType = CommandType.Text;
-
-                query.CommandText = string.Format("INSERT INTO Relation(id_user1, id_user2) VALUES({0}, {1})", id_req_user, id_res_user);
-
-                query.ExecuteNonQuery();
-            }
         }
     }
 }
