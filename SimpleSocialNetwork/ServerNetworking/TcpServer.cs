@@ -43,6 +43,9 @@ namespace ServerNetworking
         /// <summary>A serializer for reading byte arrays into messages, and for writing messages into byte arrays.</summary>
         Serializer server_serializer = new Serializer();
 
+        private object socket_list_lock = new object();
+
+
         public TcpServer() { }
 
         public TcpServer(string ip_to_use, string port_to_use)
@@ -143,8 +146,9 @@ namespace ServerNetworking
                         // Client disconnected
                         Console.WriteLine("User disconnected.");
 
-                        if(usersOnSockets.ContainsValue(s))
-                            usersOnSockets.Remove(s);
+                        if (usersOnSockets.ContainsValue(s))
+                            RemoveSocket(s);
+                            
 
                         if(all_active_client_sockets.Contains(s))
                             all_active_client_sockets.Remove(s);
@@ -227,6 +231,15 @@ namespace ServerNetworking
             }
         }
 
+        private void RemoveSocket(Socket s)
+        {
+            lock (socket_list_lock)
+            {
+                try{usersOnSockets.Remove(s);}
+                catch (Exception) {/**List empty or socket does not exist**/ }
+            }
+        }
+
         public bool userIsBoundToSocket(string user)
         {
             if(usersOnSockets.ContainsKey(user))
@@ -245,10 +258,13 @@ namespace ServerNetworking
 
         public string GetUserFromSocket(Socket s)
         {
-            foreach (string user in usersOnSockets.Keys)
+            lock (socket_list_lock)
             {
-                if(usersOnSockets[user] == s)
-                    return user;
+                foreach (string user in usersOnSockets.Keys)
+                {
+                    if (usersOnSockets[user] == s)
+                        return user;
+                }
             }
 
             return null;
@@ -258,15 +274,18 @@ namespace ServerNetworking
         {
             if (!usersOnSockets.ContainsKey(username))
             {
-                usersOnSockets.Add(username, s);
+                lock (socket_list_lock)
+                    usersOnSockets.Add(username, s);
             }
         }
 
-        public void UnbindUserToSocket(String username)
+        public void UnbindUserFromSocket(String username)
         {
+            
             if (usersOnSockets.ContainsKey(username))
             {
-                usersOnSockets.Remove(username);
+                lock (socket_list_lock)
+                    usersOnSockets.Remove(username);
             }
         }
 
@@ -285,13 +304,6 @@ namespace ServerNetworking
         /// <param name="s">Socket to send msg to.</param>
         private bool SendMessageToSocket(ServerMsg msg, Socket s)
         {
-            //user is not online, or something went very wrong 0o????
-            if(s == null)
-            {
-                Console.WriteLine(String.Format("[Error]:Server '{0}'-message could not be sent. User is offline or does not exist.", TcpConst.IntToText(msg.type)));
-                return false;
-            }
-
             byte[] byte_buffer = new byte[TcpConst.BUFFER_SIZE];
             byte_buffer = server_serializer.SerializeServerMsg(msg);
 
@@ -325,7 +337,7 @@ namespace ServerNetworking
 
             if (value == null)
             {
-                Console.WriteLine(String.Format("[ERROR]:Target user: {0}, is not bound to a socket, or user is not online. Socket = null.", user));
+                Console.WriteLine(String.Format("[Error]:Target user: {0}, is not bound to a socket, or user is not online. Socket = null.", user));
             }
 
             return (Socket)value;
@@ -369,27 +381,35 @@ namespace ServerNetworking
 
     public class ServerInbox
     {
+        private object inbox_lock = new object();
         private List<ClientMsg> list = new List<ClientMsg>();
 
         public bool Empty()
         {
-            if (list.Count < 1)
-                return true;
-            else
-                return false;
+            lock (((IList)list).SyncRoot)
+            {
+                if (list.Count < 1)
+                    return true;
+                else
+                    return false;
+            }
+
         }
 
         public ClientMsg Pop()
         {
-            ClientMsg next = null;
-            next = list.First();
-            list.RemoveAt(list.IndexOf(list.First()));
-            return next;
+            lock (inbox_lock)
+            {
+                ClientMsg next = null;
+                next = list.First();
+                list.RemoveAt(list.IndexOf(list.First()));
+                return next;
+            }
         }
 
         public void Push(ClientMsg msg)
         {
-            list.Add(msg);
+            lock (inbox_lock) {list.Add(msg);}
         }
     }
 }

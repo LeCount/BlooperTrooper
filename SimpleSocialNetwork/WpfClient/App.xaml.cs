@@ -31,6 +31,9 @@ namespace WpfClient
         /// <summary>Thread responsible for reading incoming messages on this client's socket, and adding them to a global list.</summary>
         private Thread add_messages = null;
 
+        /// <summary>Thread that handles received messages from server.</summary>
+        Thread handle_messages = null;
+
         /// <summary>Thread responsible for pinging the server.</summary>
         private Thread ping_server = null;
 
@@ -43,8 +46,7 @@ namespace WpfClient
         /// <summary>A reference to an instance, that provides the API for TCP communication.</summary>
         ClientTCP tcp_networking = new ClientTCP(); 
 
-        /// <summary>Thread that handles received messages from server.</summary>
-        Thread handle_messages = null;
+
 
         public App()
         {
@@ -54,12 +56,6 @@ namespace WpfClient
             //TODO: Server ip is assumed to be local host at the moment.
             if (client_stream == null)
                 client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
-
-           /* handle_messages = new Thread(GetNextMessage);
-            handle_messages.Start();
-
-            add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
-            add_messages.Start();*/
 
             main_window = new MainWindow();
             login_window = new LoginWindow();
@@ -386,9 +382,7 @@ namespace WpfClient
                     Chat_data received_data = (Chat_data)msg.data;
 
                     if (chat_conversations.ContainsKey(received_data.from))
-                    {
                         AddChatMessage(new ChatMessage(received_data.from, received_data.text), false);
-                    }
                     else
                     {
                         StartChat(received_data.from);

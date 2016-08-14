@@ -7,7 +7,7 @@
     using SharedResources;
     using System.Collections.Generic;
 
-    public static class Entrypoint
+    public static class ServerEntryPoint
     {
         static void Main(string[] args)
         {
@@ -26,7 +26,7 @@
     {
         private SQLiteDB sqlite_database = new SQLiteDB(TcpConst.DATABASE_FILE);
         private TcpServer tcp_server = null;
-        private Thread get_next_request = null;
+        private Thread executeRequests = null;
     
         public ServerApp(){InitServerApp(null, null);}
 
@@ -37,11 +37,11 @@
             tcp_server = new TcpServer(ip_addr_to_use, port_to_use);
             tcp_server.StartServer();
 
-            get_next_request = new Thread(executeRequests);
-            get_next_request.Start();
+            executeRequests = new Thread(GetNextRequest);
+            executeRequests.Start();
         }
 
-        private void executeRequests()
+        private void GetNextRequest()
         {
             ClientMsg next_request = null;
 

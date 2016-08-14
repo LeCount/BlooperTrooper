@@ -18,6 +18,7 @@ namespace ClientNetworking
         private bool server_alive = false;
         private bool connected = false;
         private static Serializer s = new Serializer();
+        private object message_list_lock = new object();
 
         /// <summary>A byte-array based buffer, where incoming messages are stored.</summary>
         private byte[] receive_buffer = new byte[TcpConst.BUFFER_SIZE];
@@ -101,12 +102,24 @@ namespace ClientNetworking
 
                     if (msg != null)
                     {
-                        message_list.Enqueue(msg);
+                        EnqueueWithMutex(msg);
                     }
 
                     numOfBytesRead = 0;
                 }
             }
+        }
+
+        private ServerMsg DequeueWithMutex()
+        {
+            lock(message_list_lock)
+                return message_list.Dequeue();
+        }
+
+        private void EnqueueWithMutex(ServerMsg msg)
+        {
+            lock (message_list_lock)
+                message_list.Enqueue(msg);
         }
 
         public void SetServerStatus(bool b)
@@ -120,7 +133,7 @@ namespace ClientNetworking
 
             if (message_list.Count > 0 && message_list != null)
             {
-                msg = message_list.Dequeue();
+                msg = DequeueWithMutex();
             }
 
             return msg;
