@@ -8,7 +8,10 @@
         Title="Login" Height="250" Width="250"
         ResizeMode="NoResize"
         Left="800" Top="150">
-
+    <Window.Resources>
+        <local:BoolToStringConverter x:Key="BoolToNetworkAvailabilityConverter" TrueString="Network: Available" FalseString="Network: Unavailable"/>
+        <local:BoolToStringConverter x:Key="BoolToServerAvailabilityConverter"  TrueString="Server: Available" FalseString="Server: Unavailable"/>
+    </Window.Resources>
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
@@ -29,8 +32,9 @@
         <Label Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="2">Password:</Label>
         <PasswordBox x:Name="txtPassword" Height="25" VerticalAlignment="Top"  Grid.Row="2" Grid.Column="1"> </PasswordBox>
         
-            <Button Height="40" VerticalAlignment="Top" x:Name="loginButton" Margin="5" Click="loginButton_Click" Grid.Row="3" Grid.ColumnSpan="2">Login</Button>
-            <Label x:Name="lblRegister" VerticalAlignment="Bottom" MouseLeftButtonUp="lblRegister_MouseLeftButtonUp" FontSize="10" Background="{x:Null}" Foreground="#FF000CFF" Grid.Row="4" Grid.ColumnSpan="2">Register Account</Label>
-     
+        <Button Height="40" VerticalAlignment="Top" x:Name="loginButton" Margin="5" Click="loginButton_Click" Grid.Row="3" Grid.ColumnSpan="2">Login</Button>
+        <Label x:Name="lblRegister" VerticalAlignment="Bottom" MouseLeftButtonUp="lblRegister_MouseLeftButtonUp" FontSize="10" Background="{x:Null}" Foreground="#FF000CFF" Grid.Row="4" Grid.ColumnSpan="2">Register Account</Label>
+        <Label x:Name="lblNetwork_availability" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="10" Background="{x:Null}" Foreground="Black" Grid.Row="4" Content="{Binding Path=Network_status.Network_availability, Converter={StaticResource BoolToNetworkAvailabilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}" Grid.ColumnSpan="2"></Label>
+        <Label x:Name="lblServerAvailabillity" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="10" Background="{x:Null}" Foreground="Black" Grid.Row="4" Content="{Binding Path=Server_status.Server_availability, Converter={StaticResource BoolToServerAvailabilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}" Grid.ColumnSpan="2"></Label>
     </Grid>
 </Window>

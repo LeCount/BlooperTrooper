@@ -219,9 +219,9 @@
             data_to_send.message_code = ValidateLoginRequest(received_data);
 
             if(data_to_send.message_code == TcpMessageCode.ACCEPTED)
-                Console.WriteLine(String.Format("[{0}]:Network access granted.", received_data.username));
+                Console.WriteLine(String.Format("[Server]:{0} was granted access to network.", received_data.username));
             else
-                Console.WriteLine(String.Format("[{0}]:Network access denied.", received_data.username));
+                Console.WriteLine(String.Format("[Server]:{0} was denied access to network.", received_data.username));
 
             tcp_server.SendMessage(data_to_send, TcpConst.LOGIN, received_data.username);
         }

@@ -15,7 +15,6 @@ namespace ClientNetworking
         private AppLogger log = new AppLogger();
 
         private Queue<ServerMsg> message_list = new Queue<ServerMsg>();
-        private bool server_alive = false;
         private bool connected = false;
         private static Serializer s = new Serializer();
         private object message_list_lock = new object();
@@ -38,6 +37,7 @@ namespace ClientNetworking
                 try
                 {
                     c.Connect(IPAddress.Parse(server_addr), port);
+                    //c.Connect(IPAddress.Parse("193.11.112.234"), port);
                     client_stream = c.GetStream();
                     connected = true;
                 }
@@ -48,39 +48,25 @@ namespace ClientNetworking
             return client_stream;
         }
 
-        public void ServerStatusPing(Stream client_stream)
-        {   
-            while (true)
-            {
-                ClientMsg msg = new ClientMsg();
-                Ping_data pingdata = new Ping_data();
-                pingdata.message_code = TcpMessageCode.REQUEST;
-
-                Client_send(pingdata, TcpConst.PING, client_stream);
-
-                Thread.Sleep(10000);
-
-                if (!server_alive)
-                {
-                    connected = false;
-                    //logger.Error("Ping failed!");
-                }
-
-            }
-        }
-
 
         /// <summary>Send message from client to server over TCP.</summary>
         /// <param name="msg">Message to be sent over TCP.</param>
-        public void Client_send(object msg_data, int msg_type, Stream client_stream)
+        public bool Client_send(object msg_data, int msg_type, Stream client_stream)
         {
             ClientMsg msg = new ClientMsg();
             msg.type = msg_type;
             msg.data = msg_data;
 
             byte[] byteBuffer = s.SerializeClientMsg(msg);
-            try { client_stream.Write(byteBuffer, 0, byteBuffer.Length); }
-            catch (Exception) { }
+            try
+            {
+                client_stream.Write(byteBuffer, 0, byteBuffer.Length);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>Read messages from the server</summary>
@@ -120,11 +106,6 @@ namespace ClientNetworking
         {
             lock (message_list_lock)
                 message_list.Enqueue(msg);
-        }
-
-        public void SetServerStatus(bool b)
-        {
-            server_alive = b;
         }
 
         public ServerMsg GetNextMessage()

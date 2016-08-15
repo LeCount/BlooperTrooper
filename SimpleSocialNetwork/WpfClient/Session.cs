@@ -18,8 +18,6 @@ namespace WpfClient
         public const int IS_FALSE = -1;
         public const int IS_TRUE = 1;
 
-        private int grubb { set; get; }
-
         /// <summary>List to keep track of users in SSN</summary>
         public ObservableCollection<UserSimple> users_list = new ObservableCollection<UserSimple>();
         public bool users_list_collected;
@@ -29,7 +27,7 @@ namespace WpfClient
         private int registration = REGISTRATION_NOTSET;
 
         /// <summary>User information in current session</summary>
-        private string current_username = "";
+        private string current_username = "Unknown user";
 
         private int logged_in = NOT_SET; 
 

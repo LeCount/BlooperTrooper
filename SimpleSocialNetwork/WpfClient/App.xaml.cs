@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Net.NetworkInformation;
 
 namespace WpfClient
 {
@@ -44,27 +45,85 @@ namespace WpfClient
         public MainWindow main_window = null; 
 
         /// <summary>A reference to an instance, that provides the API for TCP communication.</summary>
-        ClientTCP tcp_networking = new ClientTCP(); 
-
-
+        ClientTCP tcp_networking = new ClientTCP();
 
         public App()
         {
             if (tcp_client == null)
                 tcp_client = new TcpClient();
 
+            main_window = new MainWindow();
+            login_window = new LoginWindow();
+            login_window.Show();
+
+            NetworkChange.NetworkAvailabilityChanged += new NetworkAvailabilityChangedEventHandler(OnNetworkAvailabilityChanged);
+
+            login_window.SetServerAvailability(false);
             //TODO: Server ip is assumed to be local host at the moment.
             if (client_stream == null)
                 client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
 
-            main_window = new MainWindow();
-            login_window = new LoginWindow();
+            login_window.SetServerAvailability(true);
+
+            ping_server = new Thread(ServerStatusPing);
+            ping_server.Start();
         }
+
+        public void OnNetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
+        {
+            if (e.IsAvailable)
+                login_window.SetNetworkAvailability(true);
+            else
+                login_window.SetNetworkAvailability(false);
+        }
+
+        public void SetServerStatus(bool val)
+        {
+            login_window.SetNetworkAvailability(val);
+        }
+
+        public void ServerStatusPing()
+        {
+            while (true)
+            {
+                ClientMsg msg = new ClientMsg();
+                Ping_data pingdata = new Ping_data();
+                pingdata.message_code = TcpMessageCode.REQUEST;
+
+                if(tcp_networking.Client_send(pingdata, TcpConst.PING, client_stream))
+                {
+                    login_window.SetServerAvailability(true);
+                    Thread.Sleep(5000);
+                }
+                else
+                {
+                    OnServerDisconnect();
+                }  
+            }
+        }
+
+        private void OnServerDisconnect()
+        {
+            MessageBox.Show("Server is offline or can't be reached.");
+            login_window.SetServerAvailability(false);
+
+            Dispatcher.Invoke(new Action(delegate ()
+            {
+                main_window.Hide();
+                login_window.Show();
+            }
+            ));
+
+            tcp_client = new TcpClient();
+            client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
+            session = new Session();
+        }
+
 
         ///<summary>Login to server</summary>
         public bool LoginToServer(string username, string password)
         {
-            if(tcp_client==null)
+            if (tcp_client==null)
                 tcp_client = new TcpClient();
 
             //TODO: Server ip is assumed to be local host at the moment.
@@ -96,10 +155,6 @@ namespace WpfClient
                 if (session.GetLoggedInStatus() == 1)
                 {
                     main_window.Title = "Simple Social Network - " + username;
-
-                    ping_server = new Thread(() => tcp_networking.ServerStatusPing(client_stream));
-                    ping_server.Start();
-
                     return true;
                 }
                 else if (session.GetLoggedInStatus() == -1)
@@ -116,14 +171,17 @@ namespace WpfClient
 
             log.Add("User loged out from server.");
 
-            if (add_messages.IsAlive)
-                add_messages.Abort();
+            if(add_messages != null)
+            {
+                if (add_messages.IsAlive)
+                    add_messages.Abort();
+            }
 
-            if (ping_server.IsAlive)
-                ping_server.Abort();
-
-            if (handle_messages.IsAlive)
-                handle_messages.Abort();
+            if(handle_messages != null)
+            {
+                if (handle_messages.IsAlive)
+                    handle_messages.Abort();
+            }
 
             try
             {
@@ -137,7 +195,11 @@ namespace WpfClient
 
             session.SetLoggedOut();
             login_window.Show();
+
+            tcp_client = new TcpClient();
+            client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
         }
+
 
         public bool RequestToJoinSocialNetwork(string username, string password, string email, string firstName, string lastName, string about, string interests)
         {
@@ -283,20 +345,6 @@ namespace WpfClient
         {
             switch (msg.type)
             {
-                case TcpConst.PING:
-                    Ping_data b = new Ping_data();
-                    b = (Ping_data)msg.data;
-                   
-                    if(b.message_code == TcpMessageCode.REPLY)
-                        tcp_networking.SetServerStatus(true);
-                    else
-                    {
-                        log.Add("Invalid Ping");
-                        tcp_networking.SetServerStatus(false);
-                    }
-
-                    break;
-
                 case TcpConst.JOIN:
                     JoinReply_data join_reply = (JoinReply_data)msg.data;
 
@@ -308,6 +356,7 @@ namespace WpfClient
                     else
                     {
                         session.SetRegistrationFailed();
+                        session.SetCurrentUsername("Unknown user");
                         log.Add("Registration of user failed");
                     }
                     break;
@@ -321,7 +370,11 @@ namespace WpfClient
                         log.Add("User Logged in");
                     }
                     else
+                    {
                         session.SetLoggedOut();
+                        session.SetCurrentUsername("Unknown user");
+                    }
+
                     break;
 
                 case TcpConst.LOGOUT:
@@ -421,14 +474,23 @@ namespace WpfClient
         {
             log.Add("App is shutting down.");
 
-            if (add_messages.IsAlive)
-                add_messages.Abort();
+            if (add_messages != null)
+            {
+                if (add_messages.IsAlive)
+                    add_messages.Abort();
+            }
 
-            if (ping_server.IsAlive)
-                ping_server.Abort();
+            if (ping_server != null)
+            {
+                if (ping_server.IsAlive)
+                    ping_server.Abort();
+            }
 
-            if (handle_messages.IsAlive)
-                handle_messages.Abort();
+            if (handle_messages != null)
+            {
+                if (handle_messages.IsAlive)
+                    handle_messages.Abort();
+            }
 
             try {tcp_client.Close();}
             catch (Exception) { }

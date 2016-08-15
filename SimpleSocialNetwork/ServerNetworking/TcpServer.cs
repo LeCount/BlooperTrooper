@@ -111,7 +111,7 @@ namespace ServerNetworking
             {
                 while (!client_listener.Pending()) { }
 
-                Console.WriteLine(String.Format("[Server]Client connection occurred."));
+                Console.WriteLine(String.Format("[Server]Client connection established."));
 
                 s = client_listener.AcceptSocket();
                 all_active_client_sockets.Add(s);
@@ -206,24 +206,14 @@ namespace ServerNetworking
 
                         if (msg.type == TcpConst.PING)
                         {
-                            if (user_on_this_socket != null)
-                                Console.WriteLine(String.Format("[{0}]:Ping server.", user_on_this_socket));
-
-                            Ping_data received_data = new Ping_data();
-                            received_data = (Ping_data)msg.data;
-
-                            ServerMsg msg_to_send = new ServerMsg();
-                            msg_to_send.type = TcpConst.PING;
-
-                            Ping_data data_to_send = new Ping_data();
-                            data_to_send.message_code = TcpMessageCode.REPLY;
-                            msg_to_send.data = (Object)data_to_send;
-
-                            SendMessageToSocket(msg_to_send, s);
+                            //Console.WriteLine("[Server]:Received PING-request.");
                         }
 
-                        if(user_on_this_socket != null)
-                            Console.WriteLine(String.Format("[{0}]:Sent {1}-message.", user_on_this_socket, TcpConst.IntToText(msg.type)));
+                        if(user_on_this_socket == null || user_on_this_socket == "")
+                            Console.WriteLine(String.Format("[Server]:Received {0}-message from unknown user", TcpConst.IntToText(msg.type)));
+                        else
+                            Console.WriteLine(String.Format("[Server]:Received {0}-message from {1}", TcpConst.IntToText(msg.type), user_on_this_socket));
+
                     }
 
                     num_of_bytes_read = 0;
