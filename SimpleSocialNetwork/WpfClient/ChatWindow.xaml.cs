@@ -11,6 +11,7 @@ namespace WpfClient
     public partial class ChatWindow : Window
     {
         private App wpf_app = null;
+        ObservableCollection<ChatMessage> conversation = new ObservableCollection<ChatMessage>();
         private string username_chatter;
 
         public ChatWindow(string name)
@@ -18,7 +19,7 @@ namespace WpfClient
             InitializeComponent();
             wpf_app = (App)Application.Current;
             username_chatter = name;
-            listbox_chat_log.ItemsSource = (ObservableCollection<ChatMessage>)wpf_app.chat_conversations[name];
+            listbox_chat_log.ItemsSource = (ObservableCollection<ChatMessage>)conversation;
         }
 
 
@@ -27,12 +28,6 @@ namespace WpfClient
             if (txtbox_chat.Text.Length != 0)
                 wpf_app.SendChatMessage(txtbox_chat.Text, username_chatter);
             txtbox_chat.Clear();
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            wpf_app.RemoveConversation(username_chatter);
-            base.OnClosing(e);
         }
 
         private void txtbox_chat_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -44,6 +39,15 @@ namespace WpfClient
             if(txtbox_chat.Text.Length != 0)
                 wpf_app.SendChatMessage(txtbox_chat.Text, username_chatter);
             txtbox_chat.Clear();
+        }
+
+        public void AddNewChatMessage(ChatMessage chatMessage)
+        {
+            Dispatcher.Invoke(new Action(delegate ()
+            {
+                conversation.Add(chatMessage);
+            }
+            ));
         }
     }
 }

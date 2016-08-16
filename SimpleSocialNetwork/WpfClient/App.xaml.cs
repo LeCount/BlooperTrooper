@@ -24,7 +24,7 @@ namespace WpfClient
         /// <summary>A medium for providing client connections for TCP network services.</summary>
         private TcpClient tcp_client = null;
 
-        public Hashtable chat_conversations = new Hashtable();
+        public Hashtable active_chats = new Hashtable();
 
         /// <summary>Session class to keep track of current session</summary>
         public Session session = new Session();
@@ -49,21 +49,11 @@ namespace WpfClient
 
         public App()
         {
-            if (tcp_client == null)
-                tcp_client = new TcpClient();
-
             main_window = new MainWindow();
             login_window = new LoginWindow();
-            login_window.Show();
+            ReconnectServer();
 
             NetworkChange.NetworkAvailabilityChanged += new NetworkAvailabilityChangedEventHandler(OnNetworkAvailabilityChanged);
-
-            login_window.SetServerAvailability(false);
-            //TODO: Server ip is assumed to be local host at the moment.
-            if (client_stream == null)
-                client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
-
-            login_window.SetServerAvailability(true);
 
             ping_server = new Thread(ServerStatusPing);
             ping_server.Start();
@@ -96,19 +86,29 @@ namespace WpfClient
                     Thread.Sleep(5000);
                 }
                 else
-                {
-                    OnServerDisconnect();
-                }  
+                    OnServerDisconnect(); 
             }
         }
 
         private void OnServerDisconnect()
         {
             MessageBox.Show("Server is offline or can't be reached.");
+            ReconnectServer();
+        }
+
+        private void ReconnectServer()
+        {
             login_window.SetServerAvailability(false);
 
             Dispatcher.Invoke(new Action(delegate ()
             {
+               foreach (ChatWindow c in active_chats.Values)
+                {
+                    c.Close();
+                }
+
+                active_chats = new Hashtable();
+
                 main_window.Hide();
                 login_window.Show();
             }
@@ -116,19 +116,9 @@ namespace WpfClient
 
             tcp_client = new TcpClient();
             client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
+            login_window.SetServerAvailability(true);
             session = new Session();
-        }
-
-
-        ///<summary>Login to server</summary>
-        public bool LoginToServer(string username, string password)
-        {
-            if (tcp_client==null)
-                tcp_client = new TcpClient();
-
-            //TODO: Server ip is assumed to be local host at the moment.
-            if(client_stream == null)
-                client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
+            session.SetLoggedOut();
 
             log.Add("Starting handle message thread");
             handle_messages = new Thread(GetNextMessage);
@@ -137,8 +127,11 @@ namespace WpfClient
             log.Add("Starting add message thread");
             add_messages = new Thread(() => tcp_networking.ClientRead(client_stream));
             add_messages.Start();
+        }
 
-            session.SetLoggedInStatus(0);
+        ///<summary>Login to server</summary>
+        public bool LoginToServer(string username, string password)
+        {           
             session.SetCurrentUsername(username);
             LoginRequest_data loginData = new LoginRequest_data();
 
@@ -157,10 +150,11 @@ namespace WpfClient
                     main_window.Title = "Simple Social Network - " + username;
                     return true;
                 }
-                else if (session.GetLoggedInStatus() == -1)
-                    return false;
-                timeout_counter++;
-                Thread.Sleep(10);
+                else
+                { 
+                    timeout_counter++;
+                    Thread.Sleep(10);
+                }
             }
             return false;
         }
@@ -193,11 +187,7 @@ namespace WpfClient
             tcp_client = null;
             client_stream = null;
 
-            session.SetLoggedOut();
-            login_window.Show();
-
-            tcp_client = new TcpClient();
-            client_stream = tcp_networking.ConnectToServer(tcp_client, TcpMethods.GetIP(), TcpConst.SERVER_PORT);
+            ReconnectServer();
         }
 
 
@@ -284,22 +274,17 @@ namespace WpfClient
 
         public void StartChat(string username)
         {
-            if (!chat_conversations.ContainsKey(username))
+            if (!active_chats.ContainsKey(username))
             {
-                ObservableCollection<ChatMessage> new_conversation = new ObservableCollection<ChatMessage>();
-                chat_conversations.Add(username, new_conversation);
+                Dispatcher.Invoke(new Action(delegate ()
+                {
+                    ChatWindow chat = new ChatWindow(username);
+                    active_chats.Add(username, chat);
+                    chat.Title = string.Format("[{0}] \tConversation with {1}", session.GetCurrentUsername(), username);
+                    chat.Show();
+                }
+                ));
             }
-
-            Dispatcher.Invoke(new Action(delegate ()
-            {
-                ChatWindow chat_window = new ChatWindow(username);
-                chat_window.Title = string.Format("[{0}] \tConversation with {1}", session.GetCurrentUsername(), username);
-                chat_window.Show();
-            }
-            ));
-            
-                
-            return;
         }
 
         public void SendChatMessage(string text, string username)
@@ -324,19 +309,12 @@ namespace WpfClient
 
             Dispatcher.Invoke(new Action(delegate ()
             {
-                if (((ObservableCollection<ChatMessage>)chat_conversations[msg.Username]) == null)
-                    chat_conversations.Add(msg.Username, new ObservableCollection<ChatMessage>());
-
-                
-                ((ObservableCollection<ChatMessage>)chat_conversations[msg.Username]).Add(new ChatMessage(from_user, msg.MessageText));
+                if ( ((ChatWindow)active_chats[msg.Username]) == null )
+                    StartChat(msg.Username);
+                else
+                ((ChatWindow)active_chats[msg.Username]).AddNewChatMessage(new ChatMessage(from_user, msg.MessageText));
             }
             ));
-        }
-
-        internal void RemoveConversation(string uname)
-        {
-            if (chat_conversations.ContainsKey(uname))
-                chat_conversations.Remove(uname);
         }
 
         /// <summary>Depending on the reply that was received, handle it accordingly. </summary>
@@ -434,7 +412,7 @@ namespace WpfClient
                 case TcpConst.CHAT:
                     Chat_data received_data = (Chat_data)msg.data;
 
-                    if (chat_conversations.ContainsKey(received_data.from))
+                    if (active_chats.ContainsKey(received_data.from))
                         AddChatMessage(new ChatMessage(received_data.from, received_data.text), false);
                     else
                     {
@@ -473,7 +451,11 @@ namespace WpfClient
         public void AppShutdown()
         {
             log.Add("App is shutting down.");
+            StopAllThreads();
+        }
 
+        protected void StopAllThreads()
+        {
             if (add_messages != null)
             {
                 if (add_messages.IsAlive)
@@ -492,7 +474,7 @@ namespace WpfClient
                     handle_messages.Abort();
             }
 
-            try {tcp_client.Close();}
+            try { tcp_client.Close(); }
             catch (Exception) { }
         }
     }

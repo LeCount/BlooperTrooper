@@ -204,11 +204,6 @@ namespace ServerNetworking
                             return;
                         }
 
-                        if (msg.type == TcpConst.PING)
-                        {
-                            //Console.WriteLine("[Server]:Received PING-request.");
-                        }
-
                         if(user_on_this_socket == null || user_on_this_socket == "")
                             Console.WriteLine(String.Format("[Server]:Received {0}-message from unknown user", TcpConst.IntToText(msg.type)));
                         else
