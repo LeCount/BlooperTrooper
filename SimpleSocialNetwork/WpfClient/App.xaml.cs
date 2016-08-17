@@ -80,7 +80,7 @@ namespace WpfClient
 
         private void StartCollectingMessagesFromServer()
         {
-
+            //on connect or reconnect, this thread must be re-created, since it depends on the client stream. The server discards the active socket on logout.
             if (add_messages != null && add_messages.IsAlive)
                 add_messages.Abort();
             
