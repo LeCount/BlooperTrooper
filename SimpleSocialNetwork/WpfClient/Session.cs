@@ -12,7 +12,6 @@ namespace WpfClient
     {
         public const int REGISTRATION_FAILED = -1;
         public const int REGISTRATION_SUCCESS = 1;
-        public const int REGISTRATION_NOTSET = 0;
 
         public const int NOT_SET = 0;
         public const int IS_FALSE = -1;
@@ -20,36 +19,51 @@ namespace WpfClient
 
         /// <summary>List to keep track of users in SSN</summary>
         public ObservableCollection<UserSimple> users_list = new ObservableCollection<UserSimple>();
-        public bool users_list_collected;
 
         public ObservableCollection<WallPostItem> wall = new ObservableCollection<WallPostItem>();
 
-        private int registration = REGISTRATION_NOTSET;
+        private int is_registered { get; set; }
+        private string current_username { get; set; }
+        private int is_logged_in { get; set; }
 
-        /// <summary>User information in current session</summary>
-        private string current_username = "Unknown user";
+        public Session()
+        {
+            current_username = "Unknown user";
+            is_logged_in = IS_FALSE;
+            is_registered = NOT_SET;
+        }
 
-        private int logged_in = NOT_SET; 
+        public int GetRegistrationStatus(){return is_registered;} 
 
-        public int GetRegistrationStatus(){return registration;} 
+        public void SetRegistrationFailed(){is_registered = REGISTRATION_FAILED;}
 
-        public void SetRegistrationFailed(){registration = REGISTRATION_FAILED;}
+        public void SetRegistrationSuccessful(){is_registered = REGISTRATION_SUCCESS;}
 
-        public void SetRegistrationSuccessful(){registration = REGISTRATION_SUCCESS;}
-
-        public void SetRegistrationNotSet(){registration = REGISTRATION_NOTSET;}
+        public void SetRegistrationNotSet(){is_registered = NOT_SET; }
 
         public void SetCurrentUsername(string un){current_username = un;}
 
         public string GetCurrentUsername(){return current_username;}
 
-        public void SetLoggedIn(){logged_in = IS_TRUE; }
+        public void SetLoggedIn()
+        {
+            is_logged_in = IS_TRUE;
+            is_registered = IS_TRUE;
+        }
 
-        public void SetLoggedOut(){logged_in = IS_FALSE; }
+        public void SetLoggedOut()
+        {
+            is_logged_in = IS_FALSE;
+            current_username = "Unknown user";
+            is_registered = NOT_SET;
+            wall = new ObservableCollection<WallPostItem>();
+            users_list = new ObservableCollection<UserSimple>();
 
-        public int GetLoggedInStatus(){return logged_in;}
+        }
 
-        public void SetLoggedInStatus(int status){logged_in = status; }
+        public int GetLoggedInStatus(){return is_logged_in;}
+
+        public void SetLoggedInStatus(int status){is_logged_in = status; }
 
         public void AddUserToList(string username, bool friend)
         {

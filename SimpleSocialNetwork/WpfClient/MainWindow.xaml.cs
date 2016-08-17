@@ -19,7 +19,7 @@ namespace WpfClient
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             // Close all threads in app
-            wpf_app.AppShutdown();
+            wpf_app.OnAppShutdown();
             Environment.Exit(0);
             base.OnClosing(e);
         }
