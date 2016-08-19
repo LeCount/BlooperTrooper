@@ -143,7 +143,7 @@ namespace WpfClient
             Thread.Sleep(100);
 
             int timeout_counter = 0;
-            while (timeout_counter < 100)
+            while (timeout_counter < 500)
             {
                 if (session.GetLoggedInStatus() == 1)
                 {
