@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Data;
 
 namespace WpfClient
 {
@@ -119,6 +120,68 @@ namespace WpfClient
             }
         }
 
+    }
+
+    public class UserSimple : INotifyPropertyChanged
+    {
+        private string username = "";
+
+        public string Username
+        {
+            get { return username; }
+            set
+            {
+                username = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        private bool friend = false;
+
+        public bool Friend
+        {
+            get { return friend; }
+            set
+            {
+                friend = value;
+                NotifyPropertyChanged();
+            }
+        }
+    }
+
+    public class FriendToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            switch ((bool)value)
+            {
+                case true:
+                    return "green";
+                case false:
+                    return "red";
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            switch (value.ToString().ToLower())
+            {
+                case "green":
+                    return true;
+                case "red":
+                    return false;
+            }
+            return false;
+        }
     }
 
 }

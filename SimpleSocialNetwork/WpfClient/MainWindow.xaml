@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfClient"
         mc:Ignorable="d"
-        Title="Simple Social Network" Height="500" Width="700"
+        Title="Simple Social Network" Height="500" Width="800"
         Left="800" Top="150">
 
     <Window.Resources>
@@ -14,10 +14,11 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
+        <Grid Grid.Column="0" HorizontalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="20"/>
@@ -26,7 +27,7 @@
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <TextBlock Height="40" VerticalAlignment="Top" Padding="10" Background="Black" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Users</TextBlock>
+            <TextBlock Height="40" VerticalAlignment="Top" Padding="10" Background="#333333" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Users</TextBlock>
             <Button x:Name="btnRefreshUserList" Height="20" BorderThickness="0"  BorderBrush="#F8F8F8" Background="#FFFFFF" Grid.Row="1" Click="btnRefresh_Click" Padding="0">Refresh</Button>
 
             <ListBox Name="lbUserList" Grid.Row="2" SelectionMode="Single" SelectionChanged="lbUserList_SelectionChanged">
@@ -47,14 +48,15 @@
             <Button x:Name="btnAddFriend" Height="40" BorderThickness="0" Background="#F8F8F8" Grid.Row="4" Click="btnAddFriend_Click">Add Friend</Button>
             <Button x:Name="btnLogOut" Height="40" Background="#F8F8F8" Grid.Row="5" Click="btnLogOut_Click">Log out</Button>
         </Grid>
-        <Grid Grid.Column="1">
+        <GridSplitter ResizeDirection="Columns" Background="#333333" Height="auto" Width="5" Grid.Column="1" Grid.ColumnSpan="1" Margin="0" ResizeBehavior="PreviousAndNext"/>
+        <Grid Grid.Column="2" HorizontalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition Height="40" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock x:Name="txtWall" Height="40" VerticalAlignment="Top" Padding="10" Background="Black" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Wall</TextBlock>
-            <TextBox x:Name="txtStatus" Height="40" VerticalAlignment="Top" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 0 50 0">Enter Status Message...</TextBox>
+            <TextBlock x:Name="txtWall" Height="40" VerticalAlignment="Top" Padding="10" Background="#333333" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Wall</TextBlock>
+            <TextBox x:Name="txtStatus" Height="40" VerticalAlignment="Top" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 0 50 0"></TextBox>
             <Button x:Name="btnStatusSubmit" Grid.Row="1" HorizontalAlignment="Right" Width="50" Click="btnStatusSubmit_Click">Submit</Button>
 
             <ListBox Name="lbWall" Grid.Row="2" SelectionMode="Single">
