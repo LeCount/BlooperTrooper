@@ -19,7 +19,7 @@ namespace WpfClient
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             // Close all threads in app
-            wpf_app.AppShutdown();
+            wpf_app.OnAppShutdown();
             Environment.Exit(0);
             base.OnClosing(e);
         }
@@ -67,8 +67,20 @@ namespace WpfClient
         {
             ListBox lbx = sender as ListBox;
 
+            
             if(lbUserList.SelectedItem != null)
             {
+                if ( ((UserSimple)lbUserList.SelectedItem).Username == wpf_app.session.GetCurrentUsername() )
+                {
+                    btnStartChat.IsEnabled = false;
+                    btnAddFriend.IsEnabled = false;
+                }
+                else
+                {
+                    btnStartChat.IsEnabled = true;
+                    btnAddFriend.IsEnabled = true;
+                }
+
                 wpf_app.GetWallFromUser(((UserSimple)lbUserList.SelectedItem).Username);
                 txtWall.Text = "Wall of " + ((UserSimple)lbUserList.SelectedItem).Username;
             }
