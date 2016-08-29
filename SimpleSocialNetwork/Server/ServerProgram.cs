@@ -6,7 +6,9 @@
     using ServerNetworking;
     using SharedResources;
     using System.Collections.Generic;
-
+    using System.Net.Mail;
+    using System.Net;
+    using Server;
     public static class ServerEntryPoint
     {
         static void Main(string[] args)
@@ -27,13 +29,17 @@
         private SQLiteDB sqlite_database = new SQLiteDB(TcpConst.DATABASE_FILE);
         private TcpServer tcp_server = null;
         private Thread executeRequests = null;
-    
+        private SMTP_window smtp_form = null;
+        private SmtpClient smtp_client = null;
+
         public ServerApp(){InitServerApp(null, null);}
 
         public ServerApp(string ipaddr, string port){InitServerApp(ipaddr, port);}
 
         private void InitServerApp(string ip_addr_to_use, string port_to_use)
         {
+            smtp_form = new SMTP_window(this);
+
             tcp_server = new TcpServer(ip_addr_to_use, port_to_use);
             tcp_server.StartServer();
 
@@ -300,6 +306,29 @@
         private List<String> GetAllUsersFromDB()
         {
             return sqlite_database.GetAllUsernames();
+        }
+
+        private void SendEmailTo(string suggested_email, string text, string subject)
+        {
+            if (smtp_client != null)
+            { 
+                MailMessage msg = new MailMessage();
+
+                msg.From = new MailAddress("server.test@gmail.com", "Server Verification");
+                msg.To.Add(suggested_email);
+                msg.Subject = subject;
+                msg.Body = text;
+                smtp_client.Send(msg);
+            }
+        }
+
+        public void SetSMTP_client(SmtpClient smtpc)
+        {
+            if (smtpc == null)
+                Console.WriteLine("No SMTP client were specified.");
+            else
+                Console.WriteLine("Using SMTP client.");
+            smtp_client = smtpc;
         }
     }
 }

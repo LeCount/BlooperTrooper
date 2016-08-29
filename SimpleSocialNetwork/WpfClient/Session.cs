@@ -104,7 +104,7 @@ namespace WpfClient
 
             Application.Current.Dispatcher.BeginInvoke(new Action(() => wall.Add(w)));
         }
+
+
     }
-
-
 }
