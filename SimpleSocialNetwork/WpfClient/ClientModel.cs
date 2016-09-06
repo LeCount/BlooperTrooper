@@ -166,7 +166,7 @@ namespace WpfClient
                 case true:
                     return "green";
                 case false:
-                    return "red";
+                    return "none";
             }
             return false;
         }

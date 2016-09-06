@@ -10,6 +10,12 @@
 
     <Window.Resources>
         <local:FriendToColorConverter x:Key="FriendToColorConverter" />
+        <Style x:Key="buttonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="Gray" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="#F8F8F8" />
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -44,9 +50,9 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button x:Name="btnStartChat" Height="40" BorderThickness="0" Background="#F8F8F8" Grid.Row="3" Click="btnStartChat_Click">Chat</Button>
-            <Button x:Name="btnAddFriend" Height="40" BorderThickness="0" Background="#F8F8F8" Grid.Row="4" Click="btnAddFriend_Click">Add Friend</Button>
-            <Button x:Name="btnLogOut" Height="40" Background="#F8F8F8" Grid.Row="5" Click="btnLogOut_Click">Log out</Button>
+            <Button x:Name="btnStartChat" Style="{StaticResource buttonStyle}" Height="40" Grid.Row="3" Click="btnStartChat_Click">Chat</Button>
+            <Button x:Name="btnAddFriend" Style="{StaticResource buttonStyle}" Height="40" Grid.Row="4" Click="btnAddFriend_Click">Add Friend</Button>
+            <Button x:Name="btnLogOut" Style="{StaticResource buttonStyle}" Height="40" Grid.Row="5" Click="btnLogOut_Click">Log out</Button>
         </Grid>
         <GridSplitter ResizeDirection="Columns" Background="#333333" Height="auto" Width="5" Grid.Column="1" Grid.ColumnSpan="1" Margin="0" ResizeBehavior="PreviousAndNext"/>
         <Grid Grid.Column="2" HorizontalAlignment="Stretch">
@@ -57,7 +63,7 @@
             </Grid.RowDefinitions>
             <TextBlock x:Name="txtWall" Height="40" VerticalAlignment="Top" Padding="10" Background="#333333" Foreground="White" FontWeight="Bold" FontSize="14" Grid.Row="0">Wall</TextBlock>
             <TextBox x:Name="txtStatus" Height="40" VerticalAlignment="Top" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 0 50 0"></TextBox>
-            <Button x:Name="btnStatusSubmit" Grid.Row="1" HorizontalAlignment="Right" Width="50" Click="btnStatusSubmit_Click">Submit</Button>
+            <Button x:Name="btnStatusSubmit"  Style="{StaticResource buttonStyle}" Grid.Row="1" HorizontalAlignment="Right" Width="50" FontSize="12" Click="btnStatusSubmit_Click">Submit</Button>
 
             <ListBox Name="lbWall" Grid.Row="2" SelectionMode="Single">
                 <ListBox.ItemTemplate>

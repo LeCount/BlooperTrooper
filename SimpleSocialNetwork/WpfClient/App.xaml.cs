@@ -304,6 +304,9 @@ namespace WpfClient
                 case TcpConst.GET_USERS:
                     GetUsersReply_data udr = (GetUsersReply_data)msg.data;
 
+                    if(udr.username == session.GetCurrentUsername())
+                        udr.username = udr.username + " (Me)";
+
                     if (!session.UserListContains(udr.username))
                     {
                         session.AddUserToList(udr.username, udr.friend_status);
