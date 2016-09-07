@@ -38,7 +38,7 @@
 
         private void InitServerApp(string ip_addr_to_use, string port_to_use)
         {
-            smtp_form = new SMTP_window(this);
+            //smtp_form = new SMTP_window(this);
 
             tcp_server = new TcpServer(ip_addr_to_use, port_to_use);
             tcp_server.StartServer();
